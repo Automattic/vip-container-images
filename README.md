@@ -15,3 +15,7 @@ docker pull ghcr.io/automattic/vip-container-images/alpine:3.14.1
 ## Publishing the images
 
 The image publishing process is performed by [a GitHub action](.github/workflows/) every time a commit is done to `master`. All workflows are triggered then, therefore, all images are built in parallel.
+
+## Updating Docker images
+
+This repository has Dependabot [set up](.github/dependabot.yml). Whenever a Docker base image has a new available version, the bot will open a Pull Request with the change.

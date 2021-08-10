@@ -1,0 +1,33 @@
+version: 2
+updates:
+  # Enable version updates for Alpine
+  - package-ecosystem: "docker"
+    # Look for a `Dockerfile` in the `root` directory
+    directory: "alpine/"
+    # Check for updates once a week
+    schedule:
+      interval: "weekly"
+
+  # Enable version updates for Nginx
+  - package-ecosystem: "docker"
+    # Look for a `Dockerfile` in the `root` directory
+    directory: "nginx/"
+    # Check for updates once a week
+    schedule:
+      interval: "weekly"
+
+  # Enable version updates for PHP-FPM
+  - package-ecosystem: "docker"
+    # Look for a `Dockerfile` in the `root` directory
+    directory: "php-fpm/"
+    # Check for updates once a week
+    schedule:
+      interval: "weekly"
+
+  # Enable version updates for Statsd
+  - package-ecosystem: "docker"
+    # Look for a `Dockerfile` in the `root` directory
+    directory: "statsd/"
+    # Check for updates once a week
+    schedule:
+      interval: "weekly"
