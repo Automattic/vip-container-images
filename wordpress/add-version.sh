@@ -14,46 +14,31 @@ fi
 version=$1
 ref=$2
 
-if [ -e internal/$version -o -e public/$version ]; then
-  echo "Version $version already exists"
-  exit 1
-fi
-
-echo "====================================="
-echo "Creating subtree internal/$version"
-echo "====================================="
-echo
-git subtree add -P internal/$version https://github.com/WordPress/WordPress $ref --squash -m "Add internal WordPress $version"
-
 echo
 echo "====================================="
 echo "Creating subtree public/$version"
 echo "====================================="
 echo
-git subtree add -P public/$version https://github.com/WordPress/WordPress $ref --squash -m "Add public WordPress $version"
+git subtree add -P wordpress/public/$version https://github.com/WordPress/WordPress $ref --squash -m "Add public WordPress $version"
 
 echo
 echo "====================================="
 echo "Copying extra files for VIP"
 echo "====================================="
 echo
-for variant in internal public; do
-  cd $variant/extra
-  cp -a . ../$version/
-  find . -type f | while read f; do git add ../$version/$f; done
-  cd ../..
-done
+cd wordpress/public/extra
+cp -a . ../$version/
+find . -type f | while read f; do git add ../$version/$f; done
+cd ../../..
 
 echo
 echo "====================================="
 echo "Patching files for VIP"
 echo "====================================="
 echo
-for variant in internal public; do
-  cd $variant/$version
-  for p in ../patches/*.patch; do patch -p1 -s < $p; done
-  cd ../..
-done
+cd wordpress/public/$version
+for p in ../patches/*.patch; do patch -p1 -s < $p; done
+cd ../../..
 
 echo
 echo "====================================="
