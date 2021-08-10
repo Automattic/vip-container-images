@@ -22,7 +22,8 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Get ngix image version
-        run: head -n 1 nginx/Dockerfile | sed -e 's/FROM nginx:\(.*\)-alpine/\1/'
+        id: getversion
+        run: echo "::set-output name=version::$(head -n 1 nginx/Dockerfile | sed -e 's/FROM nginx:\(.*\)-alpine/\1/')"
       - name: Build container image
         uses: docker/build-push-action@v2
         with:
@@ -30,4 +31,4 @@ jobs:
           push: true
           tags: |
             ghcr.io/automattic/vip-container-images/nginx:latest
-            ghcr.io/automattic/vip-container-images/nginx:1.19.10
+            ghcr.io/automattic/vip-container-images/nginx:${{ steps.getversion.outputs.version }}
