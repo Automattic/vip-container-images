@@ -1,4 +1,4 @@
-FROM statsd/statsd:v0.8.6
+FROM statsd/statsd:v0.9.0
 
 COPY statsd/statsd-config.js /config/statsd-config.js
 
