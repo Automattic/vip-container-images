@@ -1,4 +1,4 @@
-FROM alpine:3.14.1
+FROM ghcr.io/automattic/vip-container-images/alpine:3.12.7
 
 RUN apk add --no-cache git rsync && \
     git clone --depth 1 https://github.com/Automattic/vip-go-mu-plugins /mu-plugins && \
