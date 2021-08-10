@@ -1,0 +1,34 @@
+name: Publish alpine Docker image
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  push_to_registry:
+    name: Push Docker image to GitHub Packages
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Log in to GitHub Docker Registry
+        uses: docker/login-action@v1
+        with:
+          registry: https://ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get image version
+        id: getversion
+        run: echo "::set-output name=version::$(head -n 1 alpine/Dockerfile | sed -e 's/FROM alpine:\(.*\)/\1/')"
+      - name: Build container image
+        uses: docker/build-push-action@v2
+        with:
+          file: alpine/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/automattic/vip-container-images/alpine:latest
+            ghcr.io/automattic/vip-container-images/alpine:${{ steps.getversion.outputs.version }}
