@@ -1,3 +1,3 @@
-FROM wpvipdev/alpine:3.12.0-2
+FROM ghcr.io/automattic/vip-container-images/alpine:3.12.7
 
 COPY . /wp
