@@ -1,4 +1,4 @@
-name: Publish statsd Docker image
+name: Publish dev-tools Docker image
 
 on:
   push:
@@ -21,14 +21,12 @@ jobs:
           registry: https://ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Get image version
-        id: getversion
-        run: echo "::set-output name=version::$(head -n 1 statsd/Dockerfile | sed -e 's/FROM statsd\/statsd:\(.*\)/\1/')"
       - name: Build container image
         uses: docker/build-push-action@v2
         with:
-          file: statsd/Dockerfile
+          file: dev-tools/Dockerfile
           push: true
+          # Setting version tag manually
           tags: |
-            ghcr.io/automattic/vip-container-images/statsd:latest
-            ghcr.io/automattic/vip-container-images/statsd:${{ steps.getversion.outputs.version }}
+            ghcr.io/automattic/vip-container-images/dev-tools:latest
+            ghcr.io/automattic/vip-container-images/dev-tools:0.5
