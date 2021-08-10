@@ -23,7 +23,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Get image version
         id: getversion
-        run: echo "::set-output name=version::$(head -n 1 statsd/Dockerfile | sed -e 's/FROM statsd\/statsd:\(.*\)/\1/')"
+        run: echo "::set-output name=version::$(head -n 1 nginx/Dockerfile | sed -e 's/FROM nginx:\(.*\)-alpine/\1/')"
       - name: Build container image
         uses: docker/build-push-action@v2
         with:
