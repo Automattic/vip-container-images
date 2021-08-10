@@ -65,7 +65,7 @@ cat <<EOT >> .github/workflows/wordpress.yml
       - name: Build ${version} container image
         uses: docker/build-push-action@v2
         with:
-          file: Dockerfile
+          file: wordpress/Dockerfile
           context: wordpress/public/${version}
           push: true
           tags: |
