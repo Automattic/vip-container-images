@@ -61,8 +61,17 @@ if [ $? -ne 0 ]; then
       --skip-plugins #2>/dev/null
   fi
 
-  wp --allow-root elasticpress delete-index
-  wp --allow-root elasticpress index --setup
+  # Install adds folders to uploads directory under root user. Those are then
+  # locked and cause issues later when user like www-data would try to access it.
+  # To prevent the issue we will remove the root created folders and let
+  # www-data create the folder when required (e.g. on media upload)
+  rm -rf /wp/wp-content/uploads/*
+
+  wp --allow-root cli has-command elasticpress
+  if [ $? -eq 0 ]; then
+    wp --allow-root elasticpress delete-index
+    wp --allow-root elasticpress index --setup
+  fi
 
   wp --allow-root user add-cap 1 view_query_monitor
 fi
