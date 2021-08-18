@@ -2,7 +2,7 @@
 
 This repository is used to build Docker container images used, among others, by the [VIP Local Development Environment](https://docs.wpvip.com/technical-references/vip-local-development-environment/).
 
-Images are built and published using GitHub Actions and GitHub Packages.
+Images are built and published using GitHub Actions and GitHub Packages. All images in this repository are [multi-architechture images](https://docs.docker.com/desktop/multi-arch/), supporting `amd64` and `arm64`.
 
 ## Using the images
 
