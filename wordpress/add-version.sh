@@ -51,6 +51,7 @@ cat <<EOT >> .github/workflows/wordpress.yml
         uses: docker/build-push-action@v2
         with:
           file: wordpress/Dockerfile
+          platforms: linux/amd64,linux/arm64
           context: wordpress/public/${version}
           push: true
           tags: |
