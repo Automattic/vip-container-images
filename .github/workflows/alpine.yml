@@ -28,6 +28,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           file: alpine/Dockerfile
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: |
             ghcr.io/automattic/vip-container-images/alpine:latest
