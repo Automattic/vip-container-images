@@ -21,8 +21,8 @@ COPY php-fpm/wp-cli.yaml /config/wp-cli.yaml
 COPY php-fpm/php.ini /usr/local/etc/php/php.ini
 
 # move it to backup location, run-php-fpm.sh will move it to conf.d if enabled
-COPY php-fpm/xdebug.ini /usr/local/php/docker-php-ext-xdebug.ini
+COPY php-fpm/xdebug.ini /usr/local/php/docker-php-ext-xdebug.ini.template
 
-COPY php-fpm/run-php-fpm.sh /usr/local/bin/run-php-fpm.sh
+COPY php-fpm/run.sh /usr/local/bin/run.sh
 
-CMD ["run-php-fpm.sh"]
+CMD ["run.sh"]
