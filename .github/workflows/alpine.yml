@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+  pull_request:
 
 jobs:
   push_to_registry:
@@ -33,7 +34,7 @@ jobs:
         with:
           file: alpine/Dockerfile
           platforms: linux/amd64,linux/arm64
-          push: true
+          push: ${{ github.base_ref != null }}
           tags: |
             ghcr.io/automattic/vip-container-images/alpine:latest
             ghcr.io/automattic/vip-container-images/alpine:${{ steps.getversion.outputs.version }}
