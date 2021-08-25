@@ -1,4 +1,4 @@
-name: Publish nginx Docker image
+name: Build Nginx
 
 on:
   push:
@@ -33,7 +33,8 @@ jobs:
         with:
           file: nginx/Dockerfile
           platforms: linux/amd64,linux/arm64
-          push: true
+          # base_ref is only defined in PRs, hence we're only pushing when we're not in a PR
+          push: ${{ github.base_ref == null }}
           tags: |
             ghcr.io/automattic/vip-container-images/nginx:latest
             ghcr.io/automattic/vip-container-images/nginx:${{ steps.getversion.outputs.version }}

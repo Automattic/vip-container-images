@@ -1,4 +1,4 @@
-name: Publish VIP Wordpress Docker Image
+name: Build WordPress
 
 on:
   push:
@@ -31,7 +31,8 @@ jobs:
           file: wordpress/Dockerfile
           platforms: linux/amd64,linux/arm64
           context: wordpress/public/5.7.2
-          push: true
+          # base_ref is only defined in PRs, hence we're only pushing when we're not in a PR
+          push: ${{ github.base_ref == null }}
           tags: |
             ghcr.io/automattic/vip-container-images/wordpress:5.7.2
       - name: Build 5.8 container image
@@ -40,6 +41,7 @@ jobs:
           file: wordpress/Dockerfile
           platforms: linux/amd64,linux/arm64
           context: wordpress/public/5.8
-          push: true
+          # base_ref is only defined in PRs, hence we're only pushing when we're not in a PR
+          push: ${{ github.base_ref == null }}
           tags: |
             ghcr.io/automattic/vip-container-images/wordpress:5.8
