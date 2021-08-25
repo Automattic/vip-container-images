@@ -1,9 +1,10 @@
-name: Publish dev-tools Docker image
+name: Build Developer Tools
 
 on:
   push:
     branches:
       - master
+  pull_request:
 
 jobs:
   push_to_registry:
@@ -30,7 +31,8 @@ jobs:
         with:
           file: dev-tools/Dockerfile
           platforms: linux/amd64,linux/arm64
-          push: true
+          # base_ref is only defined in PRs, hence we're only pushing when we're not in a PR
+          push: ${{ github.base_ref == null }}
           # Setting version tag manually
           tags: |
             ghcr.io/automattic/vip-container-images/dev-tools:latest

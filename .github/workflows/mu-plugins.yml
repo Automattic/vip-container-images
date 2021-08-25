@@ -1,4 +1,4 @@
-name: Publish mu-plugins Docker image
+name: Build MU Plugins
 
 on:
   push:
@@ -30,7 +30,8 @@ jobs:
         with:
           file: mu-plugins/Dockerfile
           platforms: linux/amd64,linux/arm64
-          push: true
+          # base_ref is only defined in PRs, hence we're only pushing when we're not in a PR
+          push: ${{ github.base_ref == null }}
           # We always pull the latest commit from master
           tags: |
             ghcr.io/automattic/vip-container-images/mu-plugins:latest
