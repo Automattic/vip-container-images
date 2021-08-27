@@ -69,8 +69,7 @@ if [ $? -ne 0 ]; then
 
   wp --allow-root cli has-command elasticpress
   if [ $? -eq 0 ]; then
-    wp --allow-root elasticpress delete-index
-    wp --allow-root elasticpress index --setup
+    wp --allow-root elasticpress index --yes --setup
   fi
 
   wp --allow-root user add-cap 1 view_query_monitor
