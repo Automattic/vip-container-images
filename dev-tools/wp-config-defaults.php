@@ -51,10 +51,6 @@ if ( ! defined( 'WPCOM_IS_VIP_ENV' ) ) {
 	define( 'WPCOM_IS_VIP_ENV', false );
 }
 
-if ( ! defined( 'A8C_PROXIED_REQUEST' ) ) {
-	define( 'A8C_PROXIED_REQUEST', true );
-}
-
 if ( ! defined( 'FILES_CLIENT_SITE_ID' ) ) {
 	define( 'FILES_CLIENT_SITE_ID', 200508 );
 }
