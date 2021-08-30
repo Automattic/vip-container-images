@@ -34,4 +34,4 @@ jobs:
           # Setting version tag manually
           tags: |
             ghcr.io/automattic/vip-container-images/dev-tools:latest
-            ghcr.io/automattic/vip-container-images/dev-tools:0.5
+            ghcr.io/automattic/vip-container-images/dev-tools:0.6
