@@ -48,7 +48,7 @@ if ( ! defined( 'WP_CRON_CONTROL_SECRET' ) ) {
  * VIP Env variables
  */
 if ( ! defined( 'WPCOM_IS_VIP_ENV' ) ) {
-	define( 'WPCOM_IS_VIP_ENV', true );
+	define( 'WPCOM_IS_VIP_ENV', false );
 }
 
 if ( ! defined( 'A8C_PROXIED_REQUEST' ) ) {
