@@ -53,7 +53,8 @@ cat <<EOT >> .github/workflows/wordpress.yml
           file: wordpress/Dockerfile
           platforms: linux/amd64,linux/arm64
           context: wordpress/public/${version}
-          push: true
+          # base_ref is only defined in PRs, hence we're only pushing when we're not in a PR
+          push: ${{ github.base_ref == null }}
           tags: |
             ghcr.io/automattic/vip-container-images/wordpress:${version}
 EOT
