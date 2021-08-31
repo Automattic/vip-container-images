@@ -23,7 +23,7 @@ else
 fi
 
 echo "Checking for database connectivity..."
-echo "SELECT 'testing_db'"  | mysql -h $db_host -u wordpress -pwordpress wordpress
+echo "SELECT 'testing_db'" | mysql -h $db_host -u wordpress -pwordpress wordpress
 if [ $? -ne 0 ]; then
   echo "No WordPress database exists, provisioning..."
   echo "GRANT ALL ON *.* TO 'wordpress'@'localhost' IDENTIFIED BY 'wordpress' WITH GRANT OPTION;" | mysql -h $db_host -u root
