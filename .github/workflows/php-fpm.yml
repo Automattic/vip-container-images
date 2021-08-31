@@ -1,9 +1,10 @@
-name: Publish php-fpm Docker image
+name: Build PHP-FPM
 
 on:
   push:
     branches:
       - master
+  pull_request:
 
 jobs:
   push_to_registry:
@@ -33,7 +34,8 @@ jobs:
         with:
           file: php-fpm/Dockerfile
           platforms: linux/amd64,linux/arm64
-          push: true
+          # base_ref is only defined in PRs, hence we're only pushing when we're not in a PR
+          push: ${{ github.base_ref == null }}
           tags: |
             ghcr.io/automattic/vip-container-images/php-fpm:latest
             ghcr.io/automattic/vip-container-images/php-fpm:${{ steps.getversion.outputs.version }}
