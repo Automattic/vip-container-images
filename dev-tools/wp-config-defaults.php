@@ -97,9 +97,15 @@ if ( ! defined( 'VIP_ELASTICSEARCH_PASSWORD' ) ) {
 /**
  * StatsD
  */
+
+if ( ! defined( 'VIP_DISABLE_STATSD' ) ) {
+	define( 'VIP_DISABLE_STATSD', getenv( 'STATSD' ) === 'disable' );
+}
+
 if ( ! defined( 'VIP_STATSD_HOST' ) ) {
 	define( 'VIP_STATSD_HOST', 'statsd' );
 }
+
 if ( ! defined( 'VIP_STATSD_PORT' ) ) {
 	define( 'VIP_STATSD_PORT', 8126 );
 }
