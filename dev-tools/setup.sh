@@ -74,3 +74,6 @@ if [ $? -ne 0 ]; then
 
   wp --allow-root user add-cap 1 view_query_monitor
 fi
+
+echo "Copying dev-env-plugin.php to mu-plugins"
+cp /dev-tools/dev-env-plugin.php /wp/wp-content/mu-plugins/

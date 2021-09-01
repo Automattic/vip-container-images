@@ -103,3 +103,10 @@ if ( ! defined( 'VIP_STATSD_HOST' ) ) {
 if ( ! defined( 'VIP_STATSD_PORT' ) ) {
 	define( 'VIP_STATSD_PORT', 8126 );
 }
+
+/**
+ * Needed for local SSL setup
+ */
+if ( ! defined( 'FORCE_SSL_ADMIN' ) ) {
+	define( 'FORCE_SSL_ADMIN', false );
+}
