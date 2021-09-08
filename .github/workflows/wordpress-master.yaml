@@ -2,7 +2,7 @@ name: Build WordPress from master (nightly) branch
 
 on:
   schedule:
-    - cron:  '0 13 * * *'
+    - cron:  '0 15 * * *'
 
 jobs:
   push_to_registry:
@@ -24,6 +24,10 @@ jobs:
           registry: https://ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Pull latest master WordPress
+        run: 
+          git subtree pull -P wordpress/public/master https://github.com/WordPress/WordPress master --squash -m "Updating WordPress master"
+          git push
       - name: Build nightly container image
         uses: docker/build-push-action@v2
         with:
@@ -32,4 +36,4 @@ jobs:
           context: wordpress/public/master
           push: true
           tags: |
-            ghcr.io/automattic/vip-container-images/wordpress:5.7.2
+            ghcr.io/automattic/vip-container-images/wordpress:master
