@@ -193,7 +193,8 @@ function wp_schedule_single_event( $timestamp, $hook, $args = array(), $wp_error
 	);
 	uksort( $crons, 'strnatcasecmp' );
 
-	return _set_cron_array( $crons, $wp_error );
+	// VIP: don't return
+	_set_cron_array( $crons, $wp_error );
 }
 
 /**
@@ -313,7 +314,8 @@ function wp_schedule_event( $timestamp, $recurrence, $hook, $args = array(), $wp
 	);
 	uksort( $crons, 'strnatcasecmp' );
 
-	return _set_cron_array( $crons, $wp_error );
+	// VIP: don't return
+	_set_cron_array( $crons, $wp_error );
 }
 
 /**
@@ -520,7 +522,8 @@ function wp_unschedule_event( $timestamp, $hook, $args = array(), $wp_error = fa
 		unset( $crons[ $timestamp ] );
 	}
 
-	return _set_cron_array( $crons, $wp_error );
+	// VIP: don't return
+	_set_cron_array( $crons, $wp_error );
 }
 
 /**
@@ -706,11 +709,15 @@ function wp_unschedule_hook( $hook, $wp_error = false ) {
 
 	$set = _set_cron_array( $crons, $wp_error );
 
+	/*
 	if ( true === $set ) {
 		return array_sum( $results );
 	}
 
 	return $set;
+	*/
+	// VIP: ignore _set_cron_array return
+	return array_sum( $results );
 }
 
 /**
