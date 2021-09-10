@@ -37,7 +37,7 @@ echo "Patching files for VIP"
 echo "====================================="
 echo
 cd wordpress/public/$version
-for p in ../patches/*.patch; do patch -p1 -s < $p; done
+for p in ../patches/*.patch; do patch -p3 -s < $p; done
 cd ../../..
 
 echo
