@@ -1,7 +1,7 @@
-diff --git a/public/5.7.1/wp-includes/cron.php b/public/5.7.1/wp-includes/cron.php
+diff --git a/public/5.7.2/wp-includes/cron.php b/public/5.7.2/wp-includes/cron.php
 index 1666a09b27f..2fc7924884c 100644
---- a/public/5.7.1/wp-includes/cron.php
-+++ b/public/5.7.1/wp-includes/cron.php
+--- a/public/5.7.2/wp-includes/cron.php
++++ b/public/5.7.2/wp-includes/cron.php
 @@ -193,7 +193,8 @@ function wp_schedule_single_event( $timestamp, $hook, $args = array(), $wp_error
  	);
  	uksort( $crons, 'strnatcasecmp' );
