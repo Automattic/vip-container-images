@@ -1,6 +1,9 @@
 name: Build WordPress from master (nightly) branch
 
 on:
+  push:
+    branches:
+      - master
   schedule:
     - cron:  '0 15 * * *'
 
@@ -27,7 +30,7 @@ jobs:
       - name: Pull latest master WordPress
         run: 
           git subtree pull -P wordpress/public/master https://github.com/WordPress/WordPress master --squash -m "Updating WordPress master"
-          git push
+          # git push
       - name: Build nightly container image
         uses: docker/build-push-action@v2
         with:
