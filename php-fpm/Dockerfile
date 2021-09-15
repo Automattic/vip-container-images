@@ -6,6 +6,8 @@ RUN apk update && \
     yes '' | pecl install -f memcache && \
     docker-php-ext-install mysqli && \
     docker-php-ext-enable memcache && \
+    apk add libpng libpng-dev libjpeg-turbo-dev libwebp-dev zlib-dev libxpm-dev gd && \
+    docker-php-ext-install gd && \
     wget -O /usr/local/bin/phpunit https://phar.phpunit.de/phpunit-7.phar && \
     chmod a+x /usr/local/bin/phpunit && \
     wget -O /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
