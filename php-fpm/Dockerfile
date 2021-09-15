@@ -1,11 +1,12 @@
 FROM php:7.4-fpm-alpine3.14
 
 RUN apk update && \
-    apk add --no-cache less bash mariadb-client && \
-    apk add --no-cache --virtual build-deps $PHPIZE_DEPS build-base zlib-dev libffi-dev openssl-dev && \
+    apk add --no-cache less bash mariadb-client gd && \
+    apk add --no-cache --virtual build-deps $PHPIZE_DEPS build-base zlib-dev libffi-dev openssl-dev libpng libpng-dev libjpeg-turbo-dev libwebp-dev zlib-dev libxpm-dev && \
     yes '' | pecl install -f memcache && \
     docker-php-ext-install mysqli && \
     docker-php-ext-enable memcache && \
+    docker-php-ext-install gd && \
     wget -O /usr/local/bin/phpunit https://phar.phpunit.de/phpunit-7.phar && \
     chmod a+x /usr/local/bin/phpunit && \
     wget -O /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
