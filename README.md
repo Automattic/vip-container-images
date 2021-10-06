@@ -42,4 +42,3 @@ The image publishing process is performed by [a GitHub action](.github/workflows
 ## Updating Docker images
 
 This repository has Dependabot [set up](.github/dependabot.yml). Whenever a Docker base image has a new available version, the bot will open a Pull Request with the change.
-
