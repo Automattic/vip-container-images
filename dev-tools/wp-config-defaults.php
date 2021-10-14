@@ -6,12 +6,12 @@
 /**
  * Override WP_HOME and WP_SITEURL with the values from $_SERVER['HTTP_HOST'] if it's set.
  *
- * This is needed for the cases where something is already bound to default 80 or 443 ports and Lando's proxy falls back onto a different empty port.
+ * This is needed for the cases where something is already bound to default 80 or 443 ports and Lando's proxy falls back onto a different available port.
  * Defining these constants allows us to force WordPress to use the proper port instead of the default.
  *
  * phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
  */
-if ( isset( $_SERVER['HTTP_HOST'] ) ) {
+if ( isset( $_SERVER['HTTP_HOST'] ) && count( explode( ':', $_SERVER['HTTP_HOST'] ) ) === 2 ) {
 	$proto = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? 'http';
 	define( 'WP_HOME', $proto . '://' . $_SERVER['HTTP_HOST'] );
 	define( 'WP_SITEURL', $proto . '://' . $_SERVER['HTTP_HOST'] );
