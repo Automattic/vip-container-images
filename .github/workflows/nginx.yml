@@ -35,6 +35,7 @@ jobs:
           file: nginx/Dockerfile
           platforms: linux/amd64,linux/arm64
           # base_ref is only defined in PRs, hence we're only pushing when we're not in a PR
-          push: true
+          push: ${{ github.base_ref == null }}
           tags: |
-            ghcr.io/automattic/vip-container-images/nginx:pavel
+            ghcr.io/automattic/vip-container-images/nginx:latest
+            ghcr.io/automattic/vip-container-images/nginx:${{ steps.getversion.outputs.version }}
