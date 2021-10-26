@@ -26,6 +26,9 @@ jobs:
           registry: https://ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get image version
+        id: getversion
+        run: echo "::set-output name=version::$(head -n 1 traefik/Dockerfile | sed -e 's/FROM traefik:\(.*\)/\1/')"
       - name: Build container image
         uses: docker/build-push-action@v2
         with:
@@ -35,4 +38,4 @@ jobs:
           push: ${{ github.base_ref == null }}
           # We always pull the latest commit from master
           tags: |
-            ghcr.io/automattic/vip-container-images/traefik_openssl:2.2.0
+            ghcr.io/automattic/vip-container-images/traefik_openssl:${{ steps.getversion.outputs.version }}
