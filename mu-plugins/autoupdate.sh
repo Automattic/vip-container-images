@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd /mu-plugins
+cd /shared
 
 while true; do
 	git fetch
