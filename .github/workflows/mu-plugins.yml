@@ -36,3 +36,4 @@ jobs:
           # We always pull the latest commit from master
           tags: |
             ghcr.io/automattic/vip-container-images/mu-plugins:latest
+            ghcr.io/automattic/vip-container-images/mu-plugins:0.1
