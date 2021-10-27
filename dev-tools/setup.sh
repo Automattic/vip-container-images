@@ -23,7 +23,7 @@ else
 fi
 
 echo "Checking for database connectivity..."
-echo "SELECT 'testing_db'" | mysql -h $db_host -u wordpress -pwordpress wordpress
+echo "SELECT 'testing_db'" | mysql -h $db_host -u wordpress -pwordpress wordpress &>/dev/null
 if [ $? -ne 0 ]; then
   echo "No WordPress database exists, provisioning..."
   echo "GRANT ALL ON *.* TO 'wordpress'@'localhost' IDENTIFIED BY 'wordpress' WITH GRANT OPTION;" | mysql -h $db_host -u root
@@ -32,13 +32,12 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Checking for WordPress installation..."
-wp --allow-root option get siteurl
+wp option get siteurl 2>/dev/null
 if [ $? -ne 0 ]; then
   echo "No installation found, installing WordPress..."
   if [ -n "$multisite_domain" ]; then
     wp core multisite-install \
       --path=/wp \
-      --allow-root \
       --url="$wp_url" \
       --title="$wp_title" \
       --admin_user="vipgo" \
@@ -51,7 +50,6 @@ if [ $? -ne 0 ]; then
   else
     wp core install \
       --path=/wp \
-      --allow-root \
       --url="$wp_url" \
       --title="$wp_title" \
       --admin_user="vipgo" \
@@ -61,16 +59,13 @@ if [ $? -ne 0 ]; then
       --skip-plugins #2>/dev/null
   fi
 
-  # Install adds folders to uploads directory under root user. Those are then
-  # locked and cause issues later when user like www-data would try to access it.
-  # To prevent the issue we will remove the root created folders and let
-  # www-data create the folder when required (e.g. on media upload)
-  rm -rf /wp/wp-content/uploads/*
-
-  wp --allow-root cli has-command elasticpress
+  wp cli has-command elasticpress
   if [ $? -eq 0 ]; then
-    wp --allow-root elasticpress index --yes --setup
+    wp elasticpress index --yes --setup
   fi
 
-  wp --allow-root user add-cap 1 view_query_monitor
+  wp user add-cap 1 view_query_monitor
 fi
+
+echo "Copying dev-env-plugin.php to mu-plugins"
+cp /dev-tools/dev-env-plugin.php /wp/wp-content/mu-plugins/
