@@ -1,7 +1,7 @@
 FROM php:7.4-fpm-alpine3.14
 
 RUN apk update && \
-    apk add --no-cache less bash mariadb-client gd && \
+    apk add --no-cache less bash mariadb-client gd shadow && \
     apk add --no-cache --virtual build-deps $PHPIZE_DEPS build-base zlib-dev libffi-dev openssl-dev libpng libpng-dev libjpeg-turbo-dev libwebp-dev zlib-dev libxpm-dev && \
     yes '' | pecl install -f memcache && \
     docker-php-ext-install mysqli && \
