@@ -5,7 +5,7 @@
 # This is critical for some containers that map their files to host or to each other and want to be able to
 # not only read but also write to that filesystem.
 #
-# Also when deleting the envirnment we need all those mapped files to the host system to be deletable by current user
+# Also when deleting the environment we need all those mapped files to the host system to be deletable by current user
 #
 # Lando already comes with a script that aims to do just that.
 # https://github.com/lando/cli/blob/main/plugins/lando-core/scripts/user-perms.sh
