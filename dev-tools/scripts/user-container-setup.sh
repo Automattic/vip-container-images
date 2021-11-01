@@ -56,6 +56,6 @@ if [ "$LANDO_WEBROOT_UID" != "$LANDO_HOST_UID" ]; then
         lando_info "SUCCESS: user was added"
     else
         lando_error "User was not added"
-        exit 2;
+        exit 1;
     fi
 fi
