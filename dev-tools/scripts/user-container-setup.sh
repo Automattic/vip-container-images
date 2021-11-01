@@ -41,7 +41,7 @@ if [ "$LANDO_WEBROOT_UID" != "$LANDO_HOST_UID" ]; then
 
     cat /etc/group | grep -q "$LANDO_WEBROOT_GROUP"
     if [ $? != 0 ]; then
-        lando_warn "Group $LANDO_WEBROOT_GROUP doesn't exist. Will attmpt to creat it."
+        lando_warn "Group $LANDO_WEBROOT_GROUP doesn't exist. Will attempt to create it."
         groupadd --gid "$LANDO_HOST_GID" "$LANDO_WEBROOT_GROUP";
         if [ $? = 0 ]; then
             lando_info "SUCCESS: group added"
