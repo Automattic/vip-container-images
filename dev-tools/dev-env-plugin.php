@@ -9,12 +9,8 @@ add_filter( 'set_url_scheme', function( $url ) {
     return $url;
 });
 
-// Limited Two-Factor Profiders for the dev-env
-add_filter('two_factor_providers', function() {
-    return array(
-        'Two_Factor_Email'        => TWO_FACTOR_DIR . 'providers/class-two-factor-email.php',
-        'Two_Factor_Totp'         => TWO_FACTOR_DIR . 'providers/class-two-factor-totp.php',
-        'Two_Factor_Backup_Codes' => TWO_FACTOR_DIR . 'providers/class-two-factor-backup-codes.php',
-        'Two_Factor_Dummy'        => TWO_FACTOR_DIR . 'providers/class-two-factor-dummy.php',
-    );
+// Disable Two_Factor_FIDO_U2F Profider for the dev-env
+add_filter('two_factor_providers', function( $providers ) {
+    unset( $providers['Two_Factor_FIDO_U2F'] );
+    return $providers;
 });
