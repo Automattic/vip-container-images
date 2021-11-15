@@ -1,4 +1,16 @@
+# 1) Build cron-control-runner
+FROM docker.io/library/golang:1.17.3 AS builder
+
+WORKDIR /cron-runner
+RUN git clone --depth 1 https://github.com/Automattic/cron-control-runner .
+RUN go mod download
+
+RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o bin/cron-control-runner .
+
+# 2) Setup php container
 FROM php:7.4-fpm-alpine3.14
+
+WORKDIR /
 
 RUN apk update && \
     apk add --no-cache less bash mariadb-client gd shadow && \
@@ -23,6 +35,8 @@ COPY php-fpm/php.ini /usr/local/etc/php/php.ini
 
 # move it to backup location, run-php-fpm.sh will move it to conf.d if enabled
 COPY php-fpm/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini.template
+
+COPY --from=builder /cron-runner/bin/cron-control-runner /usr/local/bin/cron-control-runner
 
 COPY php-fpm/run.sh /usr/local/bin/run.sh
 
