@@ -1,5 +1,4 @@
-# 1) Build cron-control-runner
-FROM docker.io/library/golang:1.17.3 AS builder
+FROM golang:1.17 AS builder
 
 WORKDIR /cron-runner
 RUN git clone --depth 1 https://github.com/Automattic/cron-control-runner .
@@ -7,7 +6,6 @@ RUN go mod download
 
 RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o bin/cron-control-runner .
 
-# 2) Setup php container
 FROM php:7.4-fpm-alpine3.14
 
 WORKDIR /
