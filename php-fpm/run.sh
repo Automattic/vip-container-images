@@ -16,6 +16,6 @@ fi
 
 # Kick off cron runner in a background process. Initial sleep is to help give WP time to be setup.
 echo "Starting cron runner"
-nohup bash -c 'sleep 60; /usr/local/bin/cron-control-runner -wp-path=/wp -wp-cli-path=/usr/local/bin/wp -get-sites-interval=120s -get-events-interval=60s -get-events-parallelism=1 -num-run-workers=2' &>/tmp/cron-runner.log &
+nohup bash -c 'sleep 60; /usr/local/bin/cron-control-runner -wp-path=/wp -wp-cli-path=/usr/local/bin/wp -get-sites-interval=120s -get-events-interval=60s -get-events-parallelism=1 -num-run-workers=2' &>/wp/log/cron-runner.log &
 
 php-fpm
