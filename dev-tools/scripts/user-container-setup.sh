@@ -42,7 +42,7 @@ if [ "$LANDO_WEBROOT_UID" != "$LANDO_HOST_UID" ]; then
     cat /etc/group | grep -q "$LANDO_WEBROOT_GROUP"
     if [ $? != 0 ]; then
         lando_warn "Group $LANDO_WEBROOT_GROUP doesn't exist. Will attempt to create it."
-        groupadd --gid "$LANDO_HOST_GID" "$LANDO_WEBROOT_GROUP";
+        groupadd "$LANDO_WEBROOT_GROUP";
         if [ $? = 0 ]; then
             lando_info "SUCCESS: group added"
         else
@@ -58,4 +58,6 @@ if [ "$LANDO_WEBROOT_UID" != "$LANDO_HOST_UID" ]; then
         lando_error "User was not added"
         exit 1;
     fi
+
+    chown -R "$LANDO_WEBROOT_USER" "/home/$LANDO_WEBROOT_USER"
 fi
