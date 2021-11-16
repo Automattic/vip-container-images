@@ -12,6 +12,7 @@ set -e
 : "${PHP_VERSION:=""}"
 : "${DISABLE_XDEBUG:=""}"
 : "${APP_HOME:="/home/circleci/project"}"
+: "${PHP_OPTIONS:=""}"
 
 if [ ! -d "/wordpress/wordpress-${WP_VERSION}" ] || [ ! -d "/wordpress/wordpress-tests-lib-${WP_VERSION}" ]; then
 	install-wp "${WP_VERSION}"
@@ -33,6 +34,7 @@ if [ -n "${PHP_VERSION}" ] && [ -x "/usr/bin/php${PHP_VERSION}" ]; then
 fi
 
 if [ -n "${DISABLE_XDEBUG}" ]; then
+	PHP_OPTIONS="-d xdebug.mode=Off ${PHP_OPTIONS}"
 	PHPUNIT_ARGS="-d xdebug.mode=Off"
 else
 	PHPUNIT_ARGS=
@@ -45,6 +47,8 @@ done
 
 mysqladmin create "${MYSQL_DB}" --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" || true
 
+PHP="php ${PHP_OPTIONS}"
+
 php -v
 
 if [ -f "${APP_HOME}/phpunit.xml" ] || [ -f "${APP_HOME}/phpunit.xml.dist" ]; then
@@ -56,10 +60,10 @@ if [ -f "${APP_HOME}/phpunit.xml" ] || [ -f "${APP_HOME}/phpunit.xml.dist" ]; th
 		PHPUNIT=~/.composer/vendor/bin/phpunit
 	fi
 
-	"${PHPUNIT}" --version
+	${PHP} "${PHPUNIT}" --version
 	echo "Running tests..."
 	# shellcheck disable=SC2086 # PHPUNIT_ARGS should not be quoted
-	"${PHPUNIT}" ${PHPUNIT_ARGS} "$@"
+	${PHP} "${PHPUNIT}" ${PHPUNIT_ARGS} "$@"
 else
 	echo "Unable to find phpunit.xml or phpunit.xml.dist in ${APP_HOME}"
 	ls -lha "${APP_HOME}"
