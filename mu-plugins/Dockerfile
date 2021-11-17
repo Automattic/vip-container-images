@@ -1,4 +1,4 @@
-FROM ghcr.io/automattic/vip-container-images/alpine:3.14.2
+FROM ghcr.io/automattic/vip-container-images/alpine:3.14.3
 
 RUN apk add --no-cache git rsync && \
     git clone --depth 1 https://github.com/Automattic/vip-go-mu-plugins /mu-plugins && \
@@ -6,7 +6,6 @@ RUN apk add --no-cache git rsync && \
     sed -i -e "s,git@github.com:,https://github.com/," .gitmodules && \
     git submodule update --init
 
-COPY mu-plugins/run.sh /run.sh
-COPY mu-plugins/autoupdate.sh /autoupdate.sh
+COPY mu-plugins/run.sh mu-plugins/autoupdate.sh /
 
 CMD ["sh", "/run.sh"]
