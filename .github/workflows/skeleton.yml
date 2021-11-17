@@ -4,7 +4,13 @@ on:
   push:
     branches:
       - master
+    paths:
+      - "skeleton/**"
+      - ".github/workflows/skeleton.yml"
   pull_request:
+    paths:
+      - "skeleton/**"
+      - ".github/workflows/skeleton.yml"
 
 jobs:
   push_to_registry:

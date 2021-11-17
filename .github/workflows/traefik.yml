@@ -4,7 +4,13 @@ on:
   push:
     branches:
       - master
+    paths:
+      - "traefik/**"
+      - ".github/workflows/traefik.yml"
   pull_request:
+    paths:
+      - "traefik/**"
+      - ".github/workflows/traefik.yml"
 
 jobs:
   push_to_registry:

@@ -4,7 +4,13 @@ on:
   push:
     branches:
       - master
+    paths:
+      - "wordpress/**"
+      - ".github/workflows/wordpress.yml"
   pull_request:
+    paths:
+      - "wordpress/**"
+      - ".github/workflows/wordpress.yml"
 
 jobs:
   push_to_registry:
