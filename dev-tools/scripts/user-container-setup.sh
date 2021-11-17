@@ -20,17 +20,16 @@
 LANDO_MODULE="vip"
 
 
-: ${LANDO_WEBROOT_USER:='www-data'}
-: ${LANDO_WEBROOT_GROUP:='www-data'}
-: ${LANDO_WEBROOT_UID:=$(id -u $LANDO_WEBROOT_USER 2>/dev/null)}
+: "${LANDO_WEBROOT_USER:='www-data'}"
+: "${LANDO_WEBROOT_GROUP:='www-data'}"
+: "${LANDO_WEBROOT_UID:=$(id -u $LANDO_WEBROOT_USER 2>/dev/null)}"
 
 
 lando_info "Making sure $LANDO_WEBROOT_USER id ('$LANDO_WEBROOT_UID') is correctly mapped to '$LANDO_HOST_UID'"
 
 if [ "$LANDO_WEBROOT_UID" != "$LANDO_HOST_UID" ]; then
     lando_warn "User $LANDO_WEBROOT_USER is NOT correctly mapped. Will attempt to fix that."
-    which useradd > /dev/null 2>&1;
-    if [ $? != 0 ]; then
+    if ! which useradd > /dev/null 2>&1; then
         lando_info "Installing shadow to support wider uid range"
         apk add --no-cache shadow > /dev/null 2>&1
     fi
@@ -39,11 +38,9 @@ if [ "$LANDO_WEBROOT_UID" != "$LANDO_HOST_UID" ]; then
 
     lando_info "Making sure group $LANDO_WEBROOT_GROUP exists"
 
-    cat /etc/group | grep -q "$LANDO_WEBROOT_GROUP"
-    if [ $? != 0 ]; then
+    if ! grep -q "$LANDO_WEBROOT_GROUP" /etc/group; then
         lando_warn "Group $LANDO_WEBROOT_GROUP doesn't exist. Will attempt to create it."
-        groupadd "$LANDO_WEBROOT_GROUP";
-        if [ $? = 0 ]; then
+        if groupadd "$LANDO_WEBROOT_GROUP"; then
             lando_info "SUCCESS: group added"
         else
             lando_error "Group was not added"
@@ -51,8 +48,7 @@ if [ "$LANDO_WEBROOT_UID" != "$LANDO_HOST_UID" ]; then
         fi
     fi
 
-    useradd --uid "$LANDO_HOST_UID" -M -N -G "$LANDO_WEBROOT_GROUP" "$LANDO_WEBROOT_USER"
-    if [ $? = 0 ]; then
+    if useradd --uid "$LANDO_HOST_UID" -M -N -G "$LANDO_WEBROOT_GROUP" "$LANDO_WEBROOT_USER"; then
         lando_info "SUCCESS: user was added"
     else
         lando_error "User was not added"
