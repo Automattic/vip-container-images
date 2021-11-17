@@ -4,7 +4,13 @@ on:
   push:
     branches:
       - master
+    paths:
+      - "statsd/**"
+      - ".github/workflows/statsd.yml"
   pull_request:
+    paths:
+      - "statsd/**"
+      - ".github/workflows/statsd.yml"
 
 jobs:
   push_to_registry:
