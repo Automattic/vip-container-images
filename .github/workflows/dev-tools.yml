@@ -4,7 +4,13 @@ on:
   push:
     branches:
       - master
+    paths:
+      - "dev-tools/**"
+      - ".github/workflows/dev-tools.yml"
   pull_request:
+    paths:
+      - "dev-tools/**"
+      - ".github/workflows/dev-tools.yml"
 
 jobs:
   push_to_registry:

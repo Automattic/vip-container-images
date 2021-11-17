@@ -4,7 +4,13 @@ on:
   push:
     branches:
       - master
+    paths:
+      - "php-fpm/**"
+      - ".github/workflows/php-fpm.yml"
   pull_request:
+    paths:
+      - "php-fpm/**"
+      - ".github/workflows/php-fpm.yml"
 
 jobs:
   push_to_registry:

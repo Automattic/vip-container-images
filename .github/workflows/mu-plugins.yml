@@ -4,7 +4,13 @@ on:
   push:
     branches:
       - master
+    paths:
+      - "mu-plugins/**"
+      - ".github/workflows/mu-plugins.yml"
   pull_request:
+    paths:
+      - "mu-plugins/**"
+      - ".github/workflows/mu-plugins.yml"
 
 jobs:
   push_to_registry:
