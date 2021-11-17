@@ -4,7 +4,13 @@ on:
   push:
     branches:
       - master
+    paths:
+      - "alpine/**"
+      - ".github/workflows/alpine.yml"
   pull_request:
+    paths:
+      - "alpine/**"
+      - ".github/workflows/alpine.yml"
 
 jobs:
   push_to_registry:

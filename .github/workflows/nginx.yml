@@ -4,7 +4,13 @@ on:
   push:
     branches:
       - master
+    paths:
+      - "nginx/**"
+      - ".github/workflows/nginx.yml"
   pull_request:
+    paths:
+      - "nginx/**"
+      - ".github/workflows/nginx.yml"
 
 jobs:
   push_to_registry:
