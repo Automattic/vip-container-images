@@ -19,16 +19,18 @@ echo "====================================="
 echo "Creating subtree public/$version"
 echo "====================================="
 echo
-git subtree add -P wordpress/public/$version https://github.com/WordPress/WordPress $ref --squash -m "Add public WordPress $version"
+git subtree add -P "wordpress/public/$version" https://github.com/WordPress/WordPress "$ref" --squash -m "Add public WordPress $version"
 
 echo
 echo "====================================="
 echo "Copying extra files for VIP"
 echo "====================================="
 echo
+# shellcheck disable=SC2164
 cd wordpress/public/extra
-cp -a . ../$version/
-find . -type f | while read f; do git add ../$version/$f; done
+cp -a . "../$version/"
+# shellcheck disable=SC2162
+find . -type f | while read f; do git add "../$version/$f"; done
 cd ../../..
 
 echo
@@ -36,8 +38,9 @@ echo "====================================="
 echo "Patching files for VIP"
 echo "====================================="
 echo
-cd wordpress/public/$version
-for p in ../patches/*.patch; do patch -p3 -s < $p; done
+# shellcheck disable=SC2164
+cd "wordpress/public/$version"
+for p in ../patches/*.patch; do patch -p3 -s < "$p"; done
 cd ../../..
 
 echo
