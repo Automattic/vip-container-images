@@ -38,12 +38,12 @@ if ( ! defined( 'WP_MAX_MEMORY_LIMIT' ) ) {
 }
 
 /**
- * Error Handler
+ * Pre VIP Config
  *
- * Load custom error logging functions, if available.
+ * Load required files before the VIP config is loaded.
  */
-if ( file_exists( ABSPATH . '/wp-content/mu-plugins/lib/wpcom-error-handler/wpcom-error-handler.php' ) ) {
-	require_once ABSPATH . '/wp-content/mu-plugins/lib/wpcom-error-handler/wpcom-error-handler.php';
+if ( file_exists( ABSPATH . '/wp-content/mu-plugins/000-pre-vip-config/requires.php' ) ) {
+	require_once ABSPATH . '/wp-content/mu-plugins/000-pre-vip-config/requires.php';
 }
 
 /**
