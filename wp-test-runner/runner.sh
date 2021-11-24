@@ -9,7 +9,7 @@ set -e
 : "${MYSQL_HOST="db"}"
 : "${WP_VERSION:="latest"}"
 : "${PHPUNIT_VERSION:=""}"
-: "${PHP_VERSION:=""}"
+: "${PHP_VERSION:="7.4"}"
 : "${DISABLE_XDEBUG:=""}"
 : "${APP_HOME:="/home/circleci/project"}"
 : "${PHP_OPTIONS:=""}"
@@ -29,15 +29,17 @@ rm -rf /tmp/wordpress /tmp/wordpress-tests-lib
 ln -sf "/wordpress/wordpress-${WP_VERSION}" /tmp/wordpress
 ln -sf "/wordpress/wordpress-tests-lib-${WP_VERSION}" /tmp/wordpress-tests-lib
 
-if [ -n "${PHP_VERSION}" ] && [ -x "/usr/bin/php${PHP_VERSION}" ]; then
+if [ -x "/usr/bin/php${PHP_VERSION}" ]; then
 	sudo update-alternatives --set php "/usr/bin/php${PHP_VERSION}"
+else
+	echo "Unsupported PHP version: ${PHP_VERSION}"
+	exit 1
 fi
 
 if [ -n "${DISABLE_XDEBUG}" ]; then
-	PHP_OPTIONS="-d xdebug.mode=Off ${PHP_OPTIONS}"
-	PHPUNIT_ARGS="-d xdebug.mode=Off"
+	sudo phpdismod -v "${PHP_VERSION}" xdebug || true
 else
-	PHPUNIT_ARGS=
+	sudo phpenmod -v "${PHP_VERSION}" xdebug || true
 fi
 
 echo "Waiting for MySQL..."
