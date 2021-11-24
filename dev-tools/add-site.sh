@@ -6,7 +6,7 @@ syntax() {
 }
 
 # Parse title and slug arguments
-arguments=`getopt -o '' -l slug:,title: -- "$@"`
+arguments=$(getopt -o '' -l slug:,title: -- "$@")
 eval set -- "$arguments"
 while true; do
     case "$1" in
@@ -18,17 +18,21 @@ done
 [ -z "$slug" ] && echo "ERROR: Missing or empty slug argument" && syntax
 [ -z "$title" ] && echo "ERROR: Missing or empty title argument" && syntax
 
-network_domain=`wp --allow-root site list --field=domain | head -n1`
+network_domain=$(wp --allow-root site list --field=domain | head -n1)
 
 site_domain=$slug.$network_domain
 
 echo "Checking if this is a multisite installation..."
-wp --allow-root core is-installed --network
-[ $? -ne 0 ] && echo "ERROR: Not a multisite' first" && exit 1
+if ! wp --allow-root core is-installed --network; then
+  echo "ERROR: Not a multisite"
+  exit 1
+fi
 
 echo "Checking if $site_domain already belongs to another site..."
-wp --allow-root --path=/wp site list --field=domain | grep -q "^$site_domain$"
-[ $? -eq 0 ] && echo "ERROR: site with domain $site_domain already exists" && exit 1
+if wp --allow-root --path=/wp site list --field=domain | grep -q "^$site_domain$"; then
+  echo "ERROR: site with domain $site_domain already exists"
+  exit 1
+fi
 
 echo "Creating the new site..."
 wp --allow-root --path=/wp site create --title="$title" --slug="$slug"
