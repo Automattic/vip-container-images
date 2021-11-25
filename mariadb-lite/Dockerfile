@@ -1,4 +1,4 @@
-FROM mariadb:10.3
+FROM circleci/mariadb:10.3
 
 RUN \
     apt-get -qq update && \
