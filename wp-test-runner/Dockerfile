@@ -30,7 +30,7 @@ COPY install-wp.sh /usr/local/bin/install-wp
 
 USER circleci
 
-ENV LD_PRELOAD libeatmydata.so
+ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libeatmydata.so
 RUN composer global require phpunit/phpunit:^7 yoast/phpunit-polyfills:^1
 
 RUN \
