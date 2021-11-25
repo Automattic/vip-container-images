@@ -41,3 +41,8 @@ updates:
     directory: "wp-test-runner/"
     schedule:
       interval: "weekly"
+
+  - package-ecosystem: "docker"
+    directory: "mariadb-lite/"
+    schedule:
+      interval: "weekly"
