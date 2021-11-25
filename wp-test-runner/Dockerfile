@@ -9,7 +9,7 @@ RUN \
 	eatmydata apt-get -qq upgrade && \
 	eatmydata apt-get -qq install php7.4 php7.4-apcu php7.4-curl php7.4-gd php7.4-gmp php7.4-igbinary php7.4-imagick php7.4-imap php7.4-intl php7.4-mbstring php7.4-mysql php7.4-sqlite3 php7.4-xdebug php7.4-xml php7.4-xsl php7.4-zip && \
 	eatmydata apt-get -qq install php8.0 php8.0-apcu php8.0-curl php8.0-gd php8.0-gmp php8.0-igbinary php8.0-imagick php8.0-imap php8.0-intl php8.0-mbstring php8.0-mysql php8.0-sqlite3 php8.0-xdebug php8.0-xml php8.0-xsl php8.0-zip && \
-	eatmydata apt-get -qq install php8.1 php8.1-curl php8.1-gd php8.1-gmp php8.1-imap php8.1-intl php8.1-mbstring php8.1-mysql php8.1-sqlite3 php8.1-xml php8.1-zip && \
+	eatmydata apt-get -qq install php8.1 php8.1-apcu php8.1-curl php8.1-gd php8.1-gmp php8.1-igbinary php8.1-imagick php8.1-imap php8.1-intl php8.1-mbstring php8.1-mysql php8.1-sqlite3 php8.1-xdebug php8.1-xml php8.1-zip && \
 	eatmydata apt-get -qq install subversion unzip default-mysql-client nodejs npm && \
 	apt-get clean && rm -rf /var/lib/apt/lists/* && \
 	echo "xdebug.mode=coverage" | tee /etc/php/*/mods-available/xdebug.ini && \
@@ -34,7 +34,8 @@ ENV LD_PRELOAD libeatmydata.so
 RUN composer global require phpunit/phpunit:^7 yoast/phpunit-polyfills:^1
 
 RUN \
-	for version in $(wget https://api.wordpress.org/core/version-check/1.7/ -q -O - | jq -r '[.offers[].version] | unique | map(select( . >= "5.5")) | .[]') latest; do \
+	WP_VERSIONS=$(wget https://api.wordpress.org/core/version-check/1.7/ -q -O - | jq -r '[.offers[].version] | unique | map(select( . >= "5.5")) | .[]'); \
+	for version in ${WP_VERSIONS} latest; do \
 		install-wp "${version}" & \
 	done && \
 	wait
@@ -43,6 +44,7 @@ RUN install-wp nightly
 
 USER root
 COPY runner.sh /usr/local/bin/runner
+COPY configure-environment.sh /usr/local/bin/configure-environment
 ENTRYPOINT ["/usr/local/bin/runner"]
 
 USER circleci
