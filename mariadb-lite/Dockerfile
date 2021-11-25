@@ -1,4 +1,4 @@
-FROM circleci/mariadb:10.3
+FROM circleci/mariadb:10.6.4
 
 RUN \
     apt-get -qq update && \
