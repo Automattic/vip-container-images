@@ -13,7 +13,10 @@ download_wp_core() {
 			echo "Unable to detect the latest WP version"
 			exit 1
 		fi
-		TESTS_TAG="tags/${LATEST}"
+
+		download_wp_core "${LATEST}"
+		ln -sf "/wordpress/wordpress-core-${LATEST}" /wordpress/wordpress-core-latest
+		return
 	else
 		TESTS_TAG="tags/${VERSION}"
 	fi

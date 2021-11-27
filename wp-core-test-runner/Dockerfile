@@ -22,7 +22,11 @@ ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libeatmydata.so
 USER circleci
 RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 ENV NVM_DIR /home/circleci/.nvm
-RUN install-wp-core latest
+
+RUN \
+	for version in $(wget https://api.wordpress.org/core/version-check/1.7/ -q -O - | jq -r '[.offers[].version] | unique | map(select( . >= "5.5")) | .[]') latest; do \
+		install-wp-core "${version}"; \
+	done
 
 USER root
 COPY configure-environment.sh /usr/local/bin/configure-environment
