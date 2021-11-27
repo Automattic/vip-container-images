@@ -25,5 +25,5 @@ if [ -n "${PRETEST_SCRIPT}" ] && [ -x "${PRETEST_SCRIPT}" ]; then
 	"${PRETEST_SCRIPT}"
 fi
 
-#shellcheck disable=SC2086
+# shellcheck disable=SC2086
 cd "${HOME}/wordpress-core/" && ${PHP} "${HOME}/wordpress-core/vendor/bin/phpunit" ${PHPUNIT_ARGS}
