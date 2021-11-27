@@ -43,13 +43,6 @@ else
     echo 'XDebug enabled'
 fi
 
-echo "Waiting for MySQL..."
-while ! nc -z "${MYSQL_HOST}" 3306; do
-	sleep 1
-done
-
-mysqladmin create "${MYSQL_DB}" --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" --host="${MYSQL_HOST}" || true
-
 PHP="php ${PHP_OPTIONS}"
 
 if [ -x "${APP_HOME}/vendor/bin/phpunit" ] && [ -z "${PHPUNIT_VERSION}" ]; then
