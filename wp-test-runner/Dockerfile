@@ -43,8 +43,9 @@ RUN \
 RUN install-wp nightly
 
 USER root
-COPY runner.sh /usr/local/bin/runner
 COPY configure-environment.sh /usr/local/bin/configure-environment
+COPY create-database.sh /usr/local/bin/create-database
+COPY runner.sh /usr/local/bin/runner
 ENTRYPOINT ["/usr/local/bin/runner"]
 
 USER circleci
