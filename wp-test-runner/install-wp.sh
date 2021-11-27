@@ -13,7 +13,11 @@ download_wp() {
 			echo "Unable to detect the latest WP version"
 			exit 1
 		fi
-		TESTS_TAG="tags/${LATEST}"
+
+		download_wp "${LATEST}"
+		ln -sf "/wordpress/wordpress-${LATEST}" /wordpress/wordpress-latest
+		ln -sf "/wordpress/wordpress-tests-lib-${LATEST}" /wordpress/wordpress-tests-lib-latest
+		return
 	else
 		TESTS_TAG="tags/${VERSION}"
 	fi
