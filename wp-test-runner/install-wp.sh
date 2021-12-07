@@ -1,11 +1,10 @@
 #!/bin/sh
 
-set -x
 set -e
 
 download_wp() {
 	VERSION="$1"
-	if [ "${VERSION}" = "nightly" ]; then
+	if [ "${VERSION}" = "nightly" ] || [ "${VERSION}" = "trunk" ]; then
 		TESTS_TAG="trunk"
 	elif [ "${VERSION}" = "latest" ]; then
 		VERSIONS=$(wget https://api.wordpress.org/core/version-check/1.7/ -q -O - )
@@ -14,7 +13,11 @@ download_wp() {
 			echo "Unable to detect the latest WP version"
 			exit 1
 		fi
-		TESTS_TAG="tags/${LATEST}"
+
+		download_wp "${LATEST}"
+		ln -sf "/wordpress/wordpress-${LATEST}" /wordpress/wordpress-latest
+		ln -sf "/wordpress/wordpress-tests-lib-${LATEST}" /wordpress/wordpress-tests-lib-latest
+		return
 	else
 		TESTS_TAG="tags/${VERSION}"
 	fi
