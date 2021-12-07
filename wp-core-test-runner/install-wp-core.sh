@@ -34,7 +34,7 @@ download_wp_core() {
 			npm run build
 
 			if [ -n "${DOCKER_BUILD}" ]; then
-				rm -rf node_modules .svn src
+				rm -rf node_modules .svn
 			fi
 		)
 	else
