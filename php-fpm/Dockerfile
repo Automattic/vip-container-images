@@ -1,4 +1,4 @@
-FROM php:7.4-fpm-alpine3.14
+FROM php:8.1.0-fpm-alpine3.14
 
 RUN apk update && \
     apk add --no-cache less bash mariadb-client gd shadow && \
