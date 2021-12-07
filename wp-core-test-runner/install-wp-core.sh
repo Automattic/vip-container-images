@@ -24,7 +24,7 @@ download_wp_core() {
 	if [ ! -d "/wordpress/wordpress-core-${VERSION}" ]; then
 		mkdir -p "/wordpress/wordpress-core-${VERSION}"
 		svn co --quiet --ignore-externals "https://develop.svn.wordpress.org/${TESTS_TAG}" "/wordpress/wordpress-core-${VERSION}"
-		svn co --quiet https://plugins.svn.wordpress.org/wordpress-importer/trunk/ "/wordpress/wordpress-core-${WP_VERSION}/tests/phpunit/data/plugins/wordpress-importer"
+		svn co --quiet https://plugins.svn.wordpress.org/wordpress-importer/trunk/ "/wordpress/wordpress-core-${VERSION}/tests/phpunit/data/plugins/wordpress-importer"
 		(
 			cd "/wordpress/wordpress-core-${VERSION}" && \
 			composer install -n && \
@@ -34,7 +34,7 @@ download_wp_core() {
 			npm run build
 
 			if [ -n "${DOCKER_BUILD}" ]; then
-				rm -rf node_modules .svn src
+				rm -rf node_modules .svn
 			fi
 		)
 	else
