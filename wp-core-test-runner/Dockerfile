@@ -25,7 +25,7 @@ ENV NVM_DIR /home/circleci/.nvm
 
 RUN \
 	for version in $(wget https://api.wordpress.org/core/version-check/1.7/ -q -O - | jq -r '[.offers[].version] | unique | map(select( . >= "5.5")) | .[]') latest; do \
-		install-wp-core "${version}"; \
+		DOCKER_BUILD=1 install-wp-core "${version}"; \
 	done
 
 USER root

@@ -32,6 +32,10 @@ download_wp_core() {
 			nvm use && \
 			npm ci && \
 			npm run build
+
+			if [ -n "${DOCKER_BUILD}" ]; then
+				rm -rf node_modules .svn src
+			fi
 		)
 	else
 		echo "Skipping WordPress download"
