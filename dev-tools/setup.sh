@@ -30,6 +30,9 @@ if ! mysql -h "$db_host" -u wordpress -pwordpress wordpress -e "SELECT 'testing_
   echo "CREATE DATABASE wordpress;" | mysql -h "$db_host" -u "$db_admin_user"
 fi
 
+echo "Copying dev-env-plugin.php to mu-plugins"
+cp /dev-tools/dev-env-plugin.php /wp/wp-content/mu-plugins/
+
 echo "Checking for WordPress installation..."
 
 if ! wp option get siteurl 2>/dev/null; then
@@ -64,6 +67,3 @@ if ! wp option get siteurl 2>/dev/null; then
 
   wp user add-cap 1 view_query_monitor
 fi
-
-echo "Copying dev-env-plugin.php to mu-plugins"
-cp /dev-tools/dev-env-plugin.php /wp/wp-content/mu-plugins/
