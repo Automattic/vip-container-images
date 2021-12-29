@@ -42,7 +42,7 @@ function dev_env_add_admin( $args, $assoc_args ) {
     $email = $assoc_args['email'] ?? $username . '@go-vip.net';
 
     if ( ! $username || ! $password ) {
-        WP_CLI::error( 'Both username and password needs to be provided!' );
+        WP_CLI::error( 'Both username and password need to be provided!' );
     }
 
     if ( username_exists( $username ) ) {
