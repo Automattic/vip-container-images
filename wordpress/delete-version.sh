@@ -26,6 +26,7 @@ echo "Deleting WordPress subtree $tree_dir to the tag/ref $ref"
 
 # remove subtree
 git rm --cached --ignore-unmatch -rf $tree_dir
+rm -rf $tree_dir
 
 # remove build from .github/workflows/wordpress.yml
 perl -i -pe "BEGIN{undef $/;} s/$pattern//smg" .github/workflows/wordpress.yml
