@@ -27,3 +27,4 @@ echo "Updating WordPress subtree $tree_dir to the tag/ref $ref"
 
 git subtree pull --squash -P $tree_dir https://github.com/WordPress/WordPress $ref -m "Update WordPress subtree $tree_dir to the tag/ref $ref"
 
+wordpress/patch-version.sh ${version}
