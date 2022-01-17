@@ -21,7 +21,7 @@ echo "Copying extra files for VIP"
 echo "====================================="
 echo
 # shellcheck disable=SC2164
-cd extra_dir
+cd $extra_dir
 cp -a . $tree_dir
 # shellcheck disable=SC2162
 find . -type f | while read f; do git add "$tree_dir/$f"; done
