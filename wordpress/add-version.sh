@@ -14,59 +14,13 @@ fi
 version=$1
 ref=$2
 
+tree_dir="wordpress/public/${version}"
+
 echo
 echo "====================================="
 echo "Creating subtree public/$version"
 echo "====================================="
 echo
-git subtree add -P "wordpress/public/$version" https://github.com/WordPress/WordPress "$ref" --squash -m "Add public WordPress $version"
+git subtree add -P "$tree_dir" https://github.com/WordPress/WordPress "$ref" --squash -m "Add public WordPress $version"
 
-echo
-echo "====================================="
-echo "Copying extra files for VIP"
-echo "====================================="
-echo
-# shellcheck disable=SC2164
-cd wordpress/public/extra
-cp -a . "../$version/"
-# shellcheck disable=SC2162
-find . -type f | while read f; do git add "../$version/$f"; done
-cd ../../..
-
-echo
-echo "====================================="
-echo "Patching files for VIP"
-echo "====================================="
-echo
-# shellcheck disable=SC2164
-cd "wordpress/public/$version"
-for p in ../patches/*.patch; do patch -p3 -s < "$p"; done
-cd ../../..
-
-echo
-echo "====================================="
-echo "Adding GitHub Action"
-echo "====================================="
-echo
-
-cat <<EOT >> .github/workflows/wordpress.yml
-      - name: Build ${version} container image
-        uses: docker/build-push-action@v2
-        with:
-          file: wordpress/Dockerfile
-          platforms: linux/amd64,linux/arm64
-          context: wordpress/public/${version}
-          # base_ref is only defined in PRs, hence we're only pushing when we're not in a PR
-          push: \${{ github.base_ref == null }}
-          tags: |
-            ghcr.io/automattic/vip-container-images/wordpress:${version}
-EOT
-
-echo
-echo "====================================="
-echo "Final status"
-echo "====================================="
-echo
-git status
-
-echo "Review changes and commit when they are ready. Image will be built and published by GitHub on commit."
+wordpress/patch-version.sh ${version}
