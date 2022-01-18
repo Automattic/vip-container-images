@@ -82,3 +82,13 @@ jobs:
           push: ${{ github.base_ref == null }}
           tags: |
             ghcr.io/automattic/vip-container-images/wordpress:5.9
+      - name: Build 5.7.5 container image
+        uses: docker/build-push-action@v2
+        with:
+          file: wordpress/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          context: wordpress/public/5.7.5
+          # base_ref is only defined in PRs, hence we're only pushing when we're not in a PR
+          push: ${{ github.base_ref == null }}
+          tags: |
+            ghcr.io/automattic/vip-container-images/wordpress:5.7.5
