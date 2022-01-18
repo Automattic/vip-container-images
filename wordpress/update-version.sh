@@ -29,7 +29,7 @@ echo "Updating WordPress subtree $tree_dir to the tag/ref $ref"
 git subtree pull --squash -P $tree_dir https://github.com/WordPress/WordPress $ref -m "Update WordPress subtree $tree_dir to the tag/ref $ref"
 
 # detect if subtree pull created any changes
-working_dir=$(git diff --quiet HEAD $REF -- $DIR || echo changed)
+working_dir=$(git diff --quiet || echo changed)
 
 if [ $working_dir == "changed" ]; then
   # remove build from .github/workflows/wordpress.yml
