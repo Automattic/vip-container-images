@@ -13,6 +13,8 @@ fi
 
 version=$1
 ref=$([ "$2" == "" ] && echo "$1" || echo "$2")
+ev="${version/\./\.}"
+pattern=$(printf '      - name: Build %s container image((.|\\n)*):%s' "$ev" "$ev")
 
 tree_dir="wordpress/public/${version}"
 if [ ! -d "$tree_dir" ]; then
@@ -22,6 +24,9 @@ fi
 
 # clean subtree branch
 git stash
+
+# remove build from .github/workflows/wordpress.yml
+perl -i -pe "BEGIN{undef $/;} s/$pattern//smg" .github/workflows/wordpress.yml
 
 echo "Updating WordPress subtree $tree_dir to the tag/ref $ref"
 
