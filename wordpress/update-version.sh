@@ -7,7 +7,6 @@ if [ $# -lt 1 ]; then
   echo
   echo "Examples:"
   echo "$ update-version.sh 5.9.1"
-  echo "$ update-version.sh 5.10 7e29e531bd"
   exit 1
 fi
 
@@ -29,7 +28,20 @@ echo "Updating WordPress subtree $tree_dir to the tag/ref $ref"
 
 git subtree pull --squash -P $tree_dir https://github.com/WordPress/WordPress $ref -m "Update WordPress subtree $tree_dir to the tag/ref $ref"
 
-# remove build from .github/workflows/wordpress.yml
-perl -i -pe "BEGIN{undef $/;} s/$pattern//smg" .github/workflows/wordpress.yml
+# detect if subtree pull created any changes
+working_dir = $(git diff --quiet HEAD $REF -- $DIR || echo changed)
 
-wordpress/patch-version.sh ${version}
+if [ $working_dir == "changed" ]; then
+  # remove build from .github/workflows/wordpress.yml
+    perl -i -pe "BEGIN{undef $/;} s/$pattern//smg" .github/workflows/wordpress.yml
+
+    wordpress/patch-version.sh ${version}
+else
+    echo
+    echo "====================================="
+    echo "No changes were staged for update"
+    echo "====================================="
+    echo
+fi
+
+
