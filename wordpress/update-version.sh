@@ -31,7 +31,7 @@ git subtree pull --squash -P $tree_dir https://github.com/WordPress/WordPress $r
 # detect if subtree pull created any changes
 working_dir=$(git diff --quiet || echo changed)
 
-if [ $working_dir == "changed" ]; then
+if [ "$working_dir" == "changed" ]; then
   # remove build from .github/workflows/wordpress.yml
     perl -i -pe "BEGIN{undef $/;} s/$pattern//smg" .github/workflows/wordpress.yml
 
