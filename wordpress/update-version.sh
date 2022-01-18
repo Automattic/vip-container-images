@@ -25,11 +25,11 @@ fi
 # clean subtree branch
 git stash
 
-# remove build from .github/workflows/wordpress.yml
-perl -i -pe "BEGIN{undef $/;} s/$pattern//smg" .github/workflows/wordpress.yml
-
 echo "Updating WordPress subtree $tree_dir to the tag/ref $ref"
 
 git subtree pull --squash -P $tree_dir https://github.com/WordPress/WordPress $ref -m "Update WordPress subtree $tree_dir to the tag/ref $ref"
+
+# remove build from .github/workflows/wordpress.yml
+perl -i -pe "BEGIN{undef $/;} s/$pattern//smg" .github/workflows/wordpress.yml
 
 wordpress/patch-version.sh ${version}
