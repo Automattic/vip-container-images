@@ -11,9 +11,10 @@ if [ $# -lt 1 ]; then
 fi
 
 version=$1
-tree_dir="wordpress/public/${version}"
-extra_dir="wordpress/public/extra"
 cwd=$(pwd)
+tree_dir="${cwd}/wordpress/public/${version}"
+extra_dir="${cwd}/wordpress/public/extra"
+
 
 echo
 echo "====================================="
