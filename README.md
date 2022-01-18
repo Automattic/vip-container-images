@@ -42,3 +42,15 @@ The image publishing process is performed by [a GitHub action](.github/workflows
 ## Updating Docker images
 
 This repository has Dependabot [set up](.github/dependabot.yml). Whenever a Docker base image has a new available version, the bot will open a Pull Request with the change.
+
+## Adding, Updating, and Removing Subtrees
+There are scripts that can be used to add, update and remove WordPress version subtrees. Interface with these scripts in the following ways:
+
+`$> wordpress/add-version.sh 5.9.1 5.9.1`
+  This can be used to add a new WordPress version. The second parameter is a tag for the github repository. Alternatively you can use a commit hash.
+
+`$> wordpress/update-version.sh 5.9.1`
+  This can be used to update a version to its most recent tag/commit.
+
+`$> wordpress/delete-version.sh 5.9.1`
+  This can be used to delete a subtree.
