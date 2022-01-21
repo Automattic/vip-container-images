@@ -60,17 +60,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Check whether to enable caching
-        id: caching
-        run: |
-          if [ "${{ matrix.wp.cacheable }}" = "true" ]; then
-            echo "::set-output name=cache-from::type=gha"
-            echo "::set-output name=cache-to::type=gha,mode=max"
-          else
-            echo "::set-output name=cache-from::"
-            echo "::set-output name=cache-to::"
-          fi
-
       - name: Build WordPress image
         uses: docker/build-push-action@v2
         with:
@@ -79,7 +68,8 @@ jobs:
           context: wordpress-alt
           push: ${{ github.base_ref == null }}
           build-args: WP_GIT_REF=${{ matrix.wp.ref }}
-          cache-from: ${{ steps.caching.cache-from }}
-          cache-to: ${{ steps.caching.cache-to}}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          no-cache: ${{ matrix.wp.cacheable == 'false' }}
           tags: |
             ghcr.io/automattic/vip-container-images/wordpress:${{ matrix.wp.tag }}
