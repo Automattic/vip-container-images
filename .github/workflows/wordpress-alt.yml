@@ -26,6 +26,7 @@ jobs:
       - name: Read versions.json
         id: set-matrix
         run: |
+          jq -c '.' versions.json
           echo "::set-output name=matrix::$(jq -c '.' versions.json)"
         working-directory: wordpress-alt
     outputs:
@@ -70,6 +71,6 @@ jobs:
           build-args: WP_GIT_REF=${{ matrix.wp.ref }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          no-cache: ${{ matrix.wp.cacheable == 'false' }}
+          no-cache: ${{ matrix.wp.cacheable == false }}
           tags: |
             ghcr.io/automattic/vip-container-images/wordpress:${{ matrix.wp.tag }}
