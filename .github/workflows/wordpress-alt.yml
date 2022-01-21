@@ -11,6 +11,7 @@ on:
     paths:
       - "wordpress-alt/**"
       - ".github/workflows/wordpress-alt.yml"
+  workflow_dispatch:
 
 permissions:
   contents: read
