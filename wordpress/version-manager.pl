@@ -15,7 +15,6 @@ use File::Basename;
 use FileHandle;
 use HTTP::Request;
 use JSON;
-use List::MoreUtils qw(first_index);
 use LWP::UserAgent ();
 
 use Data::Dumper;
@@ -37,7 +36,6 @@ print Dumper(\@version_list);
 # Collate list of tags to produce a list that we want users to in the dev-env
 sub collate_tag_list {
     my %params = @_;
-    my $sizeOffset = 0;
     my @new_tag_list; my @parts;
     my $major_version; my $version; my $release;
 
@@ -59,7 +57,6 @@ sub collate_tag_list {
             # If its the first and second version of the current major version,
             # Add all releases
             if ($i == 0 && $j < 2) {
-                $sizeOffset = length($indexes{'releases'}{$version});
                 push(@new_tag_list, @{ $indexes{'releases'}{$version} });
             } else {
                 # Otherwise only select the newest release of the major version
@@ -95,7 +92,7 @@ sub index_tags {
 
         # Index major_version
         # If major_version is not found in the @major_versions index
-        if ((first_index { $_ eq $major_version } @major_versions) == -1) {
+        if ( ! grep( /^$major_version$/, @major_versions ) ) {
             push(@major_versions, $major_version);
         }
 
