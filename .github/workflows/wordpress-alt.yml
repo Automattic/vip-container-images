@@ -74,4 +74,4 @@ jobs:
           cache-to: type=gha,mode=max
           no-cache: ${{ matrix.wp.cacheable == false }}
           tags: |
-            ghcr.io/automattic/vip-container-images/wordpress:${{ matrix.wp.tag }}
+            ghcr.io/automattic/vip-container-images/wordpress-alt:${{ matrix.wp.tag }}
