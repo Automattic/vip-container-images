@@ -1,26 +1,25 @@
-#!/bin/bash
+#!/bin/sh
 
 if [ $# -lt 2 ]; then
-  echo "Syntax: add-version.sh <version> <gitref>"
-  echo "  <version>  Name of the version as we are going to reference it in VIP"
-  echo "  <gitref>   Changeset/tag to import from the WordPress git repository"
-  echo
-  echo "Examples:"
-  echo "$ add-version.sh 5.5.1     5.5.1"
-  echo "$ add-version.sh 5.6-beta1 7e29e531bd"
-  exit 1
+    echo "Usage: add-version.sh <gitref> <tag> [cacheable]"
+    echo "  - <gitref>:  changeset/tag to import from the WordPress git repository"
+    echo "  - <tag>:     tag for the resulting Docker image"
+    echo "  - cacheable: optional parameter; if not empty, the ref will be marked as eligible for caching"
+    exit 1
 fi
 
-version=$1
-ref=$2
+REF="$1"
+TAG="$2"
+if [ -n "$3" ]; then
+    CACHEABLE=true
+else
+    CACHEABLE=false
+fi
+VERSIONS="$(dirname "$0")/versions.json"
 
-tree_dir="wordpress/public/${version}"
-
-echo
-echo "====================================="
-echo "Creating subtree public/$version"
-echo "====================================="
-echo
-git subtree add -P "$tree_dir" https://github.com/WordPress/WordPress "$ref" --squash -m "Add public WordPress $version"
-
-wordpress/patch-version.sh ${version}
+exists=$(jq -r ".[] | select(.ref == \"${REF}\") | .ref" "${VERSIONS}")
+if [ -z "${exists}" ]; then
+    jq ". += [{ref: \"${REF}\", tag: \"${TAG}\", cacheable: ${CACHEABLE} }] | sort" "${VERSIONS}" | sponge "${VERSIONS}"
+else
+    echo "${REF} already exists in versions.json"
+fi
