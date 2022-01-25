@@ -45,7 +45,7 @@ function collateTagList( tags, size ) {
 	const { majorVersions, versions, releases } = indexTags( tags );
 
 	// build new tag list from indexes
-	newTags:
+	OUT:
 	for ( const i in majorVersions ) {
 		for ( const [ j, v ] of versions[ majorVersions[ i ] ].entries() ) {
 			// If it is the most recent 2 versions, append all of the releases
@@ -58,7 +58,7 @@ function collateTagList( tags, size ) {
 			}
 
 			if ( newTagList.length >= ( size - sizeOffset) ) {
-				break newTags;
+				break OUT;
 			}
 		}
 	}
@@ -116,7 +116,7 @@ function indexTags( tags ) {
 }
 
 /**
- * executes a command
+ * Gets a list of all the currently available images
  */
 async function getImagelist( token ){
 	const versionList = [];
@@ -158,6 +158,9 @@ async function getImagelist( token ){
 	} );
 }
 
+/**
+ * Configurations for the Image API request
+ */
 function getImageApiOptions( token ) {
 	return {
 		hostname: 'api.github.com',
