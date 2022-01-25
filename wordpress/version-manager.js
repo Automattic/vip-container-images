@@ -21,24 +21,21 @@ const fs = require( 'fs' );
  * Internal dependencies
  */
 const cfg = require( `${__dirname}/version-manager-cfg.json` );
+cfg.REPOSITORY_DIR = `${cfg.WORKING_DIR}/vip-container-images`;
 
 /**
  * TODO: args override configs
  */
 //const args 	= process.argv.slice( 2 );
 
-
-// Run the scripted git operations in the context of the "WORKING_DIR".
+// try to create the WORKING_DIR recursively if it does not exist
 try {
-	// try to create the WORKING_DIR recursively if it does not exist
 	if ( !fs.existsSync( cfg.WORKING_DIR ) ) {
 		fs.mkdirSync( cfg.WORKING_DIR, { recursive: true } );
+		console.log(`Created Working Directory: ${cfg.WORKING_DIR}`);
 	}
-
-	process.chdir( cfg.WORKING_DIR );
-	console.log(`Working directory: ${cfg.WORKING_DIR}`);
 } catch (err) {
-	console.log('chdir: ' + err);
+	console.log('Create Working Directory failed: ' + err);
 	process.exit(1);
 }
 
@@ -58,9 +55,9 @@ try {
 // =========================== Functions ========================================
 
 /**
- *	Attempts to organize the list of tags in an intelligent way.
- *	Show all editions of the current and previous major version
- *	Show only the the most recent point releases of previous major versions
+ * Attempts to organize the list of tags in an intelligent way.
+ * Show all editions of the current and previous major version
+ * Show only the the most recent point releases of previous major versions
  */
 function collateTagList( tags, size ) {
 	const newTagList = [];
@@ -230,6 +227,35 @@ async function getTagList() {
 }
 
 /**
+ * Makes sure the Working Directory is prepared for new changes
+ */
+async function initRepo() {
+	// Clone the repo if it does not exist, else stash and update the repo
+	if ( !fs.existsSync( cfg.REPOSITORY_DIR ) ) {
+		await cloneRepository();
+		process.chdir( cfg.REPOSITORY_DIR );
+	} else {
+		await updateRepository();
+	}
+}
+
+/**
+ * Uses git to stash the current change manifest.
+ * Clears any unstaged changes.
+ */
+async function cloneRepository() {
+	console.log( `Cloning images project repository at: ${cfg.REPOSITORY_DIR}`);
+	return await execute( `git clone ${cfg.REPOSITORY_URL} ${cfg.REPOSITORY_DIR}` );
+}
+
+async function updateRepository() {
+	process.chdir( cfg.REPOSITORY_URL );
+	await stash();
+	await checkoutMasterBranch();
+	return await execute( 'git pull origin master' );
+}
+
+/**
  * Uses git to stash the current change manifest.
  * Clears any unstaged changes.
  */
@@ -238,12 +264,7 @@ async function stash() {
 }
 
 async function checkoutMasterBranch() {
-	const output = await execute( 'git checkout master' );
-	const formatted = output.split( "\n" ).map( tag => {
-		return tag.replace( /[^0-9.]/, '' );
-	} );
-
-	return formatted;
+	return await execute( 'git checkout master' );
 }
 
 async function addVersion( tag ) {
