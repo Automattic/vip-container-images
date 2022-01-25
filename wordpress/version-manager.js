@@ -141,7 +141,7 @@ async function getImagelist( token ){
 						}
 					} );
 				} catch {
-					console.log( chalk.yellow( 'Warning:' ), 'Could not load remote list of WordPress images.' );
+					console.warn( 'Could not load remote list of WordPress images.' );
 					versionList.push( '5.9', '5.8', '5.7', '5.6' );
 				}
 
@@ -151,7 +151,7 @@ async function getImagelist( token ){
 		} );
 
 		req.on( 'error', error => {
-			console.log( chalk.yellow( 'Warning:' ), error );
+			console.error( error );
 		} );
 
 		req.end();
@@ -191,7 +191,7 @@ async function execute( command ){
 	return new Promise( ( resolve, reject ) => {
 			exec( command, ( error, stdout, stderr ) => {
 			if ( error ) {
-				console.warn( error );
+				console.error( error );
 			}
 			resolve( stdout? stdout : stderr );
 		});
