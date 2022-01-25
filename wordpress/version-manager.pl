@@ -133,16 +133,16 @@ sub index_tags {
 # Gets a list of the WordPress tags from the official SVN
 sub get_tag_list {
     my @list=`svn ls https://core.svn.wordpress.org/tags`;
-    my @images;
+    my @tags;
 
     # Format the version tags
     foreach my $tag (@list) {
-        # remove all except number and period
+        # remove all characters except number and period
         $tag =~ s/[^0-9.]//g;
-        push(@images, $tag);
+        push(@tags, $tag);
     }
 
-    return @images;
+    return @tags;
 }
 
 # Produces a list of live WordPress images on github packeges
