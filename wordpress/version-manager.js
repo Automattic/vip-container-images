@@ -1,14 +1,30 @@
+#!/usr/bin/env node
+
 /**
  * Manages versions of WordPress container images
  *   Uses an algorithm to decide which versions should be available
  *   Runs processes to make the actual images correct according to the list
  */
-// ============================================================================
 
+/**
+ * @flow
+ * @format
+ */
 
+/**
+ * System dependencies
+ */
 const exec 	= require('child_process').exec;
+
+/**
+ * Internal dependencies
+ */
 const cfg 	= require( `${__dirname}/version-manager-cfg.json` );
-const args 	= process.argv.slice( 2 );
+
+/**
+ * TODO: args override configs
+ */
+//const args 	= process.argv.slice( 2 );
 
 run( cfg );
 
@@ -24,10 +40,7 @@ async function run( cfg ) {
 	console.log( versionList );
 }
 
-// ============================================================================
-/** 
- * Functions 
- */
+// =========================== Functions ========================================
 
 /**
  *	Attempts to organize the list of tags in an intelligent way.
