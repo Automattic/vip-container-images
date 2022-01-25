@@ -14,31 +14,46 @@
 /**
  * System dependencies
  */
-const exec 	= require('child_process').exec;
+const exec = require( 'child_process' ).exec;
+const fs = require( 'fs' );
 
 /**
  * Internal dependencies
  */
-const cfg 	= require( `${__dirname}/version-manager-cfg.json` );
+const cfg = require( `${__dirname}/version-manager-cfg.json` );
 
 /**
  * TODO: args override configs
  */
 //const args 	= process.argv.slice( 2 );
 
-run( cfg );
 
-async function run( cfg ) {
-	const imageList = await getImagelist( cfg['GITHUB_OAUTH_TOKEN'] );
+// Run the scripted git operations in the context of the "WORKING_DIR".
+try {
+	// try to create the WORKING_DIR recursively if it does not exist
+	if ( !fs.existsSync( cfg.WORKING_DIR ) ) {
+		fs.mkdirSync( cfg.WORKING_DIR, { recursive: true } );
+	}
+
+	process.chdir( cfg.WORKING_DIR );
+	console.log(`Working directory: ${cfg.WORKING_DIR}`);
+} catch (err) {
+	console.log('chdir: ' + err);
+	process.exit(1);
+}
+
+// main execution IIFE
+(async function () {
+	const imageList = await getImagelist( cfg.GITHUB_OAUTH_TOKEN );
 	const tagList = await getTagList();
-	const versionList = collateTagList( tagList, cfg['VERSION_LIST_SIZE'] );
+	const versionList = collateTagList( tagList, cfg.VERSION_LIST_SIZE );
 
 	console.log("Image list: ");
 	console.log( imageList );
 
 	console.log("Version list: ");
 	console.log( versionList );
-}
+})();
 
 // =========================== Functions ========================================
 
@@ -189,19 +204,7 @@ function getImageApiOptions( token ) {
 }
 
 /**
- * Gets a list of the WordPress tags from the official SVN
- */
-async function getTagList() {
-	const output = await execute('svn ls https://core.svn.wordpress.org/tags');
-	const formatted = output.split("\n").map( tag => {
-		return tag.replace(/[^0-9.]/, '');
-	} );
-
-	return formatted;
-}
-
-/**
- * executes a command
+ * executes a system command
  */
 async function execute( command ){
 	return new Promise( ( resolve, reject ) => {
@@ -212,4 +215,69 @@ async function execute( command ){
 			resolve( stdout? stdout : stderr );
 		});
 	});
+}
+
+/**
+ * Gets a list of the WordPress tags from the official SVN
+ */
+async function getTagList() {
+	const output = await execute( 'svn ls https://core.svn.wordpress.org/tags' );
+	const formatted = output.split( "\n" ).map( tag => {
+		return tag.replace( /[^0-9.]/, '' );
+	} );
+
+	return formatted;
+}
+
+/**
+ * Uses git to stash the current change manifest.
+ * Clears any unstaged changes.
+ */
+async function stash() {
+	return await execute( 'git stash' );
+}
+
+async function checkoutMasterBranch() {
+	const output = await execute( 'git checkout master' );
+	const formatted = output.split( "\n" ).map( tag => {
+		return tag.replace( /[^0-9.]/, '' );
+	} );
+
+	return formatted;
+}
+
+async function addVersion( tag ) {
+	console.log( `\n == Running "Add Version" Operation on ref: ${tag}  ==` );
+
+	try {
+		console.log( `${tag} Version Add operation succeeded.` );
+	} catch ( error ) {
+		console.log( `"Add Version" failed with error: ${error}` );
+	}
+
+	console.log( ` == Finished "Add Version" Operation ( ${tag} )  ==\n` );
+}
+
+async function updateVersion( version, tag ) {
+	console.log( `\n == Running "Update Version" Operation on version: ${version} to ref: ${tag}  ==` );
+
+	try {
+		console.log( `Version: ${version} update to: ${tag} succeeded.` );
+	} catch ( error ) {
+		console.log( `"Update Version ( ${tag} ) failed with error: ${error}` );
+	}
+
+	console.log( ` == Finished "Update Version" Operation ( ${version} )  ==\n` );
+}
+
+async function removeVersion( tag ) {
+	console.log( `\n == Running "Remove Version" Operation on ref: ${tag}  ==` );
+
+	try {
+		console.log( `Version ${tag} remove operation succeeded.` );
+	} catch ( error ) {
+		console.log( `"Remove Version ( ${tag} )" failed with error: ${error}` );
+	}
+
+	console.log( ` == Finished "Remove Version" Operation ( ${version} )  ==\n` );
 }
