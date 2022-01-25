@@ -132,7 +132,7 @@ function indexTags( tags ) {
  * Gets a list of all the currently available images
  */
 async function getImagelist( token ){
-	const versionList = [];
+	const imageList = [];
 
 	return new Promise( resolve => {
 		const https = require( 'https' );
@@ -149,17 +149,17 @@ async function getImagelist( token ){
 					list.forEach( item => {
 						if ( item.metadata.container.tags.length > 0 ) {
 							item.metadata.container.tags.forEach( tag => {
-								versionList.push( tag );
+								imageList.push( tag );
 							} );
 						}
 					} );
 				} catch {
 					console.warn( 'Could not load remote list of WordPress images.' );
-					versionList.push( '5.9', '5.8', '5.7', '5.6' );
+					imageList.push( '5.9', '5.8', '5.7', '5.6' );
 				}
 
-				versionList.sort().reverse();
-				resolve( versionList );
+				imageList.sort().reverse();
+				resolve( imageList );
 			} );
 		} );
 
