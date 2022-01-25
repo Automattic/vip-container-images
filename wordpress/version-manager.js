@@ -8,8 +8,7 @@
 
 const exec 	= require('child_process').exec;
 const cfg 	= require( `${__dirname}/version-manager-cfg.json` );
-
-const args = process.argv.slice( 2 );
+const args 	= process.argv.slice( 2 );
 
 run( cfg );
 
@@ -24,7 +23,6 @@ async function run( cfg ) {
 	console.log("Version list: ");
 	console.log( versionList );
 }
-
 
 // ============================================================================
 /** 
