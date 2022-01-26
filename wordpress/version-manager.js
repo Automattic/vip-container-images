@@ -417,7 +417,7 @@ async function checkoutMasterBranch() {
 }
 
 /**
- * Checks out the master branch.
+ * Checks out a new branch.
  */
 async function checkoutNewBranch( name ) {
 	await checkoutMasterBranch();
@@ -426,15 +426,21 @@ async function checkoutNewBranch( name ) {
 	return await execute( `git checkout -b ${name}` );
 }
 
+/**
+ * Executes the add-verison.sh script with params
+ */
 async function addVersion( tag, changeLog ) {
 	try {
-		changeLog.push( `Added ref: ${tag} to list of available WordPress images.` );
+		changeLog.push( `Added version: ${tag} to list of available WordPress images.` );
 		return await execute( `${cfg.REPOSITORY_DIR}/wordpress/add-version.sh ${tag} ${tag}` );
 	} catch ( error ) {
 		console.log( `"Add Version" failed with error: ${error}` );
 	}
 }
 
+/**
+ * Executes the del-version.sh script with params
+ */
 async function removeVersion( tag, changeLog ) {
 	try {
 		changeLog.push( `Removed version: ${tag} from list of available WordPress images.` );
