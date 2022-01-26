@@ -37,7 +37,7 @@ try {
 // main IIFE
 (async function () {
 	let change;
-	const changeLog = [ 'Changes generated to update WordPress images in vip dev-env.'];
+	const changeLog = ['Changes generated to update WordPress images in vip dev-env.'];
 	const imageList = await getImagelist();
 	const tagList = await getTagList();
 	const versionList = collateTagList( tagList, cfg.VERSION_LIST_SIZE );
