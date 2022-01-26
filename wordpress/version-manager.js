@@ -16,8 +16,8 @@ const fs = require( 'fs' );
  * Internal dependencies
  */
 const ts = new Date().toISOString();
-const cfg = require( `${__dirname}/version-manager-cfg.json` );
-const branch = `update/WordPress-image-${ts.split('T')[0]}`;
+const cfg = require(  `${__dirname}/version-manager-cfg.json` );
+const branch = `update/WordPress-image-${ts.split( 'T' )[0]}`;
 cfg.REPOSITORY_DIR = `${cfg.WORKING_DIR}/vip-container-images`;
 
 //TODO: args override configs
@@ -27,11 +27,11 @@ cfg.REPOSITORY_DIR = `${cfg.WORKING_DIR}/vip-container-images`;
 try {
 	if ( !fs.existsSync( cfg.WORKING_DIR ) ) {
 		fs.mkdirSync( cfg.WORKING_DIR, { recursive: true } );
-		console.log(`Created Working Directory: ${cfg.WORKING_DIR}`);
+		console.log( `Created Working Directory: ${cfg.WORKING_DIR}` );
 	}
-} catch (err) {
-	console.log('Create Working Directory failed: ' + err);
-	process.exit(1);
+} catch ( err ) {
+	console.log( 'Create Working Directory failed: ' + err );
+	process.exit( 1 );
 }
 
 // main IIFE
@@ -61,7 +61,7 @@ try {
 	await stage();
 
 	// Commit changes
-	const cl = changeLog.join(`\n  * `);
+	const cl = changeLog.join( `\n  * ` );
 	await commit( cl );
 
 	// Push commit
@@ -70,8 +70,8 @@ try {
 	// Create Pull Request
 	const pr = await requestMerge( cl );
 
-	console.log(`A Pull Request has been submitted on behalf of wpcomvip-bot. \n${cl}\n\n`);
-	console.log(`${pr.url}\n\n`);
+	console.log( `A Pull Request has been submitted on behalf of wpcomvip-bot. \n${cl}\n\n` );
+	console.log( `${pr.url}\n\n` );
 })();
 
 // =========================== Functions ========================================
@@ -96,7 +96,7 @@ function collateTagList( tags, size ) {
 	for ( const i in majorVersions ) {
 		for ( const [ j, v ] of versions[ majorVersions[ i ] ].entries() ) {
 			// If it is the most recent 2 versions, append all of the releases
-			if ( i == 0 && j <= 2) {
+			if ( i == 0 && j <= 2 ) {
 				sizeOffset = releases[ v ].length;
 				newTagList.push( ...releases[ v ] );
 			} else {
@@ -215,9 +215,9 @@ async function requestMerge( changeLog ) {
 			res.on( 'end', () => {
 				// Handle bad response statuses from the API
 				if ( res.statusCode != 201 ) {
-					console.error(`Error: Pull Request API ended in status: ${res.statusCode}`);
-					console.log(res.headers);
-					process.exit(1);
+					console.error( `Error: Pull Request API ended in status: ${res.statusCode}` );
+					console.log( res.headers );
+					process.exit( 1 );
 				} else {
 					response = JSON.parse( data );
 				}
