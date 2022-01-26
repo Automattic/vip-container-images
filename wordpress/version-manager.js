@@ -197,6 +197,9 @@ function indexTags( tags ) {
 	return { majorVersions, versions, releases };
 }
 
+/**
+ * Uses the Github REST API to POST to /pulls
+ */
 async function requestMerge( changeLog ) {
 	const postData = JSON.stringify( {
 		title: 'WordPress Image Refresh',
