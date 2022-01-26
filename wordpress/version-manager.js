@@ -71,7 +71,6 @@ try {
 	const pr = await requestMerge( cl );
 
 	console.log(`A Pull Request has been submitted on behalf of wpcomvip-bot. \n${cl}\n\n`);
-
 	console.log(`${pr.url}\n\n`);
 })();
 
