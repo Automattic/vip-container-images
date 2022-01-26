@@ -153,8 +153,8 @@ function indexTags( tags ) {
 
 	for ( const tag of tags ) {
 		if ( ! tag.includes( '.' ) ) {
-            continue;
-        }
+			continue;
+		}
 
 		[ majorVersion, version, release ] = tag.split( '.' );
 
