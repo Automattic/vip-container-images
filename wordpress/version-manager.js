@@ -250,7 +250,7 @@ function getPullRequestApiOptions( data ) {
 			'User-Agent': 'VIP',
 			Accept: 'application/vnd.github.v3+json',
 			'Content-Type': 'application/json',
-    		'Content-Length': data.length
+			'Content-Length': data.length
 		},
 	};
 }
