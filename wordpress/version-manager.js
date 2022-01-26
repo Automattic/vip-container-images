@@ -20,6 +20,7 @@ const fs = require( 'fs' );
 /**
  * Internal dependencies
  */
+const ts = new Date().toISOString();
 const cfg = require( `${__dirname}/version-manager-cfg.json` );
 cfg.REPOSITORY_DIR = `${cfg.WORKING_DIR}/vip-container-images`;
 
@@ -41,15 +42,31 @@ try {
 
 // main execution IIFE
 (async function () {
+	let change, output;
+	let changeLog = [];
 	const imageList = await getImagelist( cfg.GITHUB_OAUTH_TOKEN );
 	const tagList = await getTagList();
 	const versionList = collateTagList( tagList, cfg.VERSION_LIST_SIZE );
+	const adds = getAddsQueue( imageList, versionList );
+	const removes = getRemovesQueue( imageList, versionList );
 
-	console.log("Image list: ");
-	console.log( imageList );
+	await initRepo();
+	await checkoutNewBranch( `WordPress-image-refresh-${ts.split('T')[0]}` );
 
-	console.log("Version list: ");
-	console.log( versionList );
+	// walks through the list of recommended changes and performs the operations
+	for ( change of adds ) {
+		await addVersion( change.tag, changeLog );
+	}
+
+	for ( change of removes ) {
+		await removeVersion( change.version, changeLog );
+	}
+
+	// Stage and commit the result of the operations
+	//await stage();
+	//await commit();
+	//await push();
+	//await requestMerge();
 })();
 
 // =========================== Functions ========================================
@@ -89,6 +106,35 @@ function collateTagList( tags, size ) {
 	}
 
 	return newTagList;
+}
+
+/**
+ * Get list of queued adds
+ */
+function getAddsQueue( imageList, versionList ) {
+	const adds = [];
+
+	for ( version of versionList) {
+		if ( imageList.indexOf( version ) === -1 ) {
+			adds.push( {tag: version} );
+		}
+	}
+
+	return adds;
+}
+
+/**
+ * Get list of queued removes
+ */
+function getRemovesQueue( imageList, versionList ) {
+	const removes = [];
+	for ( image of imageList ) {
+		if ( versionList.indexOf( image ) === -1 ) {
+			removes.push( {version: image} );
+		}
+	}
+
+	return removes;
 }
 
 /**
@@ -230,26 +276,29 @@ async function getTagList() {
  * Makes sure the Working Directory is prepared for new changes
  */
 async function initRepo() {
-	// Clone the repo if it does not exist, else stash and update the repo
+	// Clone the repo if it does not exist, else stash and refresh the repo
 	if ( !fs.existsSync( cfg.REPOSITORY_DIR ) ) {
 		await cloneRepository();
-		process.chdir( cfg.REPOSITORY_DIR );
 	} else {
-		await updateRepository();
+		await refreshRepository();
 	}
 }
 
 /**
- * Uses git to stash the current change manifest.
- * Clears any unstaged changes.
+ * Uses git to clone a remote repository.
  */
 async function cloneRepository() {
 	console.log( `Cloning images project repository at: ${cfg.REPOSITORY_DIR}`);
-	return await execute( `git clone ${cfg.REPOSITORY_URL} ${cfg.REPOSITORY_DIR}` );
+	const output = await execute( `git clone ${cfg.REPOSITORY_URL} ${cfg.REPOSITORY_DIR}` );
+	process.chdir( cfg.REPOSITORY_DIR );
+	return output;
 }
 
-async function updateRepository() {
-	process.chdir( cfg.REPOSITORY_URL );
+/**
+ * Uses git to refresh the repository.
+ */
+async function refreshRepository() {
+	process.chdir( cfg.REPOSITORY_DIR );
 	await stash();
 	await checkoutMasterBranch();
 	return await execute( 'git pull origin master' );
@@ -263,14 +312,27 @@ async function stash() {
 	return await execute( 'git stash' );
 }
 
+/**
+ * Checks out the master branch.
+ */
 async function checkoutMasterBranch() {
 	return await execute( 'git checkout master' );
 }
 
-async function addVersion( tag ) {
+/**
+ * Checks out the master branch.
+ */
+async function checkoutNewBranch( name ) {
+	await execute( `git branch -D ${name}` );
+	return await execute( `git checkout -b ${name}` );
+}
+
+async function addVersion( tag, changeLog ) {
 	console.log( `\n == Running "Add Version" Operation on ref: ${tag}  ==` );
 
 	try {
+		return await execute( `${cfg.REPOSITORY_DIR}/wordpress/add-version.sh ${tag} ${tag}` );
+		changeLog.push( `Added ref: ${tag} to list of available WordPress images.` );
 		console.log( `${tag} Version Add operation succeeded.` );
 	} catch ( error ) {
 		console.log( `"Add Version" failed with error: ${error}` );
@@ -279,22 +341,12 @@ async function addVersion( tag ) {
 	console.log( ` == Finished "Add Version" Operation ( ${tag} )  ==\n` );
 }
 
-async function updateVersion( version, tag ) {
-	console.log( `\n == Running "Update Version" Operation on version: ${version} to ref: ${tag}  ==` );
-
-	try {
-		console.log( `Version: ${version} update to: ${tag} succeeded.` );
-	} catch ( error ) {
-		console.log( `"Update Version ( ${tag} ) failed with error: ${error}` );
-	}
-
-	console.log( ` == Finished "Update Version" Operation ( ${version} )  ==\n` );
-}
-
-async function removeVersion( tag ) {
+async function removeVersion( tag, changeLog ) {
 	console.log( `\n == Running "Remove Version" Operation on ref: ${tag}  ==` );
 
 	try {
+		return await execute( `${cfg.REPOSITORY_DIR}/wordpress/del-version.sh ${version}` );
+		changeLog.push( `Removed version: ${tag} from list of available WordPress images.` );
 		console.log( `Version ${tag} remove operation succeeded.` );
 	} catch ( error ) {
 		console.log( `"Remove Version ( ${tag} )" failed with error: ${error}` );
