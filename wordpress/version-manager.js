@@ -73,8 +73,11 @@ try {
 	await push( branch );
 
 	// Create Pull Request
-	const r = await requestMerge( cl );
-	console.log(r);
+	const pr = await requestMerge( cl );
+
+	console.log(`A Pull Request has been submitted on behalf of wpcomvip-bot. \n${cl}\n\n`);
+
+	console.log(`${pr.url}\n\n`);
 })();
 
 // =========================== Functions ========================================
@@ -194,10 +197,10 @@ function indexTags( tags ) {
 	return { majorVersions, versions, releases };
 }
 
-async function requestMerge( cl ) {
+async function requestMerge( changeLog ) {
 	const postData = JSON.stringify( {
 		title: 'WordPress Image Refresh',
-		body: cl,
+		body: changeLog,
 		head: branch,
 		base: 'master',
 	} );
@@ -221,7 +224,6 @@ async function requestMerge( cl ) {
 				} else {
 					response = JSON.parse( data );
 				}
-			}
 
 				resolve( response );
 			} );
@@ -418,7 +420,9 @@ async function checkoutMasterBranch() {
  * Checks out the master branch.
  */
 async function checkoutNewBranch( name ) {
+	await checkoutMasterBranch();
 	await execute( `git branch -D ${name}` );
+	await execute( `git push origin --delete ${name}` );
 	return await execute( `git checkout -b ${name}` );
 }
 
