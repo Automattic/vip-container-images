@@ -25,7 +25,7 @@ cfg.REPOSITORY_DIR = `${cfg.WORKING_DIR}/vip-container-images`;
 
 // try to create the WORKING_DIR recursively if it does not exist
 try {
-	if ( !fs.existsSync( cfg.WORKING_DIR ) ) {
+	if ( ! fs.existsSync( cfg.WORKING_DIR ) ) {
 		fs.mkdirSync( cfg.WORKING_DIR, { recursive: true } );
 		console.log( `Created Working Directory: ${cfg.WORKING_DIR}` );
 	}
@@ -152,7 +152,7 @@ function indexTags( tags ) {
 	let majorVersion, version, release;
 
 	for ( const tag of tags ) {
-		if ( !tag.includes( '.' ) ) {
+		if ( ! tag.includes( '.' ) ) {
             continue;
         }
 
@@ -346,7 +346,7 @@ async function getTagList() {
  */
 async function initRepo() {
 	// Clone the repo if it does not exist, else stash and refresh the repo
-	if ( !fs.existsSync( cfg.REPOSITORY_DIR ) ) {
+	if ( ! fs.existsSync( cfg.REPOSITORY_DIR ) ) {
 		await cloneRepository();
 	} else {
 		await refreshRepository();
