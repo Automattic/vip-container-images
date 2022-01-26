@@ -7,11 +7,6 @@
  */
 
 /**
- * @flow
- * @format
- */
-
-/**
  * System dependencies
  */
 const exec = require( 'child_process' ).exec;
