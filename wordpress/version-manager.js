@@ -22,12 +22,11 @@ const fs = require( 'fs' );
  */
 const ts = new Date().toISOString();
 const cfg = require( `${__dirname}/version-manager-cfg.json` );
+const branch = `update/WordPress-image-${ts.split('T')[0]}`;
 cfg.REPOSITORY_DIR = `${cfg.WORKING_DIR}/vip-container-images`;
 
-/**
- * TODO: args override configs
- */
-//const args 	= process.argv.slice( 2 );
+//TODO: args override configs
+//const args = process.argv.slice( 2 );
 
 // try to create the WORKING_DIR recursively if it does not exist
 try {
@@ -40,18 +39,19 @@ try {
 	process.exit(1);
 }
 
-// main execution IIFE
+// main IIFE
 (async function () {
-	let change, output;
-	let changeLog = [];
-	const imageList = await getImagelist( cfg.GITHUB_OAUTH_TOKEN );
+	let change;
+	const changeLog = [ 'Changes generated to update WordPress images in vip dev-env.'];
+	const imageList = await getImagelist();
 	const tagList = await getTagList();
 	const versionList = collateTagList( tagList, cfg.VERSION_LIST_SIZE );
 	const adds = getAddsQueue( imageList, versionList );
 	const removes = getRemovesQueue( imageList, versionList );
 
+	// Init repo and check out new branch
 	await initRepo();
-	await checkoutNewBranch( `WordPress-image-refresh-${ts.split('T')[0]}` );
+	await checkoutNewBranch( branch );
 
 	// walks through the list of recommended changes and performs the operations
 	for ( change of adds ) {
@@ -63,10 +63,18 @@ try {
 	}
 
 	// Stage and commit the result of the operations
-	//await stage();
-	//await commit();
-	//await push();
-	//await requestMerge();
+	await stage();
+
+	// Commit changes
+	const cl = changeLog.join(`\n  * `);
+	await commit( cl );
+
+	// Push commit
+	//await push( branch );
+
+	// Create Pull Request
+	const r = await requestMerge( cl );
+	console.log(r);
 })();
 
 // =========================== Functions ========================================
@@ -186,15 +194,77 @@ function indexTags( tags ) {
 	return { majorVersions, versions, releases };
 }
 
+async function requestMerge( cl ) {
+	const postData = JSON.stringify( {
+		title: 'WordPress Image Refresh',
+		body: cl,
+		head: branch,
+		base: 'master',
+	} );
+
+	return new Promise( resolve => {
+		let response = {};
+		const https = require( 'https' );
+		const req = https.request( getPullRequestApiOptions( postData ), res => {
+			let data = '';
+
+			res.on( 'data', chunk => {
+				data += chunk;
+			} );
+
+			res.on( 'end', () => {
+				// Handle bad response statuses from the API
+				if ( res.statusCode != 201 ) {
+					console.error(`Error: Pull Request API ended in status: ${res.statusCode}`);
+					console.log(res.headers);
+					process.exit(1);
+				} else {
+					response = JSON.parse( data );
+				}
+			}
+
+				resolve( response );
+			} );
+		} );
+
+		req.on( 'error', error => {
+			console.error( error );
+		} );
+
+		req.write( postData );
+
+		req.end();
+	} );
+}
+
+/**
+ * Configurations for the Image API request
+ */
+function getPullRequestApiOptions( data ) {
+	return {
+		hostname: 'api.github.com',
+		port: 443,
+		path: '/repos/Automattic/vip-container-images/pulls',
+		method: 'POST',
+		headers: {
+			Authorization: `Bearer ${cfg.GITHUB_OAUTH_TOKEN}`,
+			'User-Agent': 'VIP',
+			Accept: 'application/vnd.github.v3+json',
+			'Content-Type': 'application/json',
+    		'Content-Length': data.length
+		},
+	};
+}
+
 /**
  * Gets a list of all the currently available images
  */
-async function getImagelist( token ){
+async function getImagelist(){
 	const imageList = [];
 
 	return new Promise( resolve => {
 		const https = require( 'https' );
-		const req = https.request( getImageApiOptions( token ), res => {
+		const req = https.request( getImageApiOptions(), res => {
 			let data = '';
 
 			res.on( 'data', chunk => {
@@ -232,14 +302,14 @@ async function getImagelist( token ){
 /**
  * Configurations for the Image API request
  */
-function getImageApiOptions( token ) {
+function getImageApiOptions() {
 	return {
 		hostname: 'api.github.com',
 		port: 443,
 		path: '/orgs/Automattic/packages/container/vip-container-images%2Fwordpress/versions?per_page=100&repo=vip-container-images&package_type=container',
 		method: 'GET',
 		headers: {
-			Authorization: `Bearer ${token}`,
+			Authorization: `Bearer ${cfg.GITHUB_OAUTH_TOKEN}`,
 			'User-Agent': 'VIP',
 			Accept: 'application/vnd.github.v3+json',
 		},
@@ -305,12 +375,37 @@ async function refreshRepository() {
 }
 
 /**
+ * Uses git to commit the current changes.
+ * Clears any unstaged changes.
+ */
+async function commit( cl ) {
+	return await execute( `git commit -m '${cl}'` );
+}
+
+/**
+ * Uses git to stage the current change manifest.
+ * Clears any unstaged changes.
+ */
+async function stage() {
+	return await execute( 'git add wordpress/versions.json' );
+}
+
+/**
  * Uses git to stash the current change manifest.
  * Clears any unstaged changes.
  */
 async function stash() {
 	return await execute( 'git stash' );
 }
+
+/**
+ * Uses git to stash the current change manifest.
+ * Clears any unstaged changes.
+ */
+async function push( changeBranch ) {
+	return await execute( `git push ${cfg.REPOSITORY_URL} ${changeBranch}:${changeBranch}` );
+}
+
 
 /**
  * Checks out the master branch.
@@ -328,29 +423,19 @@ async function checkoutNewBranch( name ) {
 }
 
 async function addVersion( tag, changeLog ) {
-	console.log( `\n == Running "Add Version" Operation on ref: ${tag}  ==` );
-
 	try {
-		return await execute( `${cfg.REPOSITORY_DIR}/wordpress/add-version.sh ${tag} ${tag}` );
 		changeLog.push( `Added ref: ${tag} to list of available WordPress images.` );
-		console.log( `${tag} Version Add operation succeeded.` );
+		return await execute( `${cfg.REPOSITORY_DIR}/wordpress/add-version.sh ${tag} ${tag}` );
 	} catch ( error ) {
 		console.log( `"Add Version" failed with error: ${error}` );
 	}
-
-	console.log( ` == Finished "Add Version" Operation ( ${tag} )  ==\n` );
 }
 
 async function removeVersion( tag, changeLog ) {
-	console.log( `\n == Running "Remove Version" Operation on ref: ${tag}  ==` );
-
 	try {
-		return await execute( `${cfg.REPOSITORY_DIR}/wordpress/del-version.sh ${version}` );
 		changeLog.push( `Removed version: ${tag} from list of available WordPress images.` );
-		console.log( `Version ${tag} remove operation succeeded.` );
+		return await execute( `${cfg.REPOSITORY_DIR}/wordpress/del-version.sh ${version}` );
 	} catch ( error ) {
 		console.log( `"Remove Version ( ${tag} )" failed with error: ${error}` );
 	}
-
-	console.log( ` == Finished "Remove Version" Operation ( ${version} )  ==\n` );
 }
