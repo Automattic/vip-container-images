@@ -70,7 +70,7 @@ try {
 	await commit( cl );
 
 	// Push commit
-	//await push( branch );
+	await push( branch );
 
 	// Create Pull Request
 	const r = await requestMerge( cl );
