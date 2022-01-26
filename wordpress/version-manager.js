@@ -70,8 +70,16 @@ try {
 	// Create Pull Request
 	const pr = await requestMerge( cl );
 
-	console.log( `A Pull Request has been submitted on behalf of wpcomvip-bot. \n${cl}\n\n` );
-	console.log( `${pr.url}\n\n` );
+	console.log( 'Ideal Image List:' );
+	console.log( versionList );
+
+	console.log( 'Currently Offered List:' );
+	console.log( imageList );
+
+	console.log( `A Pull Request has been submitted on behalf of wpcomvip-bot.` );
+	console.log( 'Corrections Perscribed:' );
+	console.log( `${cl}` );
+	console.log( `\n${pr.url}\n\n` );
 })();
 
 // =========================== Functions ========================================
@@ -83,7 +91,7 @@ try {
  */
 function collateTagList( tags, size ) {
 	const newTagList = [];
-	let sizeOffset = 0;
+	let sizeOffset;
 
 	// sort tags
 	tags = tags.reverse();
@@ -94,10 +102,11 @@ function collateTagList( tags, size ) {
 	// build new tag list from indexes
 	OUT:
 	for ( const i in majorVersions ) {
+		sizeOffset = 0;
 		for ( const [ j, v ] of versions[ majorVersions[ i ] ].entries() ) {
 			// If it is the most recent 2 versions, append all of the releases
 			if ( i == 0 && j <= 2 ) {
-				sizeOffset = releases[ v ].length;
+				sizeOffset += releases[ v ].length;
 				newTagList.push( ...releases[ v ] );
 			} else {
 				// append only the newest release for previous versions
