@@ -360,6 +360,8 @@ async function initRepo() {
 	} else {
 		await refreshRepository();
 	}
+
+	return await prune();
 }
 
 /**
@@ -391,6 +393,14 @@ async function commit( cl ) {
 }
 
 /**
+ * Uses git to commit the current changes.
+ * Clears any unstaged changes.
+ */
+async function prune() {
+	return await execute( 'git fetch -p' );
+}
+
+/**
  * Uses git to stage the current change manifest.
  * Clears any unstaged changes.
  */
@@ -414,6 +424,19 @@ async function push( changeBranch ) {
 	return await execute( `git push ${cfg.REPOSITORY_URL} ${changeBranch}:${changeBranch}` );
 }
 
+/**
+ * Uses git to find if the named branch exists.
+ */
+async function branchExists( name ) {
+	return await execute( `git branch --list ${name}` );
+}
+
+/**
+ * Uses git to find if the named remote branch exists.
+ */
+async function remoteExists( name ) {
+	return await execute( `git ls-remote --heads ${cfg.REPOSITORY_URL} ${name}` );
+}
 
 /**
  * Checks out the master branch.
@@ -427,8 +450,15 @@ async function checkoutMasterBranch() {
  */
 async function checkoutNewBranch( name ) {
 	await checkoutMasterBranch();
-	await execute( `git branch -D ${name}` );
-	await execute( `git push origin --delete ${name}` );
+
+	if ( await branchExists( name ) ) {
+		await execute( `git branch -D ${name}` );
+	}
+
+	if ( await remoteExists( name ) ) {
+		await execute( `git push origin --delete ${name}` );
+	}
+
 	return await execute( `git checkout -b ${name}` );
 }
 
