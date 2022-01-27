@@ -70,6 +70,9 @@ try {
 	// Create Pull Request
 	const pr = await requestMerge( cl );
 
+	// Update the PR with Labels
+	await issueUpdate( pr );
+
 	console.log( 'Ideal Image List:' );
 	console.log( versionList );
 
@@ -105,7 +108,7 @@ function collateTagList( tags, size ) {
 		sizeOffset = 0;
 		for ( const [ j, v ] of versions[ majorVersions[ i ] ].entries() ) {
 			// If it is the most recent 2 versions, append all of the releases
-			if ( i == 0 && j <= 2 ) {
+			if ( i == 0 && j <= 0 ) {
 				sizeOffset += releases[ v ].length;
 				newTagList.push( ...releases[ v ] );
 			} else {
@@ -254,6 +257,68 @@ function getPullRequestApiOptions( data ) {
 		port: 443,
 		path: '/repos/Automattic/vip-container-images/pulls',
 		method: 'POST',
+		headers: {
+			Authorization: `Bearer ${cfg.GITHUB_OAUTH_TOKEN}`,
+			'User-Agent': 'VIP',
+			Accept: 'application/vnd.github.v3+json',
+			'Content-Type': 'application/json',
+			'Content-Length': data.length
+		},
+	};
+}
+
+/**
+ * Uses the Github REST API to POST to /pulls
+ */
+async function issueUpdate( issue ) {
+	const postData = JSON.stringify( {
+		labels: ['[Status] Needs Review', 'WordPress'],
+		requested_teams: ['@Automattic/vip-platform-cantina'],
+	} );
+
+	return new Promise( resolve => {
+		let response = {};
+		const https = require( 'https' );
+		const req = https.request( getIssueUpdateApiOptions( issue, postData ), res => {
+			let data = '';
+
+			res.on( 'data', chunk => {
+				data += chunk;
+			} );
+
+			res.on( 'end', () => {
+				// Handle bad response statuses from the API
+				if ( res.statusCode != 200 ) {
+					console.error( `Error: Issue Update API ended in status: ${res.statusCode}` );
+					console.log( res.headers );
+					process.exit( 1 );
+				} else {
+					response = JSON.parse( data );
+				}
+
+				resolve( response );
+			} );
+		} );
+
+		req.on( 'error', error => {
+			console.error( error );
+		} );
+
+		req.write( postData );
+
+		req.end();
+	} );
+}
+
+/**
+ * Configurations for the Image API request
+ */
+function getIssueUpdateApiOptions( issue, data ) {
+	return {
+		hostname: 'api.github.com',
+		port: 443,
+		path: `/repos/Automattic/vip-container-images/issues/${issue.number}`,
+		method: 'PATCH',
 		headers: {
 			Authorization: `Bearer ${cfg.GITHUB_OAUTH_TOKEN}`,
 			'User-Agent': 'VIP',
