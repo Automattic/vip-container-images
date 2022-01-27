@@ -290,8 +290,8 @@ async function getImagelist(){
 						}
 					} );
 				} catch {
-					console.warn( 'Could not load remote list of WordPress images.' );
-					imageList.push( '5.9', '5.8', '5.7', '5.6' );
+					console.error( 'ERROR: Could not load remote list of WordPress images.' );
+					process.exit( 1 );
 				}
 
 				imageList.sort().reverse();
