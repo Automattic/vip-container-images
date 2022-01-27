@@ -77,7 +77,7 @@ try {
 	console.log( imageList );
 
 	console.log( `A Pull Request has been submitted on behalf of wpcomvip-bot.` );
-	console.log( 'Corrections Perscribed:' );
+	console.log( 'Corrections Prescribed:' );
 	console.log( `${cl}` );
 	console.log( `\n${pr.url}\n\n` );
 })();
