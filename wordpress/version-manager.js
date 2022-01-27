@@ -53,6 +53,18 @@ try {
 	const adds = getAddsQueue( imageList, versionList );
 	const removes = getRemovesQueue( imageList, versionList );
 
+	console.log( 'Ideal Image List:' );
+	console.log( versionList );
+
+	console.log( 'Currently Offered List:' );
+	console.log( imageList );
+
+	if ( ( adds.length + removes.length ) < 1 ) {
+		// No changes staged. bail.
+		console.log( 'List of images is optimal. Exiting.' );
+		process.exit( 0 );
+	}
+
 	// Init repo and check out new branch
 	await initRepo();
 	await checkoutNewBranch( branch );
@@ -81,12 +93,6 @@ try {
 
 	// Update the PR with Labels
 	await issueUpdate( pr );
-
-	console.log( 'Ideal Image List:' );
-	console.log( versionList );
-
-	console.log( 'Currently Offered List:' );
-	console.log( imageList );
 
 	console.log( `A Pull Request has been submitted on behalf of wpcomvip-bot.` );
 	console.log( 'Corrections Prescribed:' );
