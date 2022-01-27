@@ -11,17 +11,26 @@
  */
 const exec = require( 'child_process' ).exec;
 const fs = require( 'fs' );
+let cfg = {
+	REPOSITORY_URL: null,
+	VERSION_LIST_SIZE: null,
+	WORKING_DIR: null,
+	GITHUB_OAUTH_TOKEN: null,
+};
 
 /**
- * Internal dependencies
+ * Configuration file
  */
+try {
+		cfg = require(  `${__dirname}/version-manager-cfg.json` );
+	} catch ( e ) {
+		console.warn('Warn: Configuration file not found. Configuration falling back to args.');
+}
+merge_args( cfg, process.argv.slice( 2 ) );
+
 const ts = new Date().toISOString();
-const cfg = require(  `${__dirname}/version-manager-cfg.json` );
 const branch = `update/WordPress-image-${ts.split( 'T' )[0]}`;
 cfg.REPOSITORY_DIR = `${cfg.WORKING_DIR}/vip-container-images`;
-
-//TODO: args override configs
-//const args = process.argv.slice( 2 );
 
 // try to create the WORKING_DIR recursively if it does not exist
 try {
@@ -82,10 +91,19 @@ try {
 	console.log( `A Pull Request has been submitted on behalf of wpcomvip-bot.` );
 	console.log( 'Corrections Prescribed:' );
 	console.log( `${cl}` );
-	console.log( `\n${pr.url}\n\n` );
+	//console.log( `\n${pr.url}\n\n` );
 })();
 
 // =========================== Functions ========================================
+
+function merge_args( cfg, args ) {
+	let spl, key;
+	for ( let i = 0; i < args.length; i++ ) {
+		spl = args[i].split('=');
+		key = spl[0].replace( /\-/g , '').toUpperCase();
+		cfg[key] = spl[1];
+	}
+}
 
 /**
  * Attempts to organize the list of tags in an intelligent way.
