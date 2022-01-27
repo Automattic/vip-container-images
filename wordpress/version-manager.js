@@ -393,8 +393,7 @@ async function commit( cl ) {
 }
 
 /**
- * Uses git to commit the current changes.
- * Clears any unstaged changes.
+ * Uses git to prune the current changes.
  */
 async function prune() {
 	return await execute( 'git fetch -p' );
