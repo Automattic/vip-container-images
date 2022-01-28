@@ -48,6 +48,15 @@ jobs:
       - name: Check out source code
         uses: actions/checkout@v2
 
+      - name: Set additional tags
+        id: extra-tags
+        run: |
+          if [ "${{ matrix.wp.locked }}" = "true" ]; then
+            echo "::set-output name=tags::ghcr.io/automattic/vip-container-images/wordpress:${{ matrix.wp.tag }}-locked"
+          else
+            echo "::set-output name=tags::"
+          fi
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 
@@ -75,3 +84,4 @@ jobs:
           no-cache: ${{ matrix.wp.cacheable == false }}
           tags: |
             ghcr.io/automattic/vip-container-images/wordpress:${{ matrix.wp.tag }}
+            ${{ steps.extra-tags.outputs.tags }}
