@@ -80,7 +80,7 @@
         "ref": "5.9",
         "tag": "5.9",
         "cacheable": true,
-        "locked": true,
+        "locked": false,
         "prerelease": false
     }
 ]
