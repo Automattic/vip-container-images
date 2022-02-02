@@ -1,12 +1,12 @@
 #!/bin/sh
 
 if [ $# -lt 2 ]; then
-    echo "Usage: add-version.sh <gitref> <tag> [cacheable]"
+    echo "Usage: add-version.sh <tag> <gitref> [cacheable] [locked] [prerelease]"
     echo "  - <tag>:        tag for the resulting Docker image"
     echo "  - <gitref>:     changeset/tag to import from the WordPress git repository"
-    echo "  - <cacheable>:  optional parameter; if not empty, the ref will be marked as eligible for caching"
-    echo "  - <locked>:     tag the image that it should be locked from automated curation"
-    echo "  - <prerelease>: marks the image as using an unstable ref"
+    echo "  - [cacheable]:  optional parameter; if not empty, the ref will be marked as eligible for caching"
+    echo "  - [locked]:     tag the image that it should be locked from automated curation"
+    echo "  - [prerelease]: marks the image as using an unstable ref"
     exit 1
 fi
 
