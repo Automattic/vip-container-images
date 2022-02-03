@@ -10,7 +10,10 @@
  * System dependencies
  */
 const exec = require( 'child_process' ).exec;
-const fs = require( 'fs' );
+const fs = require( 'fs' ).promises;
+const existsSync = require( 'fs' ).existsSync;
+const mkdirSync = require( 'fs' ).mkdirSync;
+
 let cfg = {
 	REPOSITORY_URL: null,
 	VERSION_LIST_SIZE: null,
@@ -34,8 +37,8 @@ cfg.REPOSITORY_DIR = `${cfg.WORKING_DIR}/vip-container-images`;
 
 // try to create the WORKING_DIR recursively if it does not exist
 try {
-	if ( ! fs.existsSync( cfg.WORKING_DIR ) ) {
-		fs.mkdirSync( cfg.WORKING_DIR, { recursive: true } );
+	if ( ! existsSync( cfg.WORKING_DIR ) ) {
+		mkdirSync( cfg.WORKING_DIR, { recursive: true } );
 		console.log( `Created Working Directory: ${cfg.WORKING_DIR}` );
 	}
 } catch ( err ) {
@@ -47,11 +50,11 @@ try {
 (async function () {
 	let change;
 	const changeLog = ['Changes generated to update WordPress images in vip dev-env.'];
-	const imageList = await getImagelist();
+	const { imageList, lockedList } = await getImagelist();
 	const tagList = await getTagList();
-	const versionList = collateTagList( tagList, cfg.VERSION_LIST_SIZE );
-	const adds = getAddsQueue( imageList, versionList );
-	const removes = getRemovesQueue( imageList, versionList );
+	const { versionList, releases } = collateTagList( tagList, cfg.VERSION_LIST_SIZE );
+	const adds = getAddsQueue( imageList, versionList, releases );
+	const removes = getRemovesQueue( imageList, versionList, lockedList );
 
 	console.log( 'Ideal Image List:' );
 	console.log( versionList );
@@ -70,12 +73,17 @@ try {
 	await checkoutNewBranch( branch );
 
 	// walks through the list of recommended changes and performs the operations
-	for ( change of adds ) {
-		await addVersion( change.tag, changeLog );
+	for ( { tag } of adds ) {
+		await addVersion( { tag, ref: tag, changeLog } );
 	}
 
-	for ( change of removes ) {
-		await removeVersion( change.version, changeLog );
+	for ( { tag } of removes ) {
+		await removeVersion( { tag, changeLog } );
+	}
+
+	const updates = await getUpdatesQueue( releases );
+	for ( { tag, ref } of updates ) {
+		await updateVersion( { tag, ref, changeLog } );
 	}
 
 	// Stage and commit the result of the operations
@@ -117,7 +125,7 @@ function merge_args( cfg, args ) {
  * Show only the the most recent point releases of previous major versions
  */
 function collateTagList( tags, size ) {
-	const newTagList = [];
+	const versionList = [];
 	let sizeOffset;
 
 	// sort tags
@@ -134,30 +142,34 @@ function collateTagList( tags, size ) {
 			// If it is the most recent 2 versions, append all of the releases
 			if ( i == 0 && j <= 0 ) {
 				sizeOffset += releases[ v ].length;
-				newTagList.push( ...releases[ v ] );
+				versionList.push( ...releases[ v ] );
 			} else {
-				// append only the newest release for previous versions
-				newTagList.push( releases[ v ][ 0 ] );
+				// Append only the newest release for previous versions
+				// Signify it only with a x.x version
+				// Later it will be stapled to the latest release for that version
+				versionList.push( v );
 			}
 
-			if ( newTagList.length >= ( size - sizeOffset) ) {
+			if ( versionList.length >= ( size - sizeOffset) ) {
 				break OUT;
 			}
 		}
 	}
 
-	return newTagList;
+	return { versionList, majorVersions, versions, releases };
 }
 
 /**
  * Get list of queued adds
  */
-function getAddsQueue( imageList, versionList ) {
+function getAddsQueue( imageList, versionList, releaseIndex ) {
 	const adds = [];
+	let ref;
 
 	for ( version of versionList) {
 		if ( imageList.indexOf( version ) === -1 ) {
-			adds.push( {tag: version} );
+			ref = ( releaseIndex.hasOwnProperty( version ) ) ? releaseIndex[version][0] : version;
+			adds.push( {tag: version, ref: ref} );
 		}
 	}
 
@@ -167,15 +179,47 @@ function getAddsQueue( imageList, versionList ) {
 /**
  * Get list of queued removes
  */
-function getRemovesQueue( imageList, versionList ) {
+function getRemovesQueue( imageList, versionList, lockedList ) {
 	const removes = [];
 	for ( image of imageList ) {
-		if ( versionList.indexOf( image ) === -1 ) {
-			removes.push( {version: image} );
+		if ( lockedList.indexOf( image ) === -1 ) {
+			if ( versionList.indexOf( image ) === -1 ) {
+				removes.push( { tag: image } );
+			}
+		} else {
+			console.log(`Image: ${image}, will not be queued for removal because it is locked.`);
 		}
 	}
 
 	return removes;
+}
+
+async function getUpdatesQueue( releases ) {
+	return new Promise( resolve => {
+		const updates = [];
+		let match, mostRecentRelease
+
+		fs.readFile( `${__dirname}/versions.json` )
+		.then( data => {
+			const images = JSON.parse(data);
+			for ( image of images ) {
+				if ( releases.hasOwnProperty( image.tag ) ) {
+					mostRecentRelease = `${releases[image.tag][0]}`;
+					if ( mostRecentRelease !== image.ref ) {
+						// If the ref is of the "tag" type e.g. X.X.X
+						match = image.ref.match( /[0-9]\.[0-9](?:\.)?(?:[0-9])?/ );
+						if ( match.length > 0 ) {
+							updates.push( {tag: image.tag, ref: mostRecentRelease} );
+						} else {
+							// TODO: Find an updated branch hash based on a commit reference
+							console.log(`No functionality available for updating tag:${image.tag}: ref:${image.ref}`);
+						}
+					}
+				}
+			}
+			resolve( updates );
+		} );
+	} );
 }
 
 /**
@@ -358,11 +402,13 @@ function getIssueUpdateApiOptions( issue, data ) {
  */
 async function getImagelist(){
 	const imageList = [];
+	const lockedList = [];
 
 	return new Promise( resolve => {
 		const https = require( 'https' );
 		const req = https.request( getImageApiOptions(), res => {
 			let data = '';
+			let spl;
 
 			res.on( 'data', chunk => {
 				data += chunk;
@@ -374,7 +420,16 @@ async function getImagelist(){
 					list.forEach( item => {
 						if ( item.metadata.container.tags.length > 0 ) {
 							item.metadata.container.tags.forEach( tag => {
-								imageList.push( tag );
+								spl = tag.split('-');
+								if ( imageList.indexOf( spl[0] ) === -1 ) {
+									imageList.push( spl[0] );
+								}
+
+								if ( spl.length > 1 ) {
+									if ( 'locked' === spl[1] ) {
+										lockedList.push( spl[0] );
+									}
+								}
 							} );
 						}
 					} );
@@ -384,7 +439,7 @@ async function getImagelist(){
 				}
 
 				imageList.sort().reverse();
-				resolve( imageList );
+				resolve( { imageList, lockedList} );
 			} );
 		} );
 
@@ -444,7 +499,7 @@ async function getTagList() {
  */
 async function initRepo() {
 	// Clone the repo if it does not exist, else stash and refresh the repo
-	if ( ! fs.existsSync( cfg.REPOSITORY_DIR ) ) {
+	if ( ! existsSync( cfg.REPOSITORY_DIR ) ) {
 		await cloneRepository();
 	} else {
 		await refreshRepository();
@@ -553,10 +608,15 @@ async function checkoutNewBranch( name ) {
 /**
  * Executes the add-verison.sh script with params
  */
-async function addVersion( tag, changeLog ) {
+async function addVersion( { tag, ref, prerelease, changeLog } ) {
+	// If the item is created by automation then it should be unlocked.
+	// Applying the locked tag should only be done by manual intervention.
+	let locked = false;
 	try {
-		changeLog.push( `Added version: ${tag} to list of available WordPress images.` );
-		return await execute( `${cfg.REPOSITORY_DIR}/wordpress/add-version.sh ${tag} ${tag}` );
+		if ( changeLog ) {
+			changeLog.push( `Added version: ${tag} to list of available WordPress images.` );
+		}
+		return await execute( `${cfg.REPOSITORY_DIR}/wordpress/add-version.sh ${tag} ${ref} true ${locked} ${prerelease}` );
 	} catch ( error ) {
 		console.log( `"Add Version" failed with error: ${error}` );
 	}
@@ -565,11 +625,24 @@ async function addVersion( tag, changeLog ) {
 /**
  * Executes the del-version.sh script with params
  */
-async function removeVersion( tag, changeLog ) {
+async function removeVersion( { tag, changeLog } ) {
 	try {
-		changeLog.push( `Removed version: ${tag} from list of available WordPress images.` );
+		if ( changeLog ) {
+			changeLog.push( `Removed version: ${tag} from list of available WordPress images.` );
+		}
 		return await execute( `${cfg.REPOSITORY_DIR}/wordpress/del-version.sh ${version}` );
 	} catch ( error ) {
 		console.log( `"Remove Version ( ${tag} )" failed with error: ${error}` );
 	}
+}
+
+/**
+ * Executes the del-version.sh and add-verison.sh scripts to update
+ */
+async function updateVersion( { tag, ref, changeLog } ) {
+	if ( changeLog ) {
+			changeLog.push( `Updated Wordpress Image version: ${tag} to ref ${ref}.` );
+	}
+	await removeVersion( { tag, changeLog: false } );
+	return await addVersion( { tag, ref, changeLog: false } );
 }
