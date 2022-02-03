@@ -1,5 +1,61 @@
 [
   {
+    "ref": "4.9.9",
+    "tag": "4.9.9",
+    "cacheable": false,
+    "locked": false,
+    "prerelease": false
+  },
+  {
+    "ref": "5.0.9",
+    "tag": "5.0.9",
+    "cacheable": false,
+    "locked": false,
+    "prerelease": false
+  },
+  {
+    "ref": "5.1.9",
+    "tag": "5.1.9",
+    "cacheable": false,
+    "locked": false,
+    "prerelease": false
+  },
+  {
+    "ref": "5.2.9",
+    "tag": "5.2.9",
+    "cacheable": false,
+    "locked": false,
+    "prerelease": false
+  },
+  {
+    "ref": "5.3.9",
+    "tag": "5.3.9",
+    "cacheable": false,
+    "locked": false,
+    "prerelease": false
+  },
+  {
+    "ref": "5.4.9",
+    "tag": "5.4.9",
+    "cacheable": false,
+    "locked": false,
+    "prerelease": false
+  },
+  {
+    "ref": "5.5.8",
+    "tag": "5.5.8",
+    "cacheable": false,
+    "locked": false,
+    "prerelease": false
+  },
+  {
+    "ref": "5.6.7",
+    "tag": "5.6.7",
+    "cacheable": false,
+    "locked": false,
+    "prerelease": false
+  },
+  {
     "ref": "5.7.2",
     "tag": "5.7.2",
     "cacheable": true,
@@ -49,13 +105,6 @@
     "prerelease": false
   },
   {
-    "ref": "5.8.3",
-    "tag": "5.8.3",
-    "cacheable": true,
-    "locked": true,
-    "prerelease": false
-  },
-  {
     "ref": "5.9",
     "tag": "5.9",
     "cacheable": true,
@@ -79,6 +128,13 @@
   {
     "ref": "5.7.5",
     "tag": "5.7",
+    "cacheable": true,
+    "locked": true,
+    "prerelease": false
+  },
+  {
+    "ref": "5.8.3",
+    "tag": "5.8.3",
     "cacheable": true,
     "locked": true,
     "prerelease": false
