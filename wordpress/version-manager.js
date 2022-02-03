@@ -56,6 +56,9 @@ try {
 	const adds = getAddsQueue( imageList, versionList, releases );
 	const removes = getRemovesQueue( imageList, versionList, lockedList );
 
+	console.log( 'Locked status -- will not be removed:' );
+	console.log( lockedList );
+
 	console.log( 'Ideal Image List:' );
 	console.log( versionList );
 
@@ -186,8 +189,6 @@ function getRemovesQueue( imageList, versionList, lockedList ) {
 			if ( versionList.indexOf( image ) === -1 ) {
 				removes.push( { tag: image } );
 			}
-		} else {
-			console.log(`Image: ${image}, will not be queued for removal because it is locked.`);
 		}
 	}
 
