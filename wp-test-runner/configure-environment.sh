@@ -49,8 +49,10 @@ if [ -x "${APP_HOME}/vendor/bin/phpunit" ] && [ -z "${PHPUNIT_VERSION}" ]; then
     PHPUNIT="${APP_HOME}/vendor/bin/phpunit"
 elif [ -n "${PHPUNIT_VERSION}" ] && [ -x "/usr/local/bin/phpunit${PHPUNIT_VERSION}" ]; then
     PHPUNIT="/usr/local/bin/phpunit${PHPUNIT_VERSION}"
+elif [ -x "${APP_HOME}/vendor/bin/phpunit" ]; then
+	PHPUNIT=~/.composer/vendor/bin/phpunit
 else
-    PHPUNIT=~/.composer/vendor/bin/phpunit
+	PHPUNIT=/usr/local/bin/phpunit7
 fi
 
 echo "WordPress version: ${WP_VERSION}"
@@ -59,3 +61,6 @@ echo "PHPUnit executable: ${PHPUNIT}"
 
 ${PHP} -v
 ${PHP} "${PHPUNIT}" --version
+
+export PHP
+export PHPUNIT
