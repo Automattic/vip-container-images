@@ -3,7 +3,7 @@
 set -e
 
 . configure-environment
-. create-database
+create-database
 
 : "${PHP_OPTIONS:=""}"
 : "${PHPUNIT_VERSION:=""}"
