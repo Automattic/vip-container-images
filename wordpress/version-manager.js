@@ -199,6 +199,8 @@ async function getUpdatesQueue( releases ) {
 	return new Promise( resolve => {
 		const updates = [];
 		let match, mostRecentRelease
+		// regex refType will match with N.N(.N)?
+		const refType = new RegExp( /[0-9]\.[0-9](?:\.)?(?:[0-9])?/ );
 
 		fs.readFile( `${__dirname}/versions.json` )
 		.then( data => {
@@ -207,10 +209,9 @@ async function getUpdatesQueue( releases ) {
 				if ( releases.hasOwnProperty( image.tag ) ) {
 					mostRecentRelease = `${releases[image.tag][0]}`;
 					if ( mostRecentRelease !== image.ref ) {
-						// If the ref is of the "tag" type e.g. X.X.X
-						match = image.ref.match( /[0-9]\.[0-9](?:\.)?(?:[0-9])?/ );
-						if ( match.length > 0 ) {
-							updates.push( {tag: image.tag, ref: mostRecentRelease} );
+						// If the ref is of the "tag" type e.g. N.N(.N)?;
+						if ( refType.test( image.ref ) ) {
+							updates.push( { tag: image.tag, ref: mostRecentRelease } );
 						} else {
 							// TODO: Find an updated branch hash based on a commit reference
 							console.log(`No functionality available for updating tag:${image.tag}: ref:${image.ref}`);
@@ -609,15 +610,12 @@ async function checkoutNewBranch( name ) {
 /**
  * Executes the add-verison.sh script with params
  */
-async function addVersion( { tag, ref, prerelease, changeLog } ) {
-	// If the item is created by automation then it should be unlocked.
-	// Applying the locked tag should only be done by manual intervention.
-	let locked = false;
+async function addVersion( { tag, ref, changeLog } ) {
 	try {
 		if ( changeLog ) {
 			changeLog.push( `Added version: ${tag} to list of available WordPress images.` );
 		}
-		return await execute( `${cfg.REPOSITORY_DIR}/wordpress/add-version.sh ${tag} ${ref} true ${locked} ${prerelease}` );
+		return await execute( `${cfg.REPOSITORY_DIR}/wordpress/add-version.sh ${tag} ${ref}` );
 	} catch ( error ) {
 		console.log( `"Add Version" failed with error: ${error}` );
 	}

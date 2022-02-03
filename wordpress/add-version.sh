@@ -4,31 +4,34 @@ if [ $# -lt 2 ]; then
     echo "Usage: add-version.sh <tag> <gitref> [cacheable] [locked] [prerelease]"
     echo "  - <tag>:        tag for the resulting Docker image"
     echo "  - <gitref>:     changeset/tag to import from the WordPress git repository"
-    echo "  - [cacheable]:  optional parameter; if not empty, the ref will be marked as eligible for caching"
-    echo "  - [locked]:     tag the image that it should be locked from automated curation"
-    echo "  - [prerelease]: marks the image as using an unstable ref"
+    echo "  - [cacheable]:  optional parameter; if not false, the ref will be marked as eligible for caching"
+    echo "  - [locked]:     optional parameter; if true mark the image that it should be locked"
+    echo "  - [prerelease]: optional parameter; if true marks the image as using an unstable ref"
     exit 1
 fi
 
 TAG="$1"
 REF="$2"
 
+CACHEABLE=true
 if [ -n "$3" ]; then
-    CACHEABLE=true
-else
-    CACHEABLE=false
+    if [ "$3" eq "false" ]; then
+        CACHEABLE=false
+    fi
 fi
 
+LOCKED=false
 if [ -n "$4" ]; then
-    LOCKED=true
-else
-    LOCKED=false
+    if [ "$4" eq "true" ]; then
+        LOCKED=true
+    fi
 fi
 
+PRERELEASE=false
 if [ -n "$5" ]; then
-    PRERELEASE=true
-else
-    PRERELEASE=false
+    if [ "$5" eq "true" ]; then
+        PRERELEASE=true
+    fi
 fi
 
 VERSIONS="$(dirname "$0")/versions.json"
