@@ -630,7 +630,7 @@ async function removeVersion( { tag, changeLog } ) {
 		if ( changeLog ) {
 			changeLog.push( `Removed version: ${tag} from list of available WordPress images.` );
 		}
-		return await execute( `${cfg.REPOSITORY_DIR}/wordpress/del-version.sh ${version}` );
+		return await execute( `${cfg.REPOSITORY_DIR}/wordpress/del-version.sh ${tag}` );
 	} catch ( error ) {
 		console.log( `"Remove Version ( ${tag} )" failed with error: ${error}` );
 	}
