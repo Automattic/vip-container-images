@@ -2,7 +2,7 @@
 
 set -e
 
-configure-environment
+. configure-environment
 create-database
 
 : "${PHP_OPTIONS:=""}"
@@ -10,14 +10,9 @@ create-database
 : "${APP_HOME:="/home/circleci/project"}"
 : "${PRETEST_SCRIPT:=""}"
 
-PHP="php ${PHP_OPTIONS}"
-
-if [ -x "${APP_HOME}/vendor/bin/phpunit" ] && [ -z "${PHPUNIT_VERSION}" ]; then
-	PHPUNIT="${APP_HOME}/vendor/bin/phpunit"
-elif [ -n "${PHPUNIT_VERSION}" ] && [ -x "/usr/local/bin/phpunit${PHPUNIT_VERSION}" ]; then
-	PHPUNIT="/usr/local/bin/phpunit${PHPUNIT_VERSION}"
-else
-	PHPUNIT=~/.composer/vendor/bin/phpunit
+if [ ! -d "${APP_HOME}/vendor/yoast/phpunit-polyfills" ]; then
+	WP_TESTS_PHPUNIT_POLYFILLS_PATH="$(composer config -g home)/vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php"
+	PHP="${PHP} -d auto_prepend_file=${WP_TESTS_PHPUNIT_POLYFILLS_PATH}"
 fi
 
 if [ -n "${PRETEST_SCRIPT}" ] && [ -x "${PRETEST_SCRIPT}" ]; then
