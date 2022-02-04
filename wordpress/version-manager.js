@@ -10,8 +10,9 @@
  * System dependencies
  */
 const exec = require( 'child_process' ).exec;
-const fs = require( 'fs' ).promises;
 const existsSync = require( 'fs' ).existsSync;
+const fs = require( 'fs' ).promises;
+const https = require( 'https' );
 const mkdirSync = require( 'fs' ).mkdirSync;
 
 let cfg = {
@@ -208,14 +209,14 @@ async function getUpdatesQueue( releases ) {
 			const images = JSON.parse(data);
 			for ( image of images ) {
 				if ( releases.hasOwnProperty( image.tag ) ) {
-					mostRecentRelease = `${releases[image.tag][0]}`;
+					mostRecentRelease = `${ releases[image.tag][0] }`;
 					if ( mostRecentRelease !== image.ref ) {
 						// If the ref is of the "tag" type e.g. N.N(.N)?;
 						if ( refType.test( image.ref ) ) {
 							updates.push( { tag: image.tag, ref: mostRecentRelease } );
 						} else {
 							// TODO: Find an updated branch hash based on a commit reference
-							console.log(`No functionality available for updating tag:${image.tag}: ref:${image.ref}`);
+							console.log(`No functionality available for updating tag:${ image.tag }: ref:${ image.ref }`);
 						}
 					}
 				}
@@ -287,7 +288,6 @@ async function requestMerge( changeLog ) {
 
 	return new Promise( resolve => {
 		let response = {};
-		const https = require( 'https' );
 		const req = https.request( getPullRequestApiOptions( postData ), res => {
 			let data = '';
 
@@ -349,7 +349,6 @@ async function issueUpdate( issue ) {
 
 	return new Promise( resolve => {
 		let response = {};
-		const https = require( 'https' );
 		const req = https.request( getIssueUpdateApiOptions( issue, postData ), res => {
 			let data = '';
 
@@ -408,7 +407,6 @@ async function getImagelist(){
 	const lockedList = [];
 
 	return new Promise( resolve => {
-		const https = require( 'https' );
 		const req = https.request( getImageApiOptions(), res => {
 			let data = '';
 			let spl;
