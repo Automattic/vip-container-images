@@ -200,7 +200,7 @@ function getRemovesQueue( imageList, versionList, lockedList ) {
 async function getUpdatesQueue( releases ) {
 	return new Promise( resolve => {
 		const updates = [];
-		let match, mostRecentRelease
+		let mostRecentRelease
 		// regex refType will match with N.N(.N)?
 		const refType = new RegExp( /[0-9]\.[0-9](?:\.)?(?:[0-9])?/ );
 
