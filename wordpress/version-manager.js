@@ -171,10 +171,10 @@ function getAddsQueue( imageList, versionList, releaseIndex ) {
 	const adds = [];
 	let ref;
 
-	for ( version of versionList) {
+	for ( version of versionList ) {
 		if ( imageList.indexOf( version ) === -1 ) {
 			ref = ( releaseIndex.hasOwnProperty( version ) ) ? releaseIndex[version][0] : version;
-			adds.push( {tag: version, ref: ref} );
+			adds.push( { tag: version, ref: ref } );
 		}
 	}
 
