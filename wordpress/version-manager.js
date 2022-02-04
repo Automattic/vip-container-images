@@ -33,7 +33,6 @@ try {
 merge_args( cfg, process.argv.slice( 2 ) );
 
 const ts = new Date().toISOString();
-const branch = `update/WordPress-image-${ts.split( 'T' )[0]}`;
 cfg.REPOSITORY_DIR = `${cfg.WORKING_DIR}/vip-container-images`;
 
 // try to create the WORKING_DIR recursively if it does not exist
@@ -49,7 +48,8 @@ try {
 
 // main IIFE
 (async function () {
-	let change;
+	let change, tag, ref;
+	const branch = `update/WordPress-image-${ts.split( 'T' )[0]}`;
 	const changeLog = ['Changes generated to update WordPress images in vip dev-env.'];
 	const { imageList, lockedList } = await getImagelist();
 	const tagList = await getTagList();
