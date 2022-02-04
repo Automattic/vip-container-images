@@ -65,12 +65,6 @@ try {
 	console.log( 'Currently Offered List:' );
 	console.log( imageList );
 
-	if ( ( adds.length + removes.length ) < 1 ) {
-		// No changes staged. bail.
-		console.log( 'List of images is optimal. Exiting.' );
-		process.exit( 0 );
-	}
-
 	// Init repo and check out new branch
 	await initRepo();
 	await checkoutNewBranch( branch );
@@ -85,6 +79,13 @@ try {
 	}
 
 	const updates = await getUpdatesQueue( releases );
+
+	if ( ( adds.length + removes.length + updates.length ) < 1 ) {
+		// No changes staged. bail.
+		console.log( 'List of images is optimal. Exiting.' );
+		process.exit( 0 );
+	}
+
 	for ( { tag, ref } of updates ) {
 		await updateVersion( { tag, ref, changeLog } );
 	}
