@@ -108,10 +108,10 @@ try {
 // =========================== Functions ========================================
 
 /**
- * Overloads cfg values with command line args
+ * Overloads defaults values with command line args
  * Assigns sane defaults where possible.
  */
-function merge_args( cfg, args ) {
+function merge_args( defaults, args ) {
 	let overloads = {};
 	let spl, key;
 	for ( const arg of args ) {
@@ -121,16 +121,16 @@ function merge_args( cfg, args ) {
 	}
 
 	// Assign default WORKING_DIR
-	if ( null === cfg.WORKING_DIR ) {
+	if ( ! overloads.hasOwnProperty( 'WORKING_DIR' ) ) {
 		overloads.WORKING_DIR = getDefaultWorkingDir();
 	}
 
 	// Assign default REPOSITORY_URL
-	if ( null === cfg.REPOSITORY_URL ) {
-		overloads.REPOSITORY_URL = `https://wpcomvip-bot:${cfg.GITHUB_OAUTH_TOKEN}@github.com/Automattic/vip-container-images.git`;
+	if ( ! overloads.hasOwnProperty( 'REPOSITORY_URL' ) ) {
+		overloads.REPOSITORY_URL = `https://wpcomvip-bot:${ overloads.GITHUB_OAUTH_TOKEN }@github.com/Automattic/vip-container-images.git`;
 	}
 
-	return { ...cfg, ...overloads };
+	return { ...defaults, ...overloads };
 }
 
 /**
