@@ -238,7 +238,7 @@ async function getUpdatesQueue( releases ) {
 		const updates = [];
 		let mostRecentRelease
 		// regex refType will match with N.N(.N)?
-		const refType = new RegExp( /[0-9]+\.[0-9]+(?:\.)?(?:[0-9]+)?/ );
+		const refType = new RegExp( /\d+\.\d+(?:\.\d+)?/ );
 
 		fs.readFile( `${__dirname}/versions.json` )
 		.then( data => {
