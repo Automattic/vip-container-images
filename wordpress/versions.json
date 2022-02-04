@@ -47,5 +47,19 @@
     "cacheable": true,
     "locked": true,
     "prerelease": true
+  },
+  {
+    "ref": "5.8.1",
+    "tag": "5.8.1",
+    "cacheable": true,
+    "locked": true,
+    "prerelease": false
+  },
+  {
+    "ref": "5.8.2",
+    "tag": "5.8.2",
+    "cacheable": true,
+    "locked": true,
+    "prerelease": false
   }
 ]
