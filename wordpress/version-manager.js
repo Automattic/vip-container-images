@@ -16,24 +16,15 @@ const https = require( 'https' );
 const mkdirSync = require( 'fs' ).mkdirSync;
 const username = require( 'os' ).userInfo().username;
 
-let cfg = {
+const ts = new Date().toISOString();
+const defaults = {
 	REPOSITORY_URL: null,
 	VERSION_LIST_SIZE: 6,
 	WORKING_DIR: null,
 	GITHUB_OAUTH_TOKEN: null,
 };
 
-/**
- * Configuration file
- */
-try {
-		cfg = require(  `${__dirname}/version-manager-cfg.json` );
-	} catch ( e ) {
-		console.warn( 'Warn: Configuration file not found. Configuration falling back to args.' );
-}
-merge_args( cfg, process.argv.slice( 2 ) );
-
-const ts = new Date().toISOString();
+const cfg = merge_args( defaults, process.argv.slice( 2 ) );
 cfg.REPOSITORY_DIR = `${cfg.WORKING_DIR}/vip-container-images`;
 
 // try to create the WORKING_DIR recursively if it does not exist
@@ -121,22 +112,25 @@ try {
  * Assigns sane defaults where possible.
  */
 function merge_args( cfg, args ) {
+	let overloads = {};
 	let spl, key;
-	for ( let i = 0; i < args.length; i++ ) {
-		spl = args[i].split('=');
+	for ( const arg of args ) {
+		spl = arg.split('=');
 		key = spl[0].replace( /\-/g , '').toUpperCase();
-		cfg[key] = spl[1];
+		overloads[key] = spl[1];
 	}
 
 	// Assign default WORKING_DIR
 	if ( null === cfg.WORKING_DIR ) {
-		cfg.WORKING_DIR = getDefaultWorkingDir();
+		overloads.WORKING_DIR = getDefaultWorkingDir();
 	}
 
 	// Assign default REPOSITORY_URL
 	if ( null === cfg.REPOSITORY_URL ) {
-		cfg.REPOSITORY_URL = `https://wpcomvip-bot:${cfg.GITHUB_OAUTH_TOKEN}@github.com/Automattic/vip-container-images.git`;
+		overloads.REPOSITORY_URL = `https://wpcomvip-bot:${cfg.GITHUB_OAUTH_TOKEN}@github.com/Automattic/vip-container-images.git`;
 	}
+
+	return { ...cfg, ...overloads };
 }
 
 /**
