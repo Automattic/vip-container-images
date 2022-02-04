@@ -14,10 +14,11 @@ const existsSync = require( 'fs' ).existsSync;
 const fs = require( 'fs' ).promises;
 const https = require( 'https' );
 const mkdirSync = require( 'fs' ).mkdirSync;
+const username = require("os").userInfo().username;
 
 let cfg = {
 	REPOSITORY_URL: null,
-	VERSION_LIST_SIZE: null,
+	VERSION_LIST_SIZE: 6,
 	WORKING_DIR: null,
 	GITHUB_OAUTH_TOKEN: null,
 };
@@ -121,6 +122,30 @@ function merge_args( cfg, args ) {
 		spl = args[i].split('=');
 		key = spl[0].replace( /\-/g , '').toUpperCase();
 		cfg[key] = spl[1];
+	}
+
+	// Assign defaults where possible
+	if ( null === cfg.WORKING_DIR ) {
+		cfg.WORKING_DIR = getDefaultWorkingDir();
+	}
+
+	if ( null === cfg.REPOSITORY_URL ) {
+		cfg.REPOSITORY_URL = `https://wpcomvip-bot:${cfg.GITHUB_OAUTH_TOKEN}@github.com/Automattic/vip-container-images.git`;
+	}
+}
+
+function getDefaultWorkingDir() {
+	switch( process.platform ) {
+		case 'darwin': {
+			return `/Users/${username}/.local/share/vip/vip-container-images/version-manager`;
+		}
+		case 'linux': {
+			return `/home/${username}/.local/share/vip/vip-container-images/version-manager`;
+		}
+		default: {
+			console.log( 'Unsupported Operating System. Currently this script only supports MacOS and Linux' );
+			process.exit( 1 );
+		}
 	}
 }
 
