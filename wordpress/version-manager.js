@@ -71,8 +71,8 @@ try {
 	await checkoutNewBranch( branch );
 
 	// walks through the list of recommended changes and performs the operations
-	for ( { tag } of adds ) {
-		await addVersion( { tag, ref: tag, changeLog } );
+	for ( { tag, ref } of adds ) {
+		await addVersion( { tag, ref, changeLog } );
 	}
 
 	for ( { tag } of removes ) {
