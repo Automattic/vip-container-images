@@ -116,6 +116,10 @@ try {
 
 // =========================== Functions ========================================
 
+/**
+ * Overloads cfg values with command line args
+ * Assigns sane defaults where possible.
+ */
 function merge_args( cfg, args ) {
 	let spl, key;
 	for ( let i = 0; i < args.length; i++ ) {
@@ -134,6 +138,9 @@ function merge_args( cfg, args ) {
 	}
 }
 
+/**
+ * Support for MacOS or Linux file system.
+ */
 function getDefaultWorkingDir() {
 	switch( process.platform ) {
 		case 'darwin': {
@@ -222,6 +229,9 @@ function getRemovesQueue( imageList, versionList, lockedList ) {
 	return removes;
 }
 
+/**
+ * Get list of queued updates
+ */
 async function getUpdatesQueue( releases ) {
 	return new Promise( resolve => {
 		const updates = [];
