@@ -242,7 +242,7 @@ async function getUpdatesQueue( releases ) {
 
 		fs.readFile( `${__dirname}/versions.json` )
 		.then( data => {
-			const images = JSON.parse(data);
+			const images = JSON.parse( data );
 			for ( image of images ) {
 				if ( releases.hasOwnProperty( image.tag ) ) {
 					mostRecentRelease = `${ releases[image.tag][0] }`;
