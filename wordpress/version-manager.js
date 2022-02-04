@@ -27,7 +27,7 @@ let cfg = {
 try {
 		cfg = require(  `${__dirname}/version-manager-cfg.json` );
 	} catch ( e ) {
-		console.warn('Warn: Configuration file not found. Configuration falling back to args.');
+		console.warn( 'Warn: Configuration file not found. Configuration falling back to args.' );
 }
 merge_args( cfg, process.argv.slice( 2 ) );
 
