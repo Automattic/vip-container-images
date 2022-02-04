@@ -19,7 +19,7 @@ const username = require( 'os' ).userInfo().username;
 const ts = new Date().toISOString();
 const defaults = {
 	REPOSITORY_URL: null,
-	VERSION_LIST_SIZE: 6,
+	VERSION_LIST_SIZE: 5,
 	WORKING_DIR: null,
 	GITHUB_OAUTH_TOKEN: null,
 };
@@ -157,38 +157,33 @@ function getDefaultWorkingDir() {
  * Show only the the most recent point releases of previous major versions
  */
 function collateTagList( tags, size ) {
-	const versionList = [];
-	let sizeOffset;
+	const list = [];
+	let first = true;
 
 	// sort tags
 	tags = tags.reverse();
 
 	// index tags
-	const { majorVersions, versions, releases } = indexTags( tags );
+	const releases = indexTags( tags );
 
 	// build new tag list from indexes
 	OUT:
-	for ( const i in majorVersions ) {
-		sizeOffset = 0;
-		for ( const [ j, v ] of versions[ majorVersions[ i ] ].entries() ) {
-			// If it is the most recent 2 versions, append all of the releases
-			if ( i == 0 && j <= 0 ) {
-				sizeOffset += releases[ v ].length;
-				versionList.push( ...releases[ v ] );
-			} else {
-				// Append only the newest release for previous versions
-				// Signify it only with a x.x version
-				// Later it will be stapled to the latest release for that version
-				versionList.push( v );
-			}
+	for ( const v in releases ) {
+		if ( first ) {
+			list.push( ...releases[ v ] );
+			first = false;
+		} else {
+			list.push( v );
+		}
 
-			if ( versionList.length >= ( size - sizeOffset) ) {
-				break OUT;
-			}
+		if ( list.length >= size ) {
+			break OUT;
 		}
 	}
 
-	return { versionList, majorVersions, versions, releases };
+	const versionList = list.slice( 0, size );
+
+	return { versionList, releases };
 }
 
 /**
@@ -302,7 +297,7 @@ function indexTags( tags ) {
 		}
 	}
 
-	return { majorVersions, versions, releases };
+	return releases;
 }
 
 /**
