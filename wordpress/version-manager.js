@@ -14,7 +14,7 @@ const existsSync = require( 'fs' ).existsSync;
 const fs = require( 'fs' ).promises;
 const https = require( 'https' );
 const mkdirSync = require( 'fs' ).mkdirSync;
-const username = require("os").userInfo().username;
+const username = require( 'os' ).userInfo().username;
 
 let cfg = {
 	REPOSITORY_URL: null,
@@ -128,11 +128,12 @@ function merge_args( cfg, args ) {
 		cfg[key] = spl[1];
 	}
 
-	// Assign defaults where possible
+	// Assign default WORKING_DIR
 	if ( null === cfg.WORKING_DIR ) {
 		cfg.WORKING_DIR = getDefaultWorkingDir();
 	}
 
+	// Assign default REPOSITORY_URL
 	if ( null === cfg.REPOSITORY_URL ) {
 		cfg.REPOSITORY_URL = `https://wpcomvip-bot:${cfg.GITHUB_OAUTH_TOKEN}@github.com/Automattic/vip-container-images.git`;
 	}
