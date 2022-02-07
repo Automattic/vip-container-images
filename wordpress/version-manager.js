@@ -221,8 +221,6 @@ async function getUpdatesQueue( releases ) {
  * Creates indexes with the tags
  */
 function indexTags( tags ) {
-	const majorVersions = [];
-	const versions = {};
 	const releases = {};
 	let majorVersion, version, release;
 
@@ -232,20 +230,6 @@ function indexTags( tags ) {
 		}
 
 		[ majorVersion, version, release ] = tag.split( '.' );
-
-		// index majorVersion
-		if ( majorVersions.indexOf( majorVersion ) === -1 ) {
-			majorVersions.push( majorVersion );
-		}
-
-		// index version
-		if ( ! versions.hasOwnProperty( majorVersion ) ) {
-			versions[ majorVersion ] = [];
-		}
-
-		if ( versions[ majorVersion ].indexOf( `${ majorVersion }.${ version }` ) === -1 ) {
-			versions[ majorVersion ].push( `${ majorVersion }.${ version }` );
-		}
 
 		// index release
 		if ( ! releases.hasOwnProperty( `${ majorVersion }.${ version }` ) ) {
