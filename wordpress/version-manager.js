@@ -45,7 +45,8 @@ try {
 	const changeLog = ['Changes generated to update WordPress images in vip dev-env.'];
 	const { imageList, lockedList } = await getImagelist();
 	const tagList = await getTagList();
-	const { versionList, releases } = collateTagList( tagList, cfg.VERSION_LIST_SIZE );
+	const releases = indexTags( tagList.reverse() );
+	const versionList = Object.keys( releases ).slice( 0, cfg.VERSION_LIST_SIZE );
 	const adds = getAddsQueue( imageList, versionList, releases );
 	const removes = getRemovesQueue( imageList, versionList, lockedList );
 
@@ -149,41 +150,6 @@ function getDefaultWorkingDir() {
 			process.exit( 1 );
 		}
 	}
-}
-
-/**
- * Attempts to organize the list of tags in an intelligent way.
- * Show all editions of the current and previous major version
- * Show only the the most recent point releases of previous major versions
- */
-function collateTagList( tags, size ) {
-	const list = [];
-	let first = true;
-
-	// sort tags
-	tags = tags.reverse();
-
-	// index tags
-	const releases = indexTags( tags );
-
-	// build new tag list from indexes
-	OUT:
-	for ( const v in releases ) {
-		if ( first ) {
-			list.push( ...releases[ v ] );
-			first = false;
-		} else {
-			list.push( v );
-		}
-
-		if ( list.length >= size ) {
-			break OUT;
-		}
-	}
-
-	const versionList = list.slice( 0, size );
-
-	return { versionList, releases };
 }
 
 /**
