@@ -16,16 +16,20 @@ const https = require( 'https' );
 const mkdirSync = require( 'fs' ).mkdirSync;
 const username = require( 'os' ).userInfo().username;
 
-const ts = new Date().toISOString();
-const defaults = {
-	REPOSITORY_URL: null,
-	VERSION_LIST_SIZE: 5,
-	WORKING_DIR: null,
-	GITHUB_OAUTH_TOKEN: null,
-};
+// Create config from args or defaults.
+// Only GITHUB_OAUTH_TOKEN is required.
+const args = process.argv.slice( 2 );
+if ( args.length < 1 ) {
+	console.log(`\n* Unable to run script without required arg: github_oath_token\n`);
+	console.log('Usage: node version-manager.js --github_oath_token=ghb_xxxxxxxxx [optional args]');
+	console.log('	working_dir			Directory where git staging operations will take place.');
+	console.log('	version_list_size		Size of the list of dynamically selected versions');
+	console.log('	branch				Name of the branch to submit staged operations');
+	console.log('exiting...\n');
+	process.exit( 1 );
+}
 
-const cfg = merge_args( defaults, process.argv.slice( 2 ) );
-cfg.REPOSITORY_DIR = `${cfg.WORKING_DIR}/vip-container-images`;
+const cfg = getConfig( args );
 
 // try to create the WORKING_DIR recursively if it does not exist
 try {
@@ -41,7 +45,6 @@ try {
 // main IIFE
 (async function () {
 	let change, tag, ref;
-	const branch = `update/WordPress-image-${ts.split( 'T' )[0]}`;
 	const changeLog = ['Changes generated to update WordPress images in vip dev-env.'];
 	const { imageList, lockedList } = await getImagelist();
 	const tagList = await getTagList();
@@ -61,7 +64,7 @@ try {
 
 	// Init repo and check out new branch
 	await initRepo();
-	await checkoutNewBranch( branch );
+	await checkoutNewBranch( cfg.BRANCH );
 
 	// walks through the list of recommended changes and performs the operations
 	for ( { tag, ref } of adds ) {
@@ -92,7 +95,7 @@ try {
 	await commit( cl );
 
 	// Push commit
-	await push( branch );
+	await push( cfg.BRANCH );
 
 	// Create Pull Request
 	const pr = await requestMerge( cl );
@@ -112,26 +115,31 @@ try {
  * Overloads defaults values with command line args
  * Assigns sane defaults where possible.
  */
-function merge_args( defaults, args ) {
-	let overloads = {};
+function getConfig( args ) {
 	let spl, key;
+	const ts = new Date().toISOString();
+	const workingDir = getDefaultWorkingDir();
+	const cfg = {
+		VERSION_LIST_SIZE: 5,
+		WORKING_DIR: workingDir,
+		REPOSITORY_DIR: `${ workingDir }/vip-container-images`,
+		GITHUB_OAUTH_TOKEN: '',
+		BRANCH: `update/WordPress-image-${ ts.split( 'T' )[0] }`,
+	};
+
+	// Populate cfg with command line args
 	for ( const arg of args ) {
 		spl = arg.split('=');
 		key = spl[0].replace( /\-/g , '').toUpperCase();
-		overloads[key] = spl[1];
-	}
-
-	// Assign default WORKING_DIR
-	if ( ! overloads.hasOwnProperty( 'WORKING_DIR' ) ) {
-		overloads.WORKING_DIR = getDefaultWorkingDir();
+		cfg[key] = spl[1];
 	}
 
 	// Assign default REPOSITORY_URL
-	if ( ! overloads.hasOwnProperty( 'REPOSITORY_URL' ) ) {
-		overloads.REPOSITORY_URL = `https://wpcomvip-bot:${ overloads.GITHUB_OAUTH_TOKEN }@github.com/Automattic/vip-container-images.git`;
+	if ( ! cfg.hasOwnProperty( 'REPOSITORY_URL' ) ) {
+		cfg.REPOSITORY_URL = `https://wpcomvip-bot:${ cfg.GITHUB_OAUTH_TOKEN }@github.com/Automattic/vip-container-images.git`;
 	}
 
-	return { ...defaults, ...overloads };
+	return cfg;
 }
 
 /**
@@ -257,7 +265,7 @@ async function requestMerge( changeLog ) {
 	const postData = JSON.stringify( {
 		title: 'WordPress Image Refresh',
 		body: changeLog,
-		head: branch,
+		head: cfg.BRANCH,
 		base: 'master',
 	} );
 
