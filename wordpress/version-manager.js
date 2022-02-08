@@ -49,7 +49,7 @@ try {
 
 // main IIFE
 (async function () {
-	let change, tag, ref;
+	let tag, ref;
 	const changeLog = ['Changes generated to update WordPress images in vip dev-env.'];
 	const { imageList, lockedList } = await getImagelist();
 	const releases = indexTags( await getTagList() );
@@ -172,7 +172,7 @@ function getAddsQueue( imageList, versionList, releaseIndex ) {
 	const adds = [];
 	let ref;
 
-	for ( version of versionList ) {
+	for ( const version of versionList ) {
 		if ( imageList.indexOf( version ) === -1 ) {
 			ref = ( releaseIndex.hasOwnProperty( version ) ) ? releaseIndex[version][0] : version;
 			adds.push( { tag: version, ref: ref } );
@@ -187,7 +187,7 @@ function getAddsQueue( imageList, versionList, releaseIndex ) {
  */
 function getRemovesQueue( imageList, versionList, lockedList ) {
 	const removes = [];
-	for ( image of imageList ) {
+	for ( const image of imageList ) {
 		if ( lockedList.indexOf( image ) === -1 ) {
 			if ( versionList.indexOf( image ) === -1 ) {
 				removes.push( { tag: image } );
@@ -211,7 +211,7 @@ async function getUpdatesQueue( releases ) {
 		fs.readFile( `${ __dirname }/versions.json` )
 		.then( data => {
 			const images = JSON.parse( data );
-			for ( image of images ) {
+			for ( const image of images ) {
 				if ( releases.hasOwnProperty( image.tag ) ) {
 					mostRecentRelease = `${ releases[image.tag][0] }`;
 					if ( mostRecentRelease !== image.ref ) {
