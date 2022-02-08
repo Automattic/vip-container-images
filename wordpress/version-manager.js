@@ -40,7 +40,7 @@ const cfg = getConfig( args );
 try {
 	if ( ! existsSync( cfg.WORKING_DIR ) ) {
 		mkdirSync( cfg.WORKING_DIR, { recursive: true } );
-		console.log( `Created Working Directory: ${cfg.WORKING_DIR}` );
+		console.log( `Created Working Directory: ${ cfg.WORKING_DIR }` );
 	}
 } catch ( err ) {
 	console.log( 'Create Working Directory failed: ' + err );
@@ -109,8 +109,8 @@ try {
 
 	console.log( `A Pull Request has been submitted on behalf of wpcomvip-bot.` );
 	console.log( 'Corrections Prescribed:' );
-	console.log( `${cl}` );
-	console.log( `\n${pr.url}\n\n` );
+	console.log( `${ cl }` );
+	console.log( `\n${ pr.url }\n\n` );
 })();
 
 // =========================== Functions ========================================
@@ -153,10 +153,10 @@ function getConfig( args ) {
 function getDefaultWorkingDir() {
 	switch( process.platform ) {
 		case 'darwin': {
-			return `/Users/${username}/.local/share/vip/vip-container-images/version-manager`;
+			return `/Users/${ username }/.local/share/vip/vip-container-images/version-manager`;
 		}
 		case 'linux': {
-			return `/home/${username}/.local/share/vip/vip-container-images/version-manager`;
+			return `/home/${ username }/.local/share/vip/vip-container-images/version-manager`;
 		}
 		default: {
 			console.log( 'Unsupported Operating System. Currently this script only supports MacOS and Linux' );
@@ -286,7 +286,7 @@ async function requestMerge( changeLog ) {
 			res.on( 'end', () => {
 				// Handle bad response statuses from the API
 				if ( res.statusCode != 201 ) {
-					console.error( `Error: Pull Request API ended in status: ${res.statusCode}` );
+					console.error( `Error: Pull Request API ended in status: ${ res.statusCode }` );
 					console.log( res.headers );
 					process.exit( 1 );
 				} else {
@@ -317,7 +317,7 @@ function getPullRequestApiOptions( data ) {
 		path: '/repos/Automattic/vip-container-images/pulls',
 		method: 'POST',
 		headers: {
-			Authorization: `Bearer ${cfg.GITHUB_OAUTH_TOKEN}`,
+			Authorization: `Bearer ${ cfg.GITHUB_OAUTH_TOKEN }`,
 			'User-Agent': 'VIP',
 			Accept: 'application/vnd.github.v3+json',
 			'Content-Type': 'application/json',
@@ -375,10 +375,10 @@ function getIssueUpdateApiOptions( issue, data ) {
 	return {
 		hostname: 'api.github.com',
 		port: 443,
-		path: `/repos/Automattic/vip-container-images/issues/${issue.number}`,
+		path: `/repos/Automattic/vip-container-images/issues/${ issue.number }`,
 		method: 'PATCH',
 		headers: {
-			Authorization: `Bearer ${cfg.GITHUB_OAUTH_TOKEN}`,
+			Authorization: `Bearer ${ cfg.GITHUB_OAUTH_TOKEN }`,
 			'User-Agent': 'VIP',
 			Accept: 'application/vnd.github.v3+json',
 			'Content-Type': 'application/json',
@@ -450,7 +450,7 @@ function getImageApiOptions() {
 		path: '/orgs/Automattic/packages/container/vip-container-images%2Fwordpress/versions?per_page=100&repo=vip-container-images&package_type=container',
 		method: 'GET',
 		headers: {
-			Authorization: `Bearer ${cfg.GITHUB_OAUTH_TOKEN}`,
+			Authorization: `Bearer ${ cfg.GITHUB_OAUTH_TOKEN }`,
 			'User-Agent': 'VIP',
 			Accept: 'application/vnd.github.v3+json',
 		},
@@ -501,8 +501,8 @@ async function initRepo() {
  * Uses git to clone a remote repository.
  */
 async function cloneRepository() {
-	console.log( `Cloning images project repository at: ${cfg.REPOSITORY_DIR}`);
-	const output = await execute( `git clone ${cfg.REPOSITORY_URL} ${cfg.REPOSITORY_DIR}` );
+	console.log( `Cloning images project repository at: ${ cfg.REPOSITORY_DIR }`);
+	const output = await execute( `git clone ${ cfg.REPOSITORY_URL } ${ cfg.REPOSITORY_DIR }` );
 	process.chdir( cfg.REPOSITORY_DIR );
 	return output;
 }
@@ -522,7 +522,7 @@ async function refreshRepository() {
  * Clears any unstaged changes.
  */
 async function commit( cl ) {
-	return await execute( `git commit -m '${cl}'` );
+	return await execute( `git commit -m '${ cl }'` );
 }
 
 /**
@@ -553,21 +553,21 @@ async function stash() {
  * Clears any unstaged changes.
  */
 async function push( changeBranch ) {
-	return await execute( `git push ${cfg.REPOSITORY_URL} ${changeBranch}:${changeBranch}` );
+	return await execute( `git push ${ cfg.REPOSITORY_URL } ${ changeBranch }:${ changeBranch }` );
 }
 
 /**
  * Uses git to find if the named branch exists.
  */
 async function branchExists( name ) {
-	return await execute( `git branch --list ${name}` );
+	return await execute( `git branch --list ${ name }` );
 }
 
 /**
  * Uses git to find if the named remote branch exists.
  */
 async function remoteExists( name ) {
-	return await execute( `git ls-remote --heads ${cfg.REPOSITORY_URL} ${name}` );
+	return await execute( `git ls-remote --heads ${ cfg.REPOSITORY_URL } ${ name }` );
 }
 
 /**
@@ -584,14 +584,14 @@ async function checkoutNewBranch( name ) {
 	await checkoutMasterBranch();
 
 	if ( await branchExists( name ) ) {
-		await execute( `git branch -D ${name}` );
+		await execute( `git branch -D ${ name }` );
 	}
 
 	if ( await remoteExists( name ) ) {
-		await execute( `git push origin --delete ${name}` );
+		await execute( `git push origin --delete ${ name }` );
 	}
 
-	return await execute( `git checkout -b ${name}` );
+	return await execute( `git checkout -b ${ name }` );
 }
 
 /**
@@ -600,11 +600,11 @@ async function checkoutNewBranch( name ) {
 async function addVersion( { tag, ref, changeLog } ) {
 	try {
 		if ( changeLog ) {
-			changeLog.push( `Added version: ${tag} to list of available WordPress images.` );
+			changeLog.push( `Added version: ${ tag } to list of available WordPress images.` );
 		}
-		return await execute( `${cfg.REPOSITORY_DIR}/wordpress/add-version.sh ${tag} ${ref}` );
+		return await execute( `${ cfg.REPOSITORY_DIR }/wordpress/add-version.sh ${ tag } ${ ref }` );
 	} catch ( error ) {
-		console.log( `"Add Version" failed with error: ${error}` );
+		console.log( `"Add Version" failed with error: ${ error }` );
 	}
 }
 
@@ -614,11 +614,11 @@ async function addVersion( { tag, ref, changeLog } ) {
 async function removeVersion( { tag, changeLog } ) {
 	try {
 		if ( changeLog ) {
-			changeLog.push( `Removed version: ${tag} from list of available WordPress images.` );
+			changeLog.push( `Removed version: ${ tag } from list of available WordPress images.` );
 		}
-		return await execute( `${cfg.REPOSITORY_DIR}/wordpress/del-version.sh ${tag}` );
+		return await execute( `${ cfg.REPOSITORY_DIR }/wordpress/del-version.sh ${ tag }` );
 	} catch ( error ) {
-		console.log( `"Remove Version ( ${tag} )" failed with error: ${error}` );
+		console.log( `"Remove Version ( ${ tag } )" failed with error: ${ error }` );
 	}
 }
 
@@ -627,7 +627,7 @@ async function removeVersion( { tag, changeLog } ) {
  */
 async function updateVersion( { tag, ref, changeLog } ) {
 	if ( changeLog ) {
-			changeLog.push( `Updated Wordpress Image version: ${tag} to ref ${ref}.` );
+			changeLog.push( `Updated Wordpress Image version: ${ tag } to ref ${ ref }.` );
 	}
 	await removeVersion( { tag, changeLog: false } );
 	return await addVersion( { tag, ref, changeLog: false } );
