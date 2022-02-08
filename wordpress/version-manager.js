@@ -208,7 +208,7 @@ async function getUpdatesQueue( releases ) {
 		// regex refType will match with N.N(.N)?
 		const refType = new RegExp( /\d+\.\d+(?:\.\d+)?/ );
 
-		fs.readFile( `${__dirname}/versions.json` )
+		fs.readFile( `${ __dirname }/versions.json` )
 		.then( data => {
 			const images = JSON.parse( data );
 			for ( image of images ) {
@@ -347,7 +347,7 @@ async function issueUpdate( issue ) {
 			res.on( 'end', () => {
 				// Handle bad response statuses from the API
 				if ( res.statusCode != 200 ) {
-					console.error( `Error: Issue Update API ended in status: ${res.statusCode}` );
+					console.error( `Error: Issue Update API ended in status: ${ res.statusCode }` );
 					console.log( res.headers );
 					process.exit( 1 );
 				} else {
