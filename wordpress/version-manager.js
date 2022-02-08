@@ -25,12 +25,12 @@ const username = require( 'os' ).userInfo().username;
 // Only GITHUB_OAUTH_TOKEN is required.
 const args = process.argv.slice( 2 );
 if ( args.length < 1 ) {
-	console.log(`\n* Unable to run script without required arg: github_oath_token\n`);
-	console.log('Usage: node version-manager.js --github_oath_token=ghb_xxxxxxxxx [optional args]');
-	console.log('	working_dir			Directory where git staging operations will take place.');
-	console.log('	version_list_size		Size of the list of dynamically selected versions');
-	console.log('	branch				Name of the branch to submit staged operations');
-	console.log('exiting...\n');
+	console.log( `* Unable to run script without required arg: github_oath_token
+		Usage: node version-manager.js --github_oath_token=ghb_xxxxxxxxx [optional args]
+		working_dir			Directory where git staging operations will take place
+		version_list_size		Size of the list of dynamically selected versions
+		branch				Name of the branch to submit staged operations
+	exiting...\n` );
 	process.exit( 1 );
 }
 
