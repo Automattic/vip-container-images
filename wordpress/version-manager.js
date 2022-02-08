@@ -4,9 +4,7 @@
  * Manages versions of WordPress container images
  *   Uses an algorithm to decide which versions should be available
  *   Runs processes to make the actual images correct according to the list
- */
-
-/**
+ *
  * Usage: node version-manager.js --github_oath_token=ghb_xxxxxxxxx [optional args]
  * 	working_dir			Directory where git staging operations will take place.
  * 	version_list_size		Size of the list of dynamically selected versions
