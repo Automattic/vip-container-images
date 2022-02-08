@@ -118,11 +118,9 @@ try {
 function getConfig( args ) {
 	let spl, key;
 	const ts = new Date().toISOString();
-	const workingDir = getDefaultWorkingDir();
 	const cfg = {
 		VERSION_LIST_SIZE: 5,
-		WORKING_DIR: workingDir,
-		REPOSITORY_DIR: `${ workingDir }/vip-container-images`,
+		WORKING_DIR: getDefaultWorkingDir(),
 		GITHUB_OAUTH_TOKEN: '',
 		BRANCH: `update/WordPress-image-${ ts.split( 'T' )[0] }`,
 	};
@@ -133,6 +131,9 @@ function getConfig( args ) {
 		key = spl[0].replace( /\-/g , '').toUpperCase();
 		cfg[key] = spl[1];
 	}
+
+	// REPOSITORY_DIR within WORKING_DIR
+	cfg.REPOSITORY_DIR = `${ cfg.WORKING_DIR }/vip-container-images`;
 
 	// Assign default REPOSITORY_URL
 	if ( ! cfg.hasOwnProperty( 'REPOSITORY_URL' ) ) {
