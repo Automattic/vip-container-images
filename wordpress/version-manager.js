@@ -52,8 +52,7 @@ try {
 	let change, tag, ref;
 	const changeLog = ['Changes generated to update WordPress images in vip dev-env.'];
 	const { imageList, lockedList } = await getImagelist();
-	const tagList = await getTagList();
-	const releases = indexTags( tagList.reverse() );
+	const releases = indexTags( await getTagList() );
 	const versionList = Object.keys( releases ).slice( 0, cfg.VERSION_LIST_SIZE );
 	const adds = getAddsQueue( imageList, versionList, releases );
 	const removes = getRemovesQueue( imageList, versionList, lockedList );
@@ -481,7 +480,7 @@ async function getTagList() {
 		return tag.replace( /[^0-9.]/, '' );
 	} );
 
-	return formatted;
+	return formatted.reverse();
 }
 
 /**
