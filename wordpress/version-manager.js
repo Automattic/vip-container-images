@@ -7,6 +7,13 @@
  */
 
 /**
+ * Usage: node version-manager.js --github_oath_token=ghb_xxxxxxxxx [optional args]
+ * 	working_dir			Directory where git staging operations will take place.
+ * 	version_list_size		Size of the list of dynamically selected versions
+ * 	branch				Name of the branch to submit staged operations
+ */
+
+/**
  * System dependencies
  */
 const exec = require( 'child_process' ).exec;
