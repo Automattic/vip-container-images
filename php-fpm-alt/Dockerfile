@@ -1,0 +1,71 @@
+FROM alpine:3.15
+
+RUN \
+    apk add --no-cache ca-certificates curl tar xz openssl less bash mariadb-client php7 php7-fpm php7-pear \
+        php7-pecl-apcu \
+        php7-bcmath \
+        php7-calendar \
+        php7-ctype \
+        php7-curl \
+        php7-dom \
+        php7-exif \
+        php7-fileinfo \
+        php7-ftp \
+        php7-gd \
+        php7-pecl-gmagick \
+        php7-gmp \
+        php7-iconv \
+        php7-intl \
+        php7-json \
+        php7-mbstring \
+        php7-pecl-mcrypt \
+        php7-pecl-memcache \
+        php7-mysqli \
+        php7-mysqlnd \
+        php7-opcache \
+        php7-openssl \
+        php7-pcntl \
+        php7-pdo \
+        php7-pdo_sqlite \
+        php7-phar \
+        php7-posix \
+        php7-session \
+        php7-shmop \
+        php7-simplexml \
+        php7-soap \
+        php7-sockets \
+        php7-sodium \
+        php7-sqlite3 \
+        php7-pecl-ssh2 \
+        php7-sysvsem \
+        php7-sysvshm \
+        php7-pecl-timezonedb \
+        php7-tokenizer \
+        php7-pecl-xdebug \
+        php7-xml \
+        php7-xmlreader \
+        php7-xmlwriter \
+        php7-zip
+
+RUN \
+    pecl update-channels && \
+    rm -rf /tmp/pear ~/.pearrc
+
+RUN ln -s /usr/sbin/php-fpm7 /usr/sbin/php-fpm
+RUN adduser -u 82 -D -S -G www-data www-data
+RUN install -d -m 0777 -o www-data -g www-data /var/www/html
+
+RUN \
+    wget -O /usr/local/bin/phpunit https://phar.phpunit.de/phpunit-7.phar && chmod 0755 /usr/local/bin/phpunit && \
+    wget -O /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && chmod 0755 /usr/local/bin/wp
+
+ENV WP_CLI_CONFIG_PATH /config/wp-cli.yaml
+ENV PHP_INI_DIR /etc/php7
+
+COPY rootfs/ /
+
+WORKDIR /var/www/html
+STOPSIGNAL SIGQUIT
+EXPOSE 9000
+ENTRYPOINT ["docker-php-entrypoint"]
+CMD ["run.sh"]
