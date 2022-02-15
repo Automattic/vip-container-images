@@ -80,8 +80,8 @@ jobs:
           push: ${{ github.base_ref == null }}
           pull: true
           build-args: WP_GIT_REF=${{ matrix.wp.ref }}
-          cache-from: type=gha,scope=wordpress
-          cache-to: type=gha,mode=max,scope=wordpress
+          cache-from: type=gha,scope=wordpress-${{ matrix.wp.ref }}
+          cache-to: type=gha,mode=max,scope=wordpress-${{ matrix.wp.ref }}
           no-cache: ${{ matrix.wp.cacheable == false }}
           tags: |
             ghcr.io/automattic/vip-container-images/wordpress:${{ matrix.wp.tag }}
