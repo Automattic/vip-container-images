@@ -38,6 +38,9 @@ jobs:
           context: php-fpm-alt
           platforms: linux/amd64,linux/arm64
           push: ${{ github.base_ref == null }}
+          pull: true
+          cache-from: type=gha,scope=php-fpm-alt
+          cache-to: type=gha,mode=max,scope=php-fpm-alt
           tags: |
             ghcr.io/automattic/vip-container-images/php-fpm-alt:latest
             ghcr.io/automattic/vip-container-images/php-fpm-alt:7.4
