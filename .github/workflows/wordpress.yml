@@ -78,9 +78,10 @@ jobs:
           platforms: linux/amd64,linux/arm64
           context: wordpress
           push: ${{ github.base_ref == null }}
+          pull: true
           build-args: WP_GIT_REF=${{ matrix.wp.ref }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=wordpress
+          cache-to: type=gha,mode=max,scope=wordpress
           no-cache: ${{ matrix.wp.cacheable == false }}
           tags: |
             ghcr.io/automattic/vip-container-images/wordpress:${{ matrix.wp.tag }}
