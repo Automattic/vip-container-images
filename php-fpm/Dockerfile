@@ -40,11 +40,17 @@ RUN \
         libzip-dev && \
     pecl channel-update pecl.php.net && \
     yes '' | pecl install -f memcache && \
-    pecl install apcu mcrypt timezonedb ssh2-1.3.1 gmagick-2.0.6RC1 xdebug && \
+    pecl install apcu && \
+    pecl install mcrypt && \
+    pecl install timezonedb && \
+    pecl install ssh2-1.3.1 && \
+    pecl install gmagick-2.0.6RC1 && \
+    pecl install xdebug && \
     docker-php-ext-install -j$(nproc) bcmath calendar exif gd gmp intl mysqli pcntl shmop soap sockets sysvsem sysvshm zip && \
     docker-php-ext-enable apcu gmagick mcrypt memcache ssh2 timezonedb xdebug opcache && \
     docker-php-source delete && \
-    apk del build-deps
+    apk del build-deps && \
+    rm -rf /tmp/pear ~/.pearrc
 
 RUN \
     wget -O /usr/local/bin/phpunit https://phar.phpunit.de/phpunit-7.phar && chmod a+x /usr/local/bin/phpunit && \
