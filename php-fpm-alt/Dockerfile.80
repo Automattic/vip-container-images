@@ -12,7 +12,7 @@ RUN \
         php8-fileinfo \
         php8-ftp \
         php8-gd \
-        php8-pecl-gmagick \
+        # php8-pecl-gmagick \
         php8-gmp \
         php8-iconv \
         php8-intl \
@@ -47,11 +47,13 @@ RUN \
         php8-xmlwriter \
         php8-zip
 
+RUN ln -s /usr/sbin/php-fpm8 /usr/sbin/php-fpm
+RUN ln -s /usr/bin/pecl8 /usr/bin/pecl
+
 RUN \
     pecl update-channels && \
     rm -rf /tmp/pear ~/.pearrc
 
-RUN ln -s /usr/sbin/php-fpm8 /usr/sbin/php-fpm
 RUN adduser -u 82 -D -S -G www-data www-data
 RUN install -d -m 0777 -o www-data -g www-data /var/www/html
 
