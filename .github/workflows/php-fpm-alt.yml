@@ -14,11 +14,19 @@ on:
 
 jobs:
   push_to_registry:
-    name: Push Docker image to GitHub Packages
+    name: Push Docker image to GitHub Packages (PHP${{ matrix.php.name }})
     runs-on: ubuntu-latest
     permissions:
       packages: write
       contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        php:
+          - name: "7.4"
+            suffix: "74"
+          - name: "8.0"
+            suffix: "80"
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
@@ -37,10 +45,9 @@ jobs:
         with:
           context: php-fpm-alt
           platforms: linux/amd64,linux/arm64
+          file: php-fpm-alt/Dockerfile.${{ matrix.php.suffix }}
           push: ${{ github.base_ref == null }}
           pull: true
-          cache-from: type=gha,scope=php-fpm-alt
-          cache-to: type=gha,mode=max,scope=php-fpm-alt
-          tags: |
-            ghcr.io/automattic/vip-container-images/php-fpm-alt:latest
-            ghcr.io/automattic/vip-container-images/php-fpm-alt:7.4
+          cache-from: type=gha,scope=php-fpm-alt-${{ matrix.php.suffix }}
+          cache-to: type=gha,mode=max,scope=php-fpm-alt-${{ matrix.php.suffix }}
+          tags: ghcr.io/automattic/vip-container-images/php-fpm-alt:${{ matrix.php.name }}
