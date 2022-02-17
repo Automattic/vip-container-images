@@ -11,6 +11,12 @@ wp_url=$3
 wp_title=$4
 multisite_domain=$5
 
+# Force-set owner to www-data otherwise we may run in to the permissions trouble during the initial start.
+# It manifests as 'Warning: require(/wp/wp-includes/pomo/mo.php): failed to open stream: No such file or directory'
+# Due to wp-includes being owned by root at the moment of script execution
+# It doesn't happen often and hard to reproduce
+chown www-data -R /wp
+
 if [ -r /wp/config/wp-config.php ]; then
   echo "Already existing wp-config.php file"
 else
