@@ -14,7 +14,7 @@ on:
 
 jobs:
   push_to_registry:
-    name: Push Docker image to GitHub Packages (PHP${{ matrix.php.name }})
+    name: Push Docker image to GitHub Packages (PHP ${{ matrix.php.name }})
     runs-on: ubuntu-latest
     permissions:
       packages: write
