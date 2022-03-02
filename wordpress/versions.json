@@ -7,7 +7,7 @@
     "prerelease": false
   },
   {
-    "ref": "5.9",
+    "ref": "5.9.1",
     "tag": "5.9",
     "cacheable": true,
     "locked": false,
@@ -35,20 +35,6 @@
     "prerelease": false
   },
   {
-    "ref": "5.8.3",
-    "tag": "5.8.3",
-    "cacheable": true,
-    "locked": true,
-    "prerelease": false
-  },
-  {
-    "ref": "3ae9f9ffe311e546b0fd5f82d456b3539e3b8e74",
-    "tag": "5.9.1",
-    "cacheable": true,
-    "locked": true,
-    "prerelease": true
-  },
-  {
     "ref": "5.8.1",
     "tag": "5.8.1",
     "cacheable": true,
@@ -61,5 +47,19 @@
     "cacheable": true,
     "locked": true,
     "prerelease": false
+  },
+  {
+    "ref": "5.8.3",
+    "tag": "5.8.3",
+    "cacheable": true,
+    "locked": true,
+    "prerelease": false
+  },
+  {
+    "ref": "3ae9f9ffe311e546b0fd5f82d456b3539e3b8e74",
+    "tag": "5.9.1",
+    "cacheable": true,
+    "locked": true,
+    "prerelease": true
   }
 ]
