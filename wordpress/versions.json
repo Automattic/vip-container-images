@@ -8,9 +8,9 @@
   },
   {
     "ref": "5.9",
-    "tag": "5.9",
+    "tag": "5.9.1",
     "cacheable": true,
-    "locked": false,
+    "locked": true,
     "prerelease": false
   },
   {
@@ -42,8 +42,8 @@
     "prerelease": false
   },
   {
-    "ref": "3ae9f9ffe311e546b0fd5f82d456b3539e3b8e74",
-    "tag": "5.9.1",
+    "ref": "fcf2500f49341dfce84c3ac68d963a6a92874f64",
+    "tag": "5.9.2-alpha-52803",
     "cacheable": true,
     "locked": true,
     "prerelease": true
