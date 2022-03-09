@@ -49,6 +49,13 @@
     "prerelease": true
   },
   {
+    "ref": "a1d974a2e1ba2dd6f525d798034b950b4f2807c1",
+    "tag": "6.0-alpha-52833",
+    "cacheable": true,
+    "locked": true,
+    "prerelease": true
+  },
+  {
     "ref": "5.8.1",
     "tag": "5.8.1",
     "cacheable": true,
