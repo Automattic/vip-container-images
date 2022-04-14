@@ -43,14 +43,23 @@ The image publishing process is performed by [a GitHub action](.github/workflows
 
 This repository has Dependabot [set up](.github/dependabot.yml). Whenever a Docker base image has a new available version, the bot will open a Pull Request with the change.
 
-## Adding, Updating, and Removing Subtrees
-There are scripts that can be used to add, update and remove WordPress version subtrees. Interface with these scripts in the following ways:
+## Adding, Updating and Deleting versions of WordPress
 
-`$> wordpress/add-version.sh 5.9.1 5.9.1`
-  This can be used to add a new WordPress version. The second parameter is a tag for the github repository. Alternatively you can use a commit hash.
+We have utility scripts to add and remove the versions of WordPress, based on the versions.json we kick off the image builds for every specified version. We use [official GitHub repo for WordPress](https://github.com/WordPress/WordPress). 
 
-`$> wordpress/update-version.sh 5.9.1`
-  This can be used to update a version to its most recent tag/commit.
+Basic syntax is as follows
 
-`$> wordpress/delete-version.sh 5.9.1`
-  This can be used to delete a subtree.
+`$> wordpress/add-version.sh <TAG> <REF> [cacheable=true] [locked=false] [prerelease=false]`
+
+- `<TAG>` is Docker image tag, should be pointing to the major version, E.g. `5.8`
+- `<REF>` is either git tag, e.g. `5.8.3` or git SHA, e.g. `e86b90cad6330eea636496f7317fac4c1a73e42b`
+
+`$> wordpress/add-version.sh 6.0 2be90dc589a1c2e2bde5efa691eafe5407d0f753 true true true`
+This will add a 6.0 (pre-release) and point to a specific commit
+
+`$> wordpress/add-version.sh 5.9 5.9.3`
+This will add a 5.9 and point to 5.9.3 tag.
+
+`$> wordpress/delete-version.sh 5.9`
+This can be used to delete tag.
+Alternatively, this also can be done by removing the related entry from `wordpress/versions.json`
