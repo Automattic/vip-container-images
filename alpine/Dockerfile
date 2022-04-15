@@ -1,4 +1,4 @@
-FROM alpine:3.15.0
+FROM alpine:3.15.4
 
 # Common packages needed for most images
 # - rsync: Needed to copy code to k8s/docker-compose volumes

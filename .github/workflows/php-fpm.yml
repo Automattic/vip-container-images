@@ -24,13 +24,13 @@ jobs:
       contents: read
     steps:
       - name: Check out the repo
-        uses: actions/checkout@629c2de402a417ea7690ca6ce3f33229e27606a5 # v2
+        uses: actions/checkout@3df53dd32d858478710a6127bcd8b9d8b7182e16 # tag=v3
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@27d0a4f181a40b142cce983c5393082c365d1480 # v1
+        uses: docker/setup-qemu-action@27d0a4f181a40b142cce983c5393082c365d1480 # tag=v1
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@94ab11c41e45d028884a99163086648e898eed25 # v1
+        uses: docker/setup-buildx-action@94ab11c41e45d028884a99163086648e898eed25 # tag=v1
       - name: Log in to GitHub Docker Registry
-        uses: docker/login-action@42d299face0c5c43a0487c477f595ac9cf22f1a7 # v1
+        uses: docker/login-action@42d299face0c5c43a0487c477f595ac9cf22f1a7 # tag=v1
         with:
           registry: https://ghcr.io
           username: ${{ github.actor }}
@@ -39,12 +39,15 @@ jobs:
         id: getversion
         run: echo "::set-output name=version::$(head -n 1 php-fpm/Dockerfile | sed -e 's/FROM php:\(.*\)-fpm-alpine3.14/\1/')"
       - name: Build container image
-        uses: docker/build-push-action@1814d3dfb36d6f84174e61f4a4b05bd84089a4b9 # v2
+        uses: docker/build-push-action@1814d3dfb36d6f84174e61f4a4b05bd84089a4b9 # tag=v2
         with:
-          file: php-fpm/Dockerfile
+          context: php-fpm
           platforms: linux/amd64,linux/arm64
           # base_ref is only defined in PRs, hence we're only pushing when we're not in a PR
           push: ${{ github.base_ref == null }}
+          pull: true
+          cache-from: type=gha,scope=php-fpm
+          cache-to: type=gha,mode=max,scope=php-fpm
           tags: |
             ghcr.io/automattic/vip-container-images/php-fpm:latest
             ghcr.io/automattic/vip-container-images/php-fpm:${{ steps.getversion.outputs.version }}

@@ -1,0 +1,74 @@
+FROM alpine:edge
+
+RUN \
+    echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
+    apk add --no-cache ca-certificates curl tar xz openssl less bash mariadb-client php81 php81-fpm php81-pear \
+        php81-pecl-apcu \
+        php81-bcmath \
+        php81-calendar \
+        php81-ctype \
+        php81-curl \
+        php81-dom \
+        php81-exif \
+        php81-fileinfo \
+        php81-ftp \
+        php81-gd \
+        # php81-pecl-gmagick \
+        php81-gmp \
+        php81-iconv \
+        php81-intl \
+        php81-json \
+        php81-mbstring \
+        # php81-pecl-mcrypt \
+        php81-pecl-memcache \
+        php81-mysqli \
+        php81-mysqlnd \
+        php81-opcache \
+        php81-openssl \
+        php81-pcntl \
+        php81-pdo \
+        php81-pdo_sqlite \
+        php81-phar \
+        php81-posix \
+        php81-session \
+        php81-shmop \
+        php81-simplexml \
+        php81-soap \
+        php81-sockets \
+        php81-sodium \
+        php81-sqlite3 \
+        php81-pecl-ssh2 \
+        php81-sysvsem \
+        php81-sysvshm \
+        # php81-pecl-timezonedb \
+        php81-tokenizer \
+        php81-pecl-xdebug \
+        php81-xml \
+        php81-xmlreader \
+        php81-xmlwriter \
+        php81-zip
+
+RUN ln -s /usr/sbin/php-fpm81 /usr/sbin/php-fpm
+RUN ln -s /usr/bin/pecl81 /usr/bin/pecl
+
+RUN \
+    pecl update-channels && \
+    rm -rf /tmp/pear ~/.pearrc
+
+RUN adduser -u 82 -D -S -G www-data www-data
+RUN install -d -m 0777 -o www-data -g www-data /var/www/html
+
+RUN \
+    wget -O /usr/local/bin/phpunit https://phar.phpunit.de/phpunit-9.phar && chmod 0755 /usr/local/bin/phpunit && \
+    wget -O /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && chmod 0755 /usr/local/bin/wp
+
+ENV WP_CLI_CONFIG_PATH /config/wp-cli.yaml
+ENV PHP_INI_DIR /etc/php81
+
+COPY rootfs81/ /
+
+WORKDIR /var/www/html
+STOPSIGNAL SIGQUIT
+EXPOSE 9000
+ENTRYPOINT ["docker-php-entrypoint"]
+CMD ["run.sh"]
