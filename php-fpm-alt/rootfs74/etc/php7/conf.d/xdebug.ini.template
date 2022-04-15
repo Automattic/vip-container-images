@@ -1,0 +1,8 @@
+[XDebug]
+zend_extension=xdebug.so
+
+xdebug.mode = debug,coverage
+xdebug.start_with_request=yes
+
+#Replace host.docker.internal to your computers IP address if linux
+xdebug.client_host=host.docker.internal
