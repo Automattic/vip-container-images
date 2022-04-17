@@ -19,6 +19,14 @@ if [ -n "${PRETEST_SCRIPT}" ] && [ -x "${PRETEST_SCRIPT}" ]; then
 	"${PRETEST_SCRIPT}"
 fi
 
-echo "Running tests..."
-# shellcheck disable=SC2086 # PHPUNIT_ARGS should not be quoted
-${PHP} "${PHPUNIT}" ${PHPUNIT_ARGS} "$@"
+if [ -z "${RUN_TESTS}" ]; then
+	echo "Running tests..."
+	# shellcheck disable=SC2086 # PHPUNIT_ARGS should not be quoted
+	${PHP} "${PHPUNIT}" ${PHPUNIT_ARGS} "$@"
+	retval=$?
+	if [ $retval -ne 0 ] && [ -n "${DEBUG_TESTS}" ]; then
+		/bin/bash -i
+	fi
+else
+	/bin/bash -i
+fi
