@@ -15,30 +15,35 @@ REF="$2"
 
 CACHEABLE=true
 if [ -n "$3" ]; then
-    if [ "$3" eq "false" ]; then
+    if [ "$3" == "false" ]; then
         CACHEABLE=false
     fi
 fi
 
 LOCKED=false
 if [ -n "$4" ]; then
-    if [ "$4" eq "true" ]; then
+    if [ "$4" == "true" ]; then
         LOCKED=true
     fi
 fi
 
 PRERELEASE=false
 if [ -n "$5" ]; then
-    if [ "$5" eq "true" ]; then
+    if [ "$5" == "true" ]; then
         PRERELEASE=true
     fi
 fi
+echo ""
+echo "Adding version: $TAG at ref: $REF"
+echo "Cacheable: $CACHEABLE"
+echo "Locked: $LOCKED"
+echo "Prerelease: $PRERELEASE"
 
 VERSIONS="$(dirname "$0")/versions.json"
 
 exists=$(jq -r ".[] | select(.tag == \"${TAG}\") | .ref" "${VERSIONS}")
 if [ -z "${exists}" ]; then
-    jq ". += [{ref: \"${REF}\", tag: \"${TAG}\", cacheable: ${CACHEABLE}, locked: ${LOCKED}, prerelease: ${PRERELEASE} }] | sort" "${VERSIONS}" | sponge "${VERSIONS}"
+    jq ". += [{ref: \"${REF}\", tag: \"${TAG}\", cacheable: ${CACHEABLE}, locked: ${LOCKED}, prerelease: ${PRERELEASE} }] | sort_by(.tag) | reverse" "${VERSIONS}" | sponge "${VERSIONS}"
 else
     echo "${TAG} already exists in versions.json"
 fi
