@@ -51,7 +51,7 @@ jobs:
             type=raw,value=latest
 
       - name: Build and push
-        uses: docker/build-push-action@a66e35b9cbcf4ad0ea91ffcaf7bbad63ad9e0229 # tag=v2.7.0
+        uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a # tag=v2.7.0
         with:
           context: wp-test-runner
           push: ${{ github.event_name != 'pull_request' }}
