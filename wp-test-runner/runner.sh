@@ -19,7 +19,7 @@ if [ -n "${PRETEST_SCRIPT}" ] && [ -x "${PRETEST_SCRIPT}" ]; then
 	"${PRETEST_SCRIPT}"
 fi
 
-if [ -z "${RUN_TESTS}" ]; then
+if [ -z "${SKIP_TESTS}" ]; then
 	echo "Running tests..."
 	# shellcheck disable=SC2086 # PHPUNIT_ARGS should not be quoted
 	${PHP} "${PHPUNIT}" ${PHPUNIT_ARGS} "$@"
