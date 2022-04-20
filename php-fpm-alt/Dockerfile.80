@@ -49,6 +49,7 @@ RUN \
 
 RUN ln -s /usr/sbin/php-fpm8 /usr/sbin/php-fpm
 RUN ln -s /usr/bin/pecl8 /usr/bin/pecl
+RUN ln -s /usr/bin/php8 /usr/bin/php
 
 RUN \
     pecl update-channels && \
