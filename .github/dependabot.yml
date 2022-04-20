@@ -29,6 +29,11 @@ updates:
     schedule:
       interval: "weekly"
 
+  - package-ecosystem: "docker"
+    directory: "php-fpm-alt/"
+    schedule:
+      interval: "weekly"
+
   # Enable version updates for Statsd
   - package-ecosystem: "docker"
     # Look for a `Dockerfile` in the `root` directory
