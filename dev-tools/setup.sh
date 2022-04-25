@@ -13,9 +13,16 @@ multisite_domain=$5
 
 # Make sure to check the core files are there before trying to install WordPress.
 echo "Waiting for core files to be copied"
+i=0;
 while [ ! -f /wp/wp-includes/pomo/mo.php ]
 do
   sleep 0.5
+  i=$((i+1))
+  # Roughly 30 seconds
+  if [ $i -eq 60 ]; then
+    echo "Timeout exceeded"
+    break
+  fi
 done
 
 
