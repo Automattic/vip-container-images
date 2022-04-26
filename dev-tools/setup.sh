@@ -18,8 +18,8 @@ while [ ! -f /wp/wp-includes/pomo/mo.php ]
 do
   sleep 0.5
   i=$((i+1))
-  # Roughly 30 seconds
-  if [ $i -eq 60 ]; then
+  # Roughly 1 minute
+  if [ $i -eq 120 ]; then
     echo "Timeout exceeded"
     break
   fi
