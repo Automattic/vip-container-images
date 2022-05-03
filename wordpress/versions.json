@@ -2,7 +2,7 @@
   {
     "ref": "HEAD",
     "tag": "trunk",
-    "cacheable": true,
+    "cacheable": false,
     "locked": false,
     "prerelease": true
   },
