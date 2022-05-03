@@ -41,11 +41,11 @@
     "locked": true,
     "prerelease": false
   },
-	{
-		"ref": "HEAD",
-		"tag": "trunk",
-		"cacheable": false,
-		"locked": false,
-		"prerelease": true
-	}
+  {
+    "ref": "HEAD",
+    "tag": "trunk",
+    "cacheable": false,
+    "locked": false,
+    "prerelease": true
+  }
 ]
