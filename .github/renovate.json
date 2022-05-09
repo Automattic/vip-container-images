@@ -1,0 +1,32 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "labels": ["dependencies"],
+    "dependencyDashboard": true,
+    "dependencyDashboardAutoclose": true,
+    "rangeStrategy": "update-lockfile",
+    "rollbackPrs": true,
+    "semanticCommits": "enabled",
+    "packageRules": [
+        {
+            "matchManagers": ["docker"],
+            "addLabels": ["docker"]
+        },
+        {
+            "matchManagers": ["github-actions"],
+            "addLabels": ["github-actions"]
+        },
+        {
+            "matchDepTypes": ["action"],
+            "pinDigests": true
+        },
+        {
+            "matchDepTypes": ["action"],
+            "matchPackagePatterns": ["^docker/"],
+            "groupName": "Docker-related Actions",
+            "groupSlug": "docker-actions"
+        }
+    ],
+    "docker": {
+        "pinDigests": true
+    }
+}
