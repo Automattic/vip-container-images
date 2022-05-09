@@ -39,7 +39,7 @@ jobs:
         id: getversion
         run: echo "::set-output name=version::$(head -n 1 alpine/Dockerfile | sed -e 's/FROM alpine:\(.*\)/\1/')"
       - name: Build container image
-        uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a # tag=v2
+        uses: docker/build-push-action@e551b19e49efd4e98792db7592c17c09b89db8d8 # tag=v2
         with:
           file: alpine/Dockerfile
           platforms: linux/amd64,linux/arm64
