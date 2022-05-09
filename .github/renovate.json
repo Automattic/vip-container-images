@@ -8,7 +8,7 @@
     "semanticCommits": "enabled",
     "packageRules": [
         {
-            "matchManagers": ["docker"],
+            "matchManagers": ["dockerfile"],
             "addLabels": ["docker"]
         },
         {
