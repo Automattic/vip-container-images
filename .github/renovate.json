@@ -9,7 +9,7 @@
     "gitAuthor": "Myrotvorets <support+renovate@myrotvorets.center>",
     "packageRules": [
         {
-            "matchManagers": ["docker"],
+            "matchManagers": ["dockerfile"],
             "addLabels": ["docker"]
         },
         {
