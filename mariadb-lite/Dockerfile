@@ -1,4 +1,4 @@
-FROM circleci/mariadb:10.3
+FROM circleci/mariadb:10.7@sha256:56d31b43f88890204cdeabcb5a0b1c3af63eea69021e152850f02cf71b305361
 
 RUN \
     apt-get -qq update && \
