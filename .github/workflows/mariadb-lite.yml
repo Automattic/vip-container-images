@@ -43,7 +43,7 @@ jobs:
       - name: Get image version
         id: getversion
         run: |
-          echo "::set-output name=version::$(awk -F: '/^FROM / {print $2}' mariadb-lite/Dockerfile)"
+          echo "::set-output name=version::$(awk -F: '/^FROM / {print gensub(/\@.+/, "", "g", $2)}' mariadb-lite/Dockerfile)"
 
       - name: Build and push
         uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a # tag=v2.7.0
