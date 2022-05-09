@@ -27,7 +27,7 @@ jobs:
       contents: read
     steps:
       - name: Check out the source code
-        uses: actions/checkout@3df53dd32d858478710a6127bcd8b9d8b7182e16 # tag=v3
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
 
       - name: Login to DockerHub
         uses: docker/login-action@dd4fa0671be5250ee6f50aedf4cb05514abda2c7 # tag=v1
