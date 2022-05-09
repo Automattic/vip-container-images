@@ -1,4 +1,4 @@
-FROM cimg/base:stable-20.04
+FROM cimg/base:stable-20.04@sha256:a394761a8abe3dbb25170529be8687c5d47eea2cbe118e37a7b49adb48692d45
 
 USER root
 
