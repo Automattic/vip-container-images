@@ -50,7 +50,15 @@ cp /dev-tools/dev-env-plugin.php /wp/wp-content/mu-plugins/
 
 echo "Checking for WordPress installation..."
 
-if ! wp option get siteurl 2>/dev/null; then
+site_exist_check_output=$(wp option get siteurl 2>&1);
+
+site_exist_return_value=$?;
+site_installed=1;
+if [[ "$site_exist_check_output" == *"The site you have requested is not installed"* ]]; then
+  site_installed=0;
+fi
+
+if [[ "$site_installed" == 0 ]]; then
   echo "No installation found, installing WordPress..."
   if [ -n "$multisite_domain" ]; then
     wp core multisite-install \
@@ -81,4 +89,9 @@ if ! wp option get siteurl 2>/dev/null; then
   fi
 
   wp user add-cap 1 view_query_monitor
+elif [ "$site_exist_return_value" != 0 ] ; then
+  echo "ERROR: Could not find out if site exist."
+  echo "$site_exist_check_output"
+else
+  echo "Wordpress already installed"
 fi
