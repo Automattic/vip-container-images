@@ -90,8 +90,8 @@ if [[ "$site_installed" == 0 ]]; then
 
   wp user add-cap 1 view_query_monitor
 elif [ "$site_exist_return_value" != 0 ] ; then
-  echo "ERROR: Could not find out if site exist."
+  echo "ERROR: Could not find out if site exists."
   echo "$site_exist_check_output"
 else
-  echo "Wordpress already installed"
+  echo "WordPress already installed"
 fi
