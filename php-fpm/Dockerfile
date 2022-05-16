@@ -46,6 +46,7 @@ RUN \
     pecl install ssh2-1.3.1 && \
     pecl install gmagick-2.0.6RC1 && \
     pecl install xdebug && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp --with-xpm && \
     docker-php-ext-install -j$(nproc) bcmath calendar exif gd gmp intl mysqli pcntl shmop soap sockets sysvsem sysvshm zip && \
     docker-php-ext-enable apcu gmagick mcrypt memcache ssh2 timezonedb xdebug opcache && \
     docker-php-source delete && \
