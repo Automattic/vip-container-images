@@ -37,7 +37,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Get image version
         id: getversion
-        run: echo "::set-output name=version::$(head -n 1 php-fpm/Dockerfile | sed -e 's/FROM php:\(.*\)-fpm-alpine3.14/\1/')"
+        run: echo "::set-output name=version::$(head -n 1 php-fpm/Dockerfile | sed -re 's/FROM php:([0-9]+\.[0-9]+)-.*$/\1/')"
       - name: Build container image
         uses: docker/build-push-action@e551b19e49efd4e98792db7592c17c09b89db8d8 # tag=v3
         with:
