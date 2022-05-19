@@ -20,7 +20,7 @@ do
   i=$((i+1))
   # Roughly 1 minute
   if [ $i -eq 120 ]; then
-    echo "ERROR: WP core files not found. Please try to restart or destroy the environment"
+    echo "ERROR: WordPress core files not found. Please try to restart or destroy the environment"
     exit 1;
   fi
 done
