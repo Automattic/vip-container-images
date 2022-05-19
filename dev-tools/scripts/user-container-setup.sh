@@ -55,5 +55,8 @@ if [ "$LANDO_WEBROOT_UID" != "$LANDO_HOST_UID" ]; then
         exit 1;
     fi
 
-    chown -R "$LANDO_WEBROOT_USER" "/home/$LANDO_WEBROOT_USER"
+    if [[ -d "/home/$LANDO_WEBROOT_USER" ]]; then
+        lando_info "Making $LANDO_WEBROOT_USER owner of /home/$LANDO_WEBROOT_USER"
+        chown -R "$LANDO_WEBROOT_USER" "/home/$LANDO_WEBROOT_USER"
+    fi
 fi
