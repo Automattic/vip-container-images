@@ -20,8 +20,8 @@ do
   i=$((i+1))
   # Roughly 1 minute
   if [ $i -eq 120 ]; then
-    echo "Timeout exceeded"
-    break
+    echo "ERROR: WordPress core files not found. Please try to restart or destroy the environment"
+    exit 1;
   fi
 done
 
