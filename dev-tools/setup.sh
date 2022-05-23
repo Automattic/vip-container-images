@@ -54,7 +54,7 @@ site_exist_check_output=$(wp option get siteurl 2>&1);
 
 site_exist_return_value=$?;
 site_installed=1;
-if [[ "$site_exist_check_output" == *"The site you have requested is not installed"* ]]; then
+if [[ "$site_exist_check_output" == *"The site you have requested is not installed"* ]] || echo "$site_exist_check_output" | grep -q "Site .* not found"; then
   site_installed=0;
 fi
 
