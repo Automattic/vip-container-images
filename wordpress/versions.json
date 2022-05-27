@@ -1,10 +1,10 @@
 [
   {
-    "ref": "d9b3f05bc0a08929c3244c691a091cd7a50a5723",
-    "tag": "6.0-RC2",
+    "ref": "6.0",
+    "tag": "6.0",
     "cacheable": true,
-    "locked": false,
-    "prerelease": true
+    "locked": true,
+    "prerelease": false
   },
   {
     "ref": "5.9.3",
