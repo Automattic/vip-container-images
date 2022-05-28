@@ -18,6 +18,13 @@ download_wp() {
 		ln -sf "/wordpress/wordpress-${LATEST}" /wordpress/wordpress-latest
 		ln -sf "/wordpress/wordpress-tests-lib-${LATEST}" /wordpress/wordpress-tests-lib-latest
 		return
+	elif [ "${VERSION%.x}" != "${VERSION}" ]; then
+		VER="${VERSION}"
+		LATEST=$(wget https://api.wordpress.org/core/version-check/1.7/ -q -O - | jq --arg version "${VERSION%.x}" -r '.offers | map(select(.version | startswith($version))) | sort_by(.version) | reverse | .[0].version')
+		download_wp "${LATEST}"
+		ln -sf "/wordpress/wordpress-${LATEST}" "/wordpress/wordpress-${VER}"
+		ln -sf "/wordpress/wordpress-tests-lib-${LATEST}" "/wordpress/wordpress-tests-lib-${VER}"
+		return
 	else
 		TESTS_TAG="tags/${VERSION}"
 	fi
