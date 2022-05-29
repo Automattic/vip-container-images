@@ -1,0 +1,51 @@
+name: Security Scan
+
+on:
+  schedule:
+    - cron: '0 10 * * *'
+  workflow_dispatch:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  security-scan:
+    name: Security Scan (${{ matrix.image }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - alpine:latest
+          - dev-tools:latest
+          - mariadb-lite:10.3
+          - mu-plugins:latest
+          - nginx:latest
+          - php-fpm-alt:7.4
+          - php-fpm-alt:8.0
+          - php-fpm-alt:8.1
+          - php-fpm:latest
+          - skeleton:latest
+          - statsd:latest
+          - traefik_openssl:v2.6.6
+          - wp-core-test-runner:latest
+          - wp-test-runner:latest
+    steps:
+      - name: Security Scan
+        uses: aquasecurity/trivy-action@master
+        id: scan
+        with:
+          image-ref: ghcr.io/automattic/vip-container-images/${{ matrix.image }}
+          format: sarif
+          output: trivy-results.sarif
+          vuln-type: os
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@a3a6c128d771b6b9bdebb1c9d0583ebd2728a108 # tag=v2.1.11
+        with:
+          sarif_file: trivy-results.sarif
