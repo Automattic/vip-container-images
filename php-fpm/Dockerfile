@@ -1,4 +1,4 @@
-FROM php:7.4-fpm-alpine3.15@sha256:ee273d3afbaca1c43d5860da2d8f66de23e2c7a14eba18cc5bf766bef421a8ce
+FROM php:8.1-fpm-alpine3.15@sha256:b754e527237649259232c68eec17e41312f079ebca63ea89e9379167ad3bea14
 
 RUN apk add --no-cache less bash mariadb-client \
     # memcache
