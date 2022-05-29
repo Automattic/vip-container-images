@@ -1,4 +1,4 @@
-FROM cimg/base:stable-20.04@sha256:a394761a8abe3dbb25170529be8687c5d47eea2cbe118e37a7b49adb48692d45
+FROM cimg/base:stable-20.04@sha256:087e0c2f4f3702c9080b726e240ec4e649eb3242cc2b453c8a49476a40bc50d1
 
 USER root
 RUN \
