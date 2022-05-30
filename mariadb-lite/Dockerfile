@@ -1,4 +1,4 @@
-FROM circleci/mariadb:10.3@sha256:6d3dea5cadaa21fdfd74cc0c0e6360a467090bae312c369c68c72c94704e54f4
+FROM mariadb:10.3@sha256:4fcbee53b67ef199eb379580382924aa7258d91147ac778f3489d004674f936e
 
 RUN \
     apt-get -qq update && \
@@ -6,4 +6,14 @@ RUN \
     eatmydata apt-get -qq upgrade && \
     rm -rf /var/lib/apt/lists/*
 
-ENV LD_PRELOAD libeatmydata.so
+ENV \
+    LD_PRELOAD=libeatmydata.so \
+    MYSQL_ALLOW_EMPTY_PASSWORD=true \
+    MYSQL_DATABASE=circle_test \
+    MYSQL_HOST=127.0.0.1 \
+    MYSQL_ROOT_HOST=% \
+    MYSQL_USER=root
+
+RUN \
+    echo '\n[mysqld]\ncollation-server = utf8_unicode_ci\ninit-connect="SET NAMES utf8"\ncharacter-set-server = utf8\ninnodb_flush_log_at_trx_commit=2\nsync_binlog=0\ninnodb_use_native_aio=0\n' >> /etc/mysql/my.cnf && \
+    echo '\n[mysqld]\ndatadir = /dev/shm/mysql\n' >> /etc/mysql/my.cnf
