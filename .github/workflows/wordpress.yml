@@ -74,11 +74,9 @@ jobs:
       - name: Build WordPress image
         uses: docker/build-push-action@e551b19e49efd4e98792db7592c17c09b89db8d8 # tag=v3
         with:
-          file: wordpress/Dockerfile
           platforms: linux/amd64,linux/arm64
           context: wordpress
           push: ${{ github.base_ref == null }}
-          pull: true
           build-args: WP_GIT_REF=${{ matrix.wp.ref }}
           cache-from: type=gha,scope=wordpress-${{ matrix.wp.ref }}
           cache-to: type=gha,mode=max,scope=wordpress-${{ matrix.wp.ref }}

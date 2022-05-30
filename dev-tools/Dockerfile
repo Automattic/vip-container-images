@@ -1,4 +1,4 @@
-FROM ghcr.io/automattic/vip-container-images/alpine:3.15.4@sha256:81651cfe524426b5066c9670d8b816a505a605df9e1d8c3d16097026388ee402
+FROM ghcr.io/automattic/vip-container-images/alpine:3.16.0@sha256:65a63720c74c978bcc1225803bb3c3e94922165c17814d599d8ac6dc11f32746
 
 COPY dev-tools/setup.sh dev-tools/add-site.sh dev-tools/dev-env-plugin.php dev-tools/wp-config* /dev-tools/
 COPY dev-tools/scripts /scripts

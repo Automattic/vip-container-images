@@ -9,7 +9,7 @@ Images are built and published using GitHub Actions and GitHub Packages. All ima
 You can find the most up to date versions of the images and the command to pull them in the sidebar, under the _Packages_ section. TL;DR the pulling has to be prefixed with `ghcr.io/automattic/vip-container-images`. For instance:
 
 ```bash
-docker pull ghcr.io/automattic/vip-container-images/alpine:3.14.1
+docker pull ghcr.io/automattic/vip-container-images/alpine:3.16.0
 ```
 
 ### Using image locally in dev-env
