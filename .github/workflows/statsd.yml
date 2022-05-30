@@ -37,7 +37,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Get image version
         id: getversion
-        run: echo "::set-output name=version::$(head -n 1 statsd/Dockerfile | sed -e 's/FROM statsd\/statsd:\(.*\)/\1/')"
+        run: |
+          echo "::set-output name=version::$(awk -F: '/^FROM / {print gensub(/\@.+/, "", "g", $2)}' statsd/Dockerfile)"
       - name: Build container image
         uses: docker/build-push-action@e551b19e49efd4e98792db7592c17c09b89db8d8 # tag=v3
         with:
