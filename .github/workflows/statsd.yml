@@ -41,7 +41,7 @@ jobs:
       - name: Build container image
         uses: docker/build-push-action@e551b19e49efd4e98792db7592c17c09b89db8d8 # tag=v3
         with:
-          file: statsd/Dockerfile
+          context: statsd
           platforms: linux/amd64,linux/arm64
           # base_ref is only defined in PRs, hence we're only pushing when we're not in a PR
           push: ${{ github.base_ref == null }}
