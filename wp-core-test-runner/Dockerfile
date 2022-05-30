@@ -20,7 +20,7 @@ COPY install-wp-core.sh /usr/local/bin/install-wp-core
 ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libeatmydata.so
 
 USER circleci
-RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 ENV NVM_DIR /home/circleci/.nvm
 
 RUN \
