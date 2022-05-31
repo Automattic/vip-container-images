@@ -1,5 +1,12 @@
-FROM statsd/statsd:v0.9.0@sha256:d7e6f2261ffeb96eff30f04c77e46959a6ddb23c492675196ceaeac5947e898c
+FROM statsd/statsd:v0.9.0@sha256:d7e6f2261ffeb96eff30f04c77e46959a6ddb23c492675196ceaeac5947e898c AS build
 
-COPY statsd/statsd-config.js /config/statsd-config.js
+FROM node:gallium-bullseye-slim@sha256:fab24688ec5c8cb3db76ce89f32ae9ab979bf12912789db28dd0436f6f27bb07
 
-CMD ["node", "/usr/src/app/stats.js", "/config/statsd-config.js"]
+WORKDIR /usr/src/app
+COPY --from=build /usr/src/app/ /usr/src/app/
+
+EXPOSE 8126 8125/udp
+
+COPY statsd-config.js /config/statsd-config.js
+
+CMD ["/usr/local/bin/node", "/usr/src/app/stats.js", "/config/statsd-config.js"]
