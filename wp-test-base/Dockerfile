@@ -12,7 +12,7 @@ RUN \
 	eatmydata apt-get -qq install php8.1 php8.1-apcu php8.1-curl php8.1-gd php8.1-gmp php8.1-igbinary php8.1-imagick php8.1-imap php8.1-intl php8.1-mbstring php8.1-mysql php8.1-sqlite3 php8.1-xdebug php8.1-xml php8.1-zip php8.1-memcache php8.1-memcached && \
 	eatmydata apt-get -qq install subversion unzip default-mysql-client && \
 	apt-get clean && rm -rf /var/lib/apt/lists/* && \
-	echo "xdebug.mode=coverage" | tee /etc/php/*/mods-available/xdebug.ini && \
+	echo "xdebug.mode=coverage" | tee -a /etc/php/*/mods-available/xdebug.ini && \
 	update-alternatives --set php /usr/bin/php7.4
 
 RUN install -d -o circleci -g circleci -m 0777 /wordpress
