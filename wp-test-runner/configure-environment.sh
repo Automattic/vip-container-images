@@ -37,10 +37,10 @@ fi
 
 if [ -n "${DISABLE_XDEBUG}" ]; then
 	sudo phpdismod -v "${PHP_VERSION}" xdebug || true
-    echo 'XDebug disabled'
+	echo 'XDebug disabled'
 else
 	sudo phpenmod -v "${PHP_VERSION}" xdebug || true
-    echo 'XDebug enabled'
+	echo 'XDebug enabled'
 fi
 
 PHP="php ${PHP_OPTIONS}"
