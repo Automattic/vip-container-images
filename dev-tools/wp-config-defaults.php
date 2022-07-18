@@ -129,3 +129,6 @@ if ( ! defined( 'VIP_STATSD_PORT' ) ) {
 if ( ! defined( 'FORCE_SSL_ADMIN' ) ) {
 	define( 'FORCE_SSL_ADMIN', false );
 }
+
+// Avoid potential IDC
+define( 'JETPACK_STAGING_MODE', true );
