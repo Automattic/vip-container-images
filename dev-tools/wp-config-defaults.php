@@ -131,4 +131,6 @@ if ( ! defined( 'FORCE_SSL_ADMIN' ) ) {
 }
 
 // Avoid potential IDC
-define( 'JETPACK_STAGING_MODE', true );
+if ( ! defined( 'JETPACK_STAGING_MODE' ) ) {
+	define( 'JETPACK_STAGING_MODE', true );
+}
