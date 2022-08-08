@@ -9,6 +9,7 @@ while true; do
 	if [ "$head" != "$develop" ]; then
 		git reset --hard origin/develop
 		git submodule update
+		rsync -r --exclude-from="/mu-plugins-ext/.dockerignore" /mu-plugins-ext/* ./
 	fi
 	# 10 mins
 	sleep 600
