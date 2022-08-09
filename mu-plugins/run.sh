@@ -4,7 +4,7 @@
 
 if [ ! -d /shared/.git ]; then
   rsync -a --delete --delete-delay /mu-plugins/ /shared/
-  rsync -r --exclude-from="/mu-plugins-ext/.dockerignore" /mu-plugins-ext/* /shared
+  rsync -r --delete --exclude-from="/mu-plugins-ext/.dockerignore" /mu-plugins-ext/* /shared
   chown www-data -R /shared
 fi
 
