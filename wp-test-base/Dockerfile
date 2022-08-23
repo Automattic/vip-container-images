@@ -9,8 +9,8 @@ RUN \
 	eatmydata apt-get -qq upgrade && \
 	eatmydata apt-get -qq install php7.4 php7.4-apcu php7.4-curl php7.4-gd php7.4-gmp php7.4-igbinary php7.4-imagick php7.4-imap php7.4-intl php7.4-mbstring php7.4-mysql php7.4-sqlite3 php7.4-xdebug php7.4-xml php7.4-xsl php7.4-zip php7.4-memcache php7.4-memcached && \
 	eatmydata apt-get -qq install php8.0 php8.0-apcu php8.0-curl php8.0-gd php8.0-gmp php8.0-igbinary php8.0-imagick php8.0-imap php8.0-intl php8.0-mbstring php8.0-mysql php8.0-sqlite3 php8.0-xdebug php8.0-xml php8.0-xsl php8.0-zip php8.0-memcache php8.0-memcached && \
-	eatmydata apt-get -qq install php8.1 php8.1-apcu php8.1-curl php8.1-gd php8.1-gmp php8.1-igbinary php8.1-imagick php8.1-imap php8.1-intl php8.1-mbstring php8.1-mysql php8.1-sqlite3 php8.1-xdebug php8.1-xml php8.1-zip php8.1-memcache php8.1-memcached && \
-	eatmydata apt-get -qq install php8.2             php8.2-curl php8.2-gd php8.2-gmp                                php8.2-imap php8.2-intl php8.2-mbstring php8.2-mysql php8.2-sqlite3               php8.2-xml php8.2-zip                                  && \
+	eatmydata apt-get -qq install php8.1 php8.1-apcu php8.1-curl php8.1-gd php8.1-gmp php8.1-igbinary php8.1-imagick php8.1-imap php8.1-intl php8.1-mbstring php8.1-mysql php8.1-sqlite3 php8.1-xdebug php8.1-xml            php8.1-zip php8.1-memcache php8.1-memcached && \
+	eatmydata apt-get -qq install php8.2             php8.2-curl php8.2-gd php8.2-gmp                                php8.2-imap php8.2-intl php8.2-mbstring php8.2-mysql php8.2-sqlite3               php8.2-xml php8.2-zip                                             && \
 	eatmydata apt-get -qq install subversion unzip default-mysql-client && \
 	apt-get clean && rm -rf /var/lib/apt/lists/* && \
 	echo "xdebug.mode=coverage" | tee -a /etc/php/*/mods-available/xdebug.ini && \
