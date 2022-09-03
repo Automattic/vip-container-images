@@ -30,7 +30,6 @@ RUN \
 USER circleci
 
 ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libeatmydata.so
-RUN composer global require phpunit/phpunit:^7 yoast/phpunit-polyfills:^1
 
 RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 ENV NVM_DIR /home/circleci/.nvm
