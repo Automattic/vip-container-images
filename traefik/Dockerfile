@@ -1,3 +1,3 @@
-FROM traefik:v2.7.0@sha256:433f851c0abcaa5999301c46d7129a96a6df95a52d09f16847b00ce5f7c1b6ae
+FROM traefik:2.8@sha256:9717bde18a6e109c63a88e4b67725500c701768d7c044fc64c83efdb892b5738
 
 RUN apk add --no-cache openssl
