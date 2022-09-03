@@ -14,7 +14,7 @@ RUN \
 	eatmydata apt-get -qq install subversion unzip default-mysql-client && \
 	apt-get clean && rm -rf /var/lib/apt/lists/* && \
 	echo "xdebug.mode=coverage" | tee -a /etc/php/*/mods-available/xdebug.ini && \
-	update-alternatives --set php /usr/bin/php7.4
+	update-alternatives --set php /usr/bin/php8.0
 
 RUN install -d -o circleci -g circleci -m 0777 /wordpress
 RUN wget -q https://getcomposer.org/installer -O - | php -- --install-dir=/usr/bin/ --filename=composer
