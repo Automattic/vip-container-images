@@ -1,4 +1,4 @@
-FROM cimg/base:stable-20.04@sha256:087e0c2f4f3702c9080b726e240ec4e649eb3242cc2b453c8a49476a40bc50d1
+FROM cimg/base:stable-20.04@sha256:35e5e29930ab565475a4f2aa9b4124998ed67dbc7b0e2dd5f420a4189d08d0d2
 
 USER root
 RUN \
@@ -9,11 +9,12 @@ RUN \
 	eatmydata apt-get -qq upgrade && \
 	eatmydata apt-get -qq install php7.4 php7.4-apcu php7.4-curl php7.4-gd php7.4-gmp php7.4-igbinary php7.4-imagick php7.4-imap php7.4-intl php7.4-mbstring php7.4-mysql php7.4-sqlite3 php7.4-xdebug php7.4-xml php7.4-xsl php7.4-zip php7.4-memcache php7.4-memcached && \
 	eatmydata apt-get -qq install php8.0 php8.0-apcu php8.0-curl php8.0-gd php8.0-gmp php8.0-igbinary php8.0-imagick php8.0-imap php8.0-intl php8.0-mbstring php8.0-mysql php8.0-sqlite3 php8.0-xdebug php8.0-xml php8.0-xsl php8.0-zip php8.0-memcache php8.0-memcached && \
-	eatmydata apt-get -qq install php8.1 php8.1-apcu php8.1-curl php8.1-gd php8.1-gmp php8.1-igbinary php8.1-imagick php8.1-imap php8.1-intl php8.1-mbstring php8.1-mysql php8.1-sqlite3 php8.1-xdebug php8.1-xml php8.1-zip php8.1-memcache php8.1-memcached && \
+	eatmydata apt-get -qq install php8.1 php8.1-apcu php8.1-curl php8.1-gd php8.1-gmp php8.1-igbinary php8.1-imagick php8.1-imap php8.1-intl php8.1-mbstring php8.1-mysql php8.1-sqlite3 php8.1-xdebug php8.1-xml            php8.1-zip php8.1-memcache php8.1-memcached && \
+	eatmydata apt-get -qq install php8.2             php8.2-curl php8.2-gd php8.2-gmp                                php8.2-imap php8.2-intl php8.2-mbstring php8.2-mysql php8.2-sqlite3               php8.2-xml php8.2-zip                                             && \
 	eatmydata apt-get -qq install subversion unzip default-mysql-client && \
 	apt-get clean && rm -rf /var/lib/apt/lists/* && \
 	echo "xdebug.mode=coverage" | tee -a /etc/php/*/mods-available/xdebug.ini && \
-	update-alternatives --set php /usr/bin/php7.4
+	update-alternatives --set php /usr/bin/php8.0
 
 RUN install -d -o circleci -g circleci -m 0777 /wordpress
 RUN wget -q https://getcomposer.org/installer -O - | php -- --install-dir=/usr/bin/ --filename=composer
@@ -29,7 +30,6 @@ RUN \
 USER circleci
 
 ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libeatmydata.so
-RUN composer global require phpunit/phpunit:^7 yoast/phpunit-polyfills:^1
 
 RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 ENV NVM_DIR /home/circleci/.nvm

@@ -11,6 +11,7 @@ on:
     paths:
       - "skeleton/**"
       - ".github/workflows/skeleton.yml"
+  workflow_dispatch:
 
 permissions:
   contents: read

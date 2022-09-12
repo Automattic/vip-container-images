@@ -1,4 +1,4 @@
-FROM ghcr.io/automattic/vip-container-images/wp-test-base:latest@sha256:215d38c840e69bffa9c4ada949032333d0bdec77d68d334da1acf9a4c7f82c3a
+FROM ghcr.io/automattic/vip-container-images/wp-test-base:latest@sha256:e9735c7e4928358649ce132aed353410068d8e9be4c0b4e9ea087d3091e00529
 
 USER root
 COPY install-wp-core.sh /usr/local/bin/install-wp-core
