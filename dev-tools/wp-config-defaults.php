@@ -17,6 +17,42 @@ if ( isset( $_SERVER['HTTP_HOST'] ) && count( explode( ':', $_SERVER['HTTP_HOST'
 	define( 'WP_SITEURL', $proto . '://' . $_SERVER['HTTP_HOST'] );
 }
 
+
+/**
+ * Parity with Go's wp-config.php
+ */
+if ( ! defined( 'ABSPATH' ) ) {
+	define( 'ABSPATH', dirname( __FILE__ ) . '/' );
+}
+
+if ( file_exists( ABSPATH . '/wp-content/mu-plugins/lib/wpcom-error-handler/wpcom-error-handler.php' ) ) {
+	require_once ABSPATH . '/wp-content/mu-plugins/lib/wpcom-error-handler/wpcom-error-handler.php';
+}
+
+// Load VIP_Request_Block utility class, if available
+if ( file_exists( ABSPATH . '/wp-content/mu-plugins/lib/class-vip-request-block.php' ) ) {
+	require_once ABSPATH . '/wp-content/mu-plugins/lib/class-vip-request-block.php';
+}
+
+$_SERVER['REMOTE_ADDR_ORIG'] = $_SERVER['REMOTE_ADDR'];
+
+
+if ( isset( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && strstr( $_SERVER['HTTP_X_FORWARDED_PROTO'], 'https' ) ) {
+	$_SERVER['HTTPS'] = 'on';
+}
+
+if ( isset( $_SERVER['HTTP_X_FORWARDED_PORT'] ) && is_numeric( $_SERVER['HTTP_X_FORWARDED_PORT'] ) ) {
+	$_SERVER['SERVER_PORT'] = intval( $_SERVER['HTTP_X_FORWARDED_PORT'] );
+}
+
+if ( isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) &&
+	( filter_var( $_SERVER['HTTP_X_FORWARDED_FOR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) ||
+		filter_var( $_SERVER['HTTP_X_FORWARDED_FOR'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) ) ) {
+	$_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_X_FORWARDED_FOR'];
+}
+
+
+
  /**
  * Read-only filesystem
  */
@@ -60,17 +96,11 @@ if ( ! defined( 'WP_CRON_CONTROL_SECRET' ) ) {
 /**
  * VIP Env variables
  */
-if ( ! defined( 'WPCOM_IS_VIP_ENV' ) ) {
-	define( 'WPCOM_IS_VIP_ENV', false );
-}
+define( 'WPCOM_IS_VIP_ENV', true );
+define( 'FILES_CLIENT_SITE_ID', 200508 );
 
-if ( ! defined( 'FILES_CLIENT_SITE_ID' ) ) {
-	define( 'FILES_CLIENT_SITE_ID', 200508 );
-}
-
-if ( ! defined( 'VIP_GO_APP_ENVIRONMENT' ) ) {
-	define( 'VIP_GO_APP_ENVIRONMENT', 'local' );
-}
+define( 'VIP_GO_APP_ENVIRONMENT', 'local' );
+define( 'VIP_GO_ENV', 'local' );
 
 /**
  * VIP Config
@@ -82,17 +112,6 @@ if ( file_exists( ABSPATH . '/wp-content/vip-config/vip-config.php' ) ) {
 /**
  * Enterprise Search
  */
-/*
-// Uncomment following code in order to enable Enterprise Search
-if ( ! defined( 'VIP_ENABLE_VIP_SEARCH' ) ) {
-	define( 'VIP_ENABLE_VIP_SEARCH', true );
-}
-
-if ( ! defined( 'VIP_ENABLE_ELASTICSEARCH_QUERY_INTEGRATION' ) ) {
-	define( 'VIP_ENABLE_ELASTICSEARCH_QUERY_INTEGRATION', true );
-}
-*/
-
 if ( ! defined( 'VIP_ELASTICSEARCH_ENDPOINTS' ) ) {
 	define( 'VIP_ELASTICSEARCH_ENDPOINTS', [
 		'http://vip-search:9200',
