@@ -76,7 +76,7 @@ jobs:
         run: |
           for version in ${LATEST}; do
             tag=$(echo ${version} | awk -F. '{print $1"."$2}')
-            ./add-version.sh "${tag}" "${version}" true
+            ./add-version.sh "${tag}" "${version}" true true
           done
         env:
           LATEST: ${{ steps.wanted.outputs.latest }}
