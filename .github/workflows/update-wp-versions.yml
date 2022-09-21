@@ -88,7 +88,7 @@ jobs:
             git config user.name "WordPress VIP Bot"
             git config user.email no-reply@automattic.com
             git add wordpress
-            git commit -m "Regenerate the bundle"
+            git commit -m "Add WordPress ${LATEST}."
             git push -u origin "${MAGIC_BRANCH_NAME}"
             gh pr create --base master --head "${MAGIC_BRANCH_NAME}" --title "Update versions.json" --body "Add WordPress ${LATEST}."
           fi
