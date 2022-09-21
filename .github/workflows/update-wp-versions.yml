@@ -1,0 +1,51 @@
+name: Update WordPress versions
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+  push:
+
+jobs:
+  update:
+    name: Update WordPress versions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v3
+
+      - name: Get WordPress versions we want
+        id: wanted
+        run: |
+          LATEST=$(wget https://api.wordpress.org/core/version-check/1.7/ -q -O - | jq -r '[.offers[].version] | unique | map(select( . >= "6.0")) | .[]')
+          echo ::set-output name=latest::${LATEST}
+          TAGS=
+          for v in ${LATEST}; do
+            TAGS="${TAGS} $(echo ${v} | awk -F. '{print $1"."$2}')"
+          done
+          TAGS=${TAGS# }
+          echo ::set-output name=tags::${TAGS}
+
+      - name: Remove old WordPress versions from versions.json
+        run: |
+          for tag in ${TAGS}; do
+            ./del-version.sh "${tag}"
+          done
+        env:
+          TAGS: ${{ steps.wanted.outputs.tags }}
+        working-directory: wordpress
+
+      - name: Add new WordPress versions to versions.json
+        run: |
+          for version in ${LATEST}; do
+            tag=$(echo ${version} | awk -F. '{print $1"."$2}')"
+            ./add-version.sh "${tag}" "${version}" 
+          done
+        env:
+          LATEST: ${{ steps.wanted.outputs.latest }}
+        working-directory: wordpress
+
+      - name: Look and get surprised
+        run: |
+          git diff
+        working-directory: wordpress
