@@ -43,7 +43,7 @@ jobs:
       - name: Add new WordPress versions to versions.json
         run: |
           for version in ${LATEST}; do
-            tag=$(echo ${version} | awk -F. '{print $1"."$2}')"
+            tag=$(echo ${version} | awk -F. '{print $1"."$2}')
             ./add-version.sh "${tag}" "${version}" 
           done
         env:
