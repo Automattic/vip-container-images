@@ -7,9 +7,30 @@ on:
   push:
 
 jobs:
+  preflight:
+    name: Preflight check
+    runs-on: ubuntu-latest
+    outputs:
+      branch-exists: ${{ steps.check-branch.outputs.exists }}
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v3
+
+      - name: Check if 'update/wordpress-versions' branch exists
+        id: check-branch
+        run: |
+          if git ls-remote --exit-code --heads origin update/wordpress-versions; then
+            echo "::set-output name=exists::true"
+            echo ::warning::"Branch 'update/wordpress-versions' already exists, exiting."
+          else
+            echo "::set-output name=exists::false"
+          fi
+
   update:
     name: Update WordPress versions
     runs-on: ubuntu-latest
+    needs: preflight
+    if: ${{ needs.preflight.outputs.branch-exists == 'false' }}
     steps:
       - name: Check out source code
         uses: actions/checkout@v3
@@ -44,7 +65,7 @@ jobs:
         run: |
           for version in ${LATEST}; do
             tag=$(echo ${version} | awk -F. '{print $1"."$2}')
-            ./add-version.sh "${tag}" "${version}" 
+            ./add-version.sh "${tag}" "${version}" true
           done
         env:
           LATEST: ${{ steps.wanted.outputs.latest }}
