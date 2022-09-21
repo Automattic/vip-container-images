@@ -43,7 +43,7 @@ VERSIONS="$(dirname "$0")/versions.json"
 
 exists=$(jq -r ".[] | select(.tag == \"${TAG}\") | .ref" "${VERSIONS}")
 if [ -z "${exists}" ]; then
-    jq ". += [{ref: \"${REF}\", tag: \"${TAG}\", cacheable: ${CACHEABLE}, locked: ${LOCKED}, prerelease: ${PRERELEASE} }] | sort_by(.tag) | reverse" "${VERSIONS}" | sponge "${VERSIONS}"
+    jq ". += [{ref: \"${REF}\", tag: \"${TAG}\", cacheable: ${CACHEABLE}, locked: ${LOCKED}, prerelease: ${PRERELEASE} }] | sort_by(.tag) | reverse | [ (.[] | select(.locked == true)), (.[] | select(.locked != true)) ]" "${VERSIONS}" | sponge "${VERSIONS}"
 else
     echo "${TAG} already exists in versions.json"
 fi
