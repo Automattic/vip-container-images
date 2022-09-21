@@ -96,7 +96,7 @@ if ( ! defined( 'WP_CRON_CONTROL_SECRET' ) ) {
 /**
  * VIP Env variables
  */
-define( 'WPCOM_IS_VIP_ENV', true );
+define( 'WPCOM_IS_VIP_ENV', false );
 define( 'FILES_CLIENT_SITE_ID', 200508 );
 
 define( 'VIP_GO_APP_ENVIRONMENT', 'local' );
