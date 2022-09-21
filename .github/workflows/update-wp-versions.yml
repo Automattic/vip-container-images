@@ -6,6 +6,12 @@ on:
   workflow_dispatch:
   push:
 
+env:
+  MAGIC_BRANCH_NAME: auto-update/wordpress-versions
+
+permissions:
+  contents: read
+
 jobs:
   preflight:
     name: Preflight check
@@ -19,9 +25,9 @@ jobs:
       - name: Check if 'update/wordpress-versions' branch exists
         id: check-branch
         run: |
-          if git ls-remote --exit-code --heads origin update/wordpress-versions; then
+          if git ls-remote --exit-code --heads origin ${MAGIC_BRANCH_NAME}; then
             echo "::set-output name=exists::true"
-            echo ::warning::"Branch 'update/wordpress-versions' already exists, exiting."
+            echo ::warning::"Branch '${MAGIC_BRANCH_NAME}' already exists, exiting."
           else
             echo "::set-output name=exists::false"
           fi
@@ -31,9 +37,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: preflight
     if: ${{ needs.preflight.outputs.branch-exists == 'false' }}
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Check out source code
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.WPCOM_VIP_BOT_TOKEN }}
 
       - name: Install dependencies
         run: |
@@ -71,7 +82,17 @@ jobs:
           LATEST: ${{ steps.wanted.outputs.latest }}
         working-directory: wordpress
 
-      - name: Look and get surprised
+      - name: Commit the changes and create a PR
         run: |
-          git diff
-        working-directory: wordpress
+          if [ "$(git diff --ignore-space-at-eol wordpress/ | wc -l)" -gt "0" ]; then
+            git checkout -b ${MAGIC_BRANCH_NAME}
+            git config user.name "WordPress VIP Bot"
+            git config user.email no-reply@automattic.com
+            git add wordpress
+            git commit -m "Regenerate the bundle"
+            git push -u origin "${MAGIC_BRANCH_NAME}"
+            gh pr create --base master --head "${MAGIC_BRANCH_NAME}" --title "Update versions.json" --body "Add WordPress ${LATEST}."
+          fi
+        env:
+          LATEST: ${{ steps.wanted.outputs.latest }}
+          GH_TOKEN: ${{ secrets.WPCOM_VIP_BOT_TOKEN }}
