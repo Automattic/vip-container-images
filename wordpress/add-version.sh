@@ -14,25 +14,20 @@ TAG="$1"
 REF="$2"
 
 CACHEABLE=true
-if [ -n "$3" ]; then
-    if [ "$3" == "false" ]; then
-        CACHEABLE=false
-    fi
+if [ "$3" = "false" ]; then
+    CACHEABLE=false
 fi
 
 LOCKED=false
-if [ -n "$4" ]; then
-    if [ "$4" == "true" ]; then
-        LOCKED=true
-    fi
+if [ "$4" = "true" ]; then
+    LOCKED=true
 fi
 
 PRERELEASE=false
-if [ -n "$5" ]; then
-    if [ "$5" == "true" ]; then
-        PRERELEASE=true
-    fi
+if [ "$5" = "true" ]; then
+    PRERELEASE=true
 fi
+
 echo ""
 echo "Adding version: $TAG at ref: $REF"
 echo "Cacheable: $CACHEABLE"
@@ -43,7 +38,7 @@ VERSIONS="$(dirname "$0")/versions.json"
 
 exists=$(jq -r ".[] | select(.tag == \"${TAG}\") | .ref" "${VERSIONS}")
 if [ -z "${exists}" ]; then
-    jq ". += [{ref: \"${REF}\", tag: \"${TAG}\", cacheable: ${CACHEABLE}, locked: ${LOCKED}, prerelease: ${PRERELEASE} }] | sort_by(.tag) | reverse" "${VERSIONS}" | sponge "${VERSIONS}"
+    jq ". += [{ref: \"${REF}\", tag: \"${TAG}\", cacheable: ${CACHEABLE}, locked: ${LOCKED}, prerelease: ${PRERELEASE} }] | sort_by(.tag) | reverse | [ (.[] | select(.locked == true)), (.[] | select(.locked != true)) ]" "${VERSIONS}" | sponge "${VERSIONS}"
 else
     echo "${TAG} already exists in versions.json"
 fi
