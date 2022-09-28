@@ -12,16 +12,23 @@ on:
       - "php-fpm/**"
       - ".github/workflows/php-fpm.yml"
 
-permissions:
-  contents: read
-
 jobs:
   push_to_registry:
-    name: Push Docker image to GitHub Packages
+    name: Push Docker image to GitHub Packages (PHP ${{ matrix.php.name }})
     runs-on: ubuntu-latest
     permissions:
       packages: write
       contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        php:
+          - name: "7.4"
+            suffix: "74"
+          - name: "8.0"
+            suffix: "80"
+          - name: "8.1"
+            suffix: "81"
     steps:
       - name: Check out the repo
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
@@ -35,19 +42,14 @@ jobs:
           registry: https://ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Get image version
-        id: getversion
-        run: echo "::set-output name=version::$(head -n 1 php-fpm/Dockerfile | sed -re 's/FROM php:([0-9]+\.[0-9]+)-.*$/\1/')"
       - name: Build container image
-        uses: docker/build-push-action@e551b19e49efd4e98792db7592c17c09b89db8d8 # tag=v3
+        uses: docker/build-push-action@e551b19e49efd4e98792db7592c17c09b89db8d8 # tag=v3.0.0
         with:
           context: php-fpm
           platforms: linux/amd64,linux/arm64
-          # base_ref is only defined in PRs, hence we're only pushing when we're not in a PR
+          file: php-fpm/Dockerfile.${{ matrix.php.suffix }}
           push: ${{ github.base_ref == null }}
           pull: true
-          cache-from: type=gha,scope=php-fpm
-          cache-to: type=gha,mode=max,scope=php-fpm
-          tags: |
-            ghcr.io/automattic/vip-container-images/php-fpm:latest
-            ghcr.io/automattic/vip-container-images/php-fpm:${{ steps.getversion.outputs.version }}
+          cache-from: type=gha,scope=php-fpm-${{ matrix.php.suffix }}
+          cache-to: type=gha,mode=max,scope=php-fpm-${{ matrix.php.suffix }}
+          tags: ghcr.io/automattic/vip-container-images/php-fpm-alt:${{ matrix.php.name }}, ghcr.io/automattic/vip-container-images/php-fpm:${{ matrix.php.name }}
