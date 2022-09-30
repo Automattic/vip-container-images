@@ -38,6 +38,8 @@ add_filter('two_factor_providers', function( $providers ) {
 	return $providers;
 });
 
+add_filter( 'wpcom_vip_is_two_factor_forced', '__return_false' );
+
 /******************
  * ADMIN USER CREATION
  ******************/
