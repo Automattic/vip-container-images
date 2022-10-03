@@ -1,7 +1,7 @@
 FROM alpine:3.15@sha256:69463fdff1f025c908939e86d4714b4d5518776954ca627cbeff4c74bcea5b22
 
 RUN \
-    apk add --no-cache ca-certificates curl tar xz openssl less bash mariadb-client php7 php7-fpm php7-pear \
+    apk add --no-cache ca-certificates curl tar xz openssl less bash mariadb-client su-exec php7 php7-fpm php7-pear \
         php7-pecl-apcu \
         php7-bcmath \
         php7-calendar \
