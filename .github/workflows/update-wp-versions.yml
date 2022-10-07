@@ -1,8 +1,8 @@
 name: Update WordPress versions
 
 on:
-  # schedule:
-  #   - cron: '0 0 * * *'
+  schedule:
+    - cron: '0 9 * * *'
   workflow_dispatch:
 
 env:
