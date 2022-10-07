@@ -73,7 +73,6 @@ ENV PHP_INI_DIR /etc/php82
 
 COPY rootfs82/ /
 COPY --from=build /usr/lib/php82/modules/memcache.so /usr/lib/php82/modules/memcache.so
-RUN php -m
 
 WORKDIR /var/www/html
 STOPSIGNAL SIGQUIT
