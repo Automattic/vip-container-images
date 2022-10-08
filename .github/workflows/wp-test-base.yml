@@ -14,6 +14,8 @@ on:
       - "wp-test-base/**"
       - ".github/workflows/wp-test-base.yml"
   workflow_dispatch:
+  schedule:
+    - cron: "39 8 * * 2"
 
 permissions:
   contents: read
