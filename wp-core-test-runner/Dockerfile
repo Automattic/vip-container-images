@@ -5,7 +5,7 @@ COPY install-wp-core.sh /usr/local/bin/install-wp-core
 
 USER circleci
 RUN \
-	for version in $(wget https://api.wordpress.org/core/version-check/1.7/ -q -O - | jq -r '[.offers[].version] | unique | map(select( . >= "5.5")) | .[]') latest; do \
+	for version in $(wget https://api.wordpress.org/core/version-check/1.7/ -q -O - | jq -r '[.offers[].version] | unique | map(select( . >= "5.9")) | .[]') latest; do \
 		DOCKER_BUILD=1 install-wp-core "${version}"; \
 	done
 
