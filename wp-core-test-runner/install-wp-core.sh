@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
@@ -25,23 +25,17 @@ download_wp_core() {
 		mkdir -p "/wordpress/wordpress-core-${VERSION}"
 		svn co --quiet --ignore-externals "https://develop.svn.wordpress.org/${TESTS_TAG}" "/wordpress/wordpress-core-${VERSION}"
 		svn co --quiet https://plugins.svn.wordpress.org/wordpress-importer/trunk/ "/wordpress/wordpress-core-${VERSION}/tests/phpunit/data/plugins/wordpress-importer"
-		(
-			cd "/wordpress/wordpress-core-${VERSION}" && \
-			composer install -n && \
-			nvm install && \
-			nvm use && \
-			npm ci && \
-			npm run build
-
-			if [ -n "${DOCKER_BUILD}" ]; then
-				rm -rf node_modules .svn
-			fi
-		)
+		cd "/wordpress/wordpress-core-${VERSION}"
+		composer install -n
+		nvm install -b
+		npm ci
+		npm run build
+		rm -rf node_modules .svn
 	else
 		echo "Skipping WordPress download"
 	fi
 }
 
 # shellcheck disable=SC1091
-[ -f "${NVM_DIR}/nvm.sh" ] && . "${NVM_DIR}/nvm.sh"
+. "${NVM_DIR}/nvm.sh" --no-use
 download_wp_core "${1:-latest}"
