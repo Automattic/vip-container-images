@@ -19,7 +19,7 @@ jobs:
       branch-exists: ${{ steps.check-branch.outputs.exists }}
     steps:
       - name: Check out source code
-        uses: actions/checkout@v3
+        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
 
       - name: Check if 'update/wordpress-versions' branch exists
         id: check-branch
@@ -41,7 +41,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Check out source code
-        uses: actions/checkout@v3
+        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
         with:
           token: ${{ secrets.WPCOM_VIP_BOT_TOKEN }}
 
