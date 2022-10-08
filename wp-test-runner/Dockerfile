@@ -1,4 +1,4 @@
-FROM ghcr.io/automattic/vip-container-images/wp-test-base:latest@sha256:100fce8ad0fce952c3dd0e05aeb94c52c3076b691a1cbcbe523242dfe375ebab
+FROM ghcr.io/automattic/vip-container-images/wp-test-base:latest@sha256:a6bb7597ec70d1d4246909afd98645fd9f4863e4a09a53e976210070a6ddea36
 
 USER root
 COPY install-wp.sh /usr/local/bin/install-wp
