@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+set -ex
 
 download_wp_core() {
 	VERSION="$1"
