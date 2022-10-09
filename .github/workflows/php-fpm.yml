@@ -12,6 +12,13 @@ on:
       - "php-fpm/**"
       - ".github/workflows/php-fpm.yml"
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   push_to_registry:
     name: Push Docker image to GitHub Packages (PHP ${{ matrix.php.name }})
