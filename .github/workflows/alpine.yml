@@ -49,6 +49,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           # base_ref is only defined in PRs, hence we're only pushing when we're not in a PR
           push: ${{ github.base_ref == null }}
+          cache-from: type=gha,scope=alpine
+          cache-to: type=gha,mode=max,scope=alpine
           tags: |
             ghcr.io/automattic/vip-container-images/alpine:latest
             ghcr.io/automattic/vip-container-images/alpine:${{ steps.getversion.outputs.version }}
