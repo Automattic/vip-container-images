@@ -54,6 +54,12 @@ jobs:
           tags: |
             type=raw,value=latest
 
+      # Keep in sync with Dockerfile
+      - name: Get the list of WordPress versions
+        id: versions
+        run: |
+          echo ::set-output name=versions::$(wget https://api.wordpress.org/core/version-check/1.7/ -q -O - | jq -r '[.offers[].version] | unique | map(select( . >= "5.9")) | .[]' | xargs echo)
+
       - name: Build and push
         uses: docker/build-push-action@c84f38281176d4c9cdb1626ffafcd6b3911b5d94 # tag=v3
         with:
@@ -61,3 +67,6 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: CACHE_BUSTER=${{ steps.versions.outputs.versions }}
+          cache-from: type=gha,scope=wp-core-test-runner
+          cache-to: type=gha,mode=max,scope=wp-core-test-runner
