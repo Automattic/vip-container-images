@@ -46,6 +46,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           # base_ref is only defined in PRs, hence we're only pushing when we're not in a PR
           push: ${{ github.base_ref == null }}
+          cache-from: type=gha,scope=dev-tools
+          cache-to: type=gha,mode=max,scope=dev-tools
           # Setting version tag manually
           tags: |
             ghcr.io/automattic/vip-container-images/dev-tools:latest

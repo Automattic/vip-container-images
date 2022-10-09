@@ -58,5 +58,7 @@ jobs:
           context: mariadb-lite
           platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
+          cache-from: type=gha,scope=mariadb-lite
+          cache-to: type=gha,mode=max,scope=mariadb-lite
           tags: |
             ghcr.io/automattic/vip-container-images/mariadb-lite:${{ steps.getversion.outputs.version }}
