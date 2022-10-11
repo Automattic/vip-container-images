@@ -1,5 +1,5 @@
-ARG CACHE_BUSTER=""
 FROM ghcr.io/automattic/vip-container-images/wp-test-base:latest@sha256:100fce8ad0fce952c3dd0e05aeb94c52c3076b691a1cbcbe523242dfe375ebab
+ARG CACHE_BUSTER=""
 
 USER root
 COPY install-wp-core.sh /usr/local/bin/install-wp-core
