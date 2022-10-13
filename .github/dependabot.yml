@@ -56,11 +56,6 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    directory: "wp-core-test-runner/"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "docker"
     directory: "wp-test-base/"
     schedule:
       interval: "weekly"
