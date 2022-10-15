@@ -45,7 +45,7 @@ jobs:
 
       - name: Get image version
         id: getversion
-        run: echo "::set-output name=version::$(head -n 1 nginx/Dockerfile | sed -e 's/FROM nginx:\(.*\)-alpine/\1/')"
+        run: echo "version=$(head -n 1 nginx/Dockerfile | sed -e 's/FROM nginx:\(.*\)-alpine/\1/')" >> $GITHUB_OUTPUT
 
       - name: Build container image
         uses: docker/build-push-action@v3

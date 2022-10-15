@@ -25,10 +25,10 @@ jobs:
         id: check-branch
         run: |
           if git ls-remote --exit-code --heads origin ${MAGIC_BRANCH_NAME}; then
-            echo "::set-output name=exists::true"
+            echo "exists=true" >> $GITHUB_OUTPUT
             echo ::warning::"Branch '${MAGIC_BRANCH_NAME}' already exists, exiting."
           else
-            echo "::set-output name=exists::false"
+            echo "exists=false" >> $GITHUB_OUTPUT
           fi
 
   update:
@@ -54,13 +54,13 @@ jobs:
         id: wanted
         run: |
           LATEST=$(wget https://api.wordpress.org/core/version-check/1.7/ -q -O - | jq -r '[.offers[].version] | unique | map(select( . >= "6.0")) | .[]')
-          echo ::set-output name=latest::${LATEST}
+          echo "latest=${LATEST}" >> $GITHUB_OUTPUT
           TAGS=
           for v in ${LATEST}; do
             TAGS="${TAGS} $(echo ${v} | awk -F. '{print $1"."$2}')"
           done
           TAGS=${TAGS# }
-          echo ::set-output name=tags::${TAGS}
+          echo "tags=${TAGS}" >> $GITHUB_OUTPUT
 
       - name: Remove old WordPress versions from versions.json
         run: |

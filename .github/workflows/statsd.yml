@@ -46,7 +46,7 @@ jobs:
       - name: Get image version
         id: getversion
         run: |
-          echo "::set-output name=version::$(awk -F: '/^FROM / {print gensub(/\@.+/, "", "g", $2)}' statsd/Dockerfile)"
+          echo "version=$(awk -F: '/^FROM / {print gensub(/@.+/, "", "g", $2);exit}' statsd/Dockerfile)" >> $GITHUB_OUTPUT
 
       - name: Build container image
         uses: docker/build-push-action@v3
