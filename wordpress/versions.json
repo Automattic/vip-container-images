@@ -7,21 +7,21 @@
     "prerelease": false
   },
   {
-    "ref": "5.9.3",
+    "ref": "5.9.5",
     "tag": "5.9",
     "cacheable": true,
     "locked": true,
     "prerelease": false
   },
   {
-    "ref": "5.8.3",
+    "ref": "5.8.6",
     "tag": "5.8",
     "cacheable": true,
     "locked": true,
     "prerelease": false
   },
   {
-    "ref": "5.7.5",
+    "ref": "5.7.8",
     "tag": "5.7",
     "cacheable": true,
     "locked": true,
