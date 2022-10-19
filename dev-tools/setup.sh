@@ -60,6 +60,10 @@ fi
 
 if [[ "$site_installed" == 0 ]]; then
   echo "No installation found, installing WordPress..."
+
+  # Ensuring wp-config-defaults is up to date
+  cp /dev-tools/wp-config-defaults.php /wp/config/
+
   if [ -n "$multisite_domain" ]; then
     wp core multisite-install \
       --path=/wp \
