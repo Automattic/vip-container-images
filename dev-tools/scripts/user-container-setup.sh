@@ -15,8 +15,10 @@
 ########################
 
 # Source log helper
+# shellcheck source=/dev/null
 . /helpers/log.sh
 
+# shellcheck disable=SC2034
 LANDO_MODULE="vip"
 
 
@@ -55,7 +57,7 @@ if [ "$LANDO_WEBROOT_UID" != "$LANDO_HOST_UID" ]; then
         exit 1;
     fi
 
-    if [[ -d "/home/$LANDO_WEBROOT_USER" ]]; then
+    if [ -d "/home/$LANDO_WEBROOT_USER" ]; then
         lando_info "Making $LANDO_WEBROOT_USER owner of /home/$LANDO_WEBROOT_USER"
         chown -R "$LANDO_WEBROOT_USER" "/home/$LANDO_WEBROOT_USER"
     fi
