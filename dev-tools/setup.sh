@@ -53,7 +53,7 @@ echo "Checking for WordPress installation..."
 site_exist_check_output=$(wp option get siteurl 2>&1);
 
 site_exist_return_value=$?;
-if ! echo "$site_exist_check_output" | grep -Eq "(Site .* not found)|(The site you have requested is not installed)"; then
+if echo "$site_exist_check_output" | grep -Eq "(Site .* not found)|(The site you have requested is not installed)"; then
   echo "No installation found, installing WordPress..."
 
   # Ensuring wp-config-defaults is up to date
