@@ -20,6 +20,7 @@ RUN \
         php8-mbstring \
         php8-pecl-mcrypt \
         php8-pecl-memcache \
+        php8-pecl-memcached \
         php8-mysqli \
         php8-mysqlnd \
         php8-opcache \

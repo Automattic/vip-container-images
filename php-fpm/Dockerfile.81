@@ -20,6 +20,7 @@ RUN \
         php81-mbstring \
         # php81-pecl-mcrypt \
         php81-pecl-memcache \
+        php81-pecl-memcached \
         php81-mysqli \
         php81-mysqlnd \
         php81-opcache \

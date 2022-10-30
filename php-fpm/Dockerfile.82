@@ -26,6 +26,7 @@ RUN \
         php82-mbstring \
         # php82-pecl-mcrypt \
         # php82-pecl-memcache \
+        # php82-pecl-memcached \
         php82-mysqli \
         php82-mysqlnd \
         php82-opcache \
