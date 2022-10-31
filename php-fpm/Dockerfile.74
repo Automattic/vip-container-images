@@ -20,6 +20,7 @@ RUN \
         php7-mbstring \
         php7-pecl-mcrypt \
         php7-pecl-memcache \
+        php7-pecl-memcached \
         php7-mysqli \
         php7-mysqlnd \
         php7-opcache \
