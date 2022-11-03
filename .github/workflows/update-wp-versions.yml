@@ -54,7 +54,7 @@ jobs:
         id: wanted
         run: |
           LATEST=$(wget https://api.wordpress.org/core/version-check/1.7/ -q -O - | jq -r '[.offers[].version] | unique | map(select( . >= "6.0")) | .[]')
-          echo "latest=${LATEST}" >> $GITHUB_OUTPUT
+          echo latest=${LATEST} >> $GITHUB_OUTPUT
           TAGS=
           for v in ${LATEST}; do
             TAGS="${TAGS} $(echo ${v} | awk -F. '{print $1"."$2}')"
