@@ -37,10 +37,21 @@ else
   curl -s https://api.wordpress.org/secret-key/1.1/salt/ >> /wp/config/wp-config.php
 fi
 
+echo "Waiting for MySQL to come online..."
+second=0
+while ! mysqladmin ping -h "${db_host}" --silent && [ "${second}" -lt 60 ]; do
+  sleep 1
+  second=$((second+1))
+done
+if ! mysqladmin ping -h "${db_host}" --silent; then
+    echo "ERROR: mysql has failed to come online"
+    exit 1;
+fi
+
 echo "Checking for database connectivity..."
 if ! mysql -h "$db_host" -u wordpress -pwordpress wordpress -e "SELECT 'testing_db'" >/dev/null 2>&1; then
   echo "No WordPress database exists, provisioning..."
-  echo "GRANT ALL ON *.* TO 'wordpress'@'localhost' IDENTIFIED BY 'wordpress' WITH GRANT OPTION;" | mysql -h "$db_host" -u root
+  echo "GRANT ALL ON *.* TO 'wordpress'@'localhost' IDENTIFIED BY 'wordpress' WITH GRANT OPTION;" | mysql -h "$db_host" -u "$db_admin_user"
   echo "GRANT ALL ON *.* TO 'wordpress'@'%' IDENTIFIED BY 'wordpress' WITH GRANT OPTION;" | mysql -h "$db_host" -u "$db_admin_user"
   echo "CREATE DATABASE wordpress;" | mysql -h "$db_host" -u "$db_admin_user"
 fi
