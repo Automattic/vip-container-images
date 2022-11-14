@@ -4,4 +4,4 @@ if getent passwd www-data; then
     chown -R www-data /shared
 fi
 
-exec /bin/sleep inifinity
+exec /bin/sleep infinity
