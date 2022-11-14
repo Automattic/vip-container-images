@@ -36,6 +36,7 @@ jobs:
       - name: Build container image
         uses: docker/build-push-action@v3
         with:
+          context: mu-plugins
           file: mu-plugins/Dockerfile.exp
           platforms: linux/amd64,linux/arm64
           push: true
