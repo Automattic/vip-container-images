@@ -11,6 +11,10 @@ on:
     paths:
       - "mu-plugins/**"
       - ".github/workflows/mu-plugins.yml"
+  workflow_dispatch:
+  repository_dispatch:
+    types:
+      - build-mu-plugins
 
 permissions:
   contents: read
@@ -42,10 +46,12 @@ jobs:
           registry: https://ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+        if: github.event_name != 'pull_request'
 
       - name: Build container image
         uses: docker/build-push-action@v3
         with:
+          context: mu-plugins
           file: mu-plugins/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: ${{ github.base_ref == null }}
