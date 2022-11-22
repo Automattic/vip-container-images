@@ -11,6 +11,6 @@ RUN \
     rm -rf /mu-plugins-ext && \
     rm -rf /shared/tests /shared/__tests__ /shared/bin /shared/ci
 
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY run.sh /run.sh
 
-CMD ["/bin/sh", "/usr/local/bin/entrypoint.sh"]
+CMD ["/bin/sh", "/run.sh"]
