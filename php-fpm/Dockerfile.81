@@ -1,7 +1,7 @@
 FROM alpine:3.17.0@sha256:8914eb54f968791faf6a8638949e480fef81e697984fba772b3976835194c6d4
 
 RUN \
-    apk add --no-cache ca-certificates curl tar xz openssl less bash mariadb-client su-exec shadow php81 php81-fpm php81-pear \
+    apk add --no-cache ca-certificates curl tar xz openssl less bash mariadb-client su-exec shadow icu-data-full php81 php81-fpm php81-pear \
         php81-pecl-apcu \
         php81-bcmath \
         php81-calendar \
@@ -49,8 +49,6 @@ RUN \
         php81-zip
 
 RUN ln -s /usr/sbin/php-fpm81 /usr/sbin/php-fpm
-RUN ln -s /usr/bin/pecl81 /usr/bin/pecl
-RUN ln -s /usr/bin/php81 /usr/bin/php
 
 RUN \
     pecl update-channels && \
