@@ -1,4 +1,4 @@
-FROM alpine:3.15@sha256:cf34c62ee8eb3fe8aa24c1fab45d7e9d12768d945c3f5a6fd6a63d901e898479
+FROM alpine:3.17@sha256:8914eb54f968791faf6a8638949e480fef81e697984fba772b3976835194c6d4
 
 RUN \
     apk add --no-cache ca-certificates curl tar xz openssl less bash mariadb-client su-exec shadow php7 php7-fpm php7-pear \
