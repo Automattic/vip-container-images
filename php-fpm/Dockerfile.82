@@ -7,7 +7,7 @@ FROM alpine:edge
 
 RUN echo https://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories
 RUN \
-    apk add --no-cache ca-certificates curl tar xz openssl less bash mariadb-client su-exec shadow php82 php82-fpm php82-pear \
+    apk add --no-cache ca-certificates curl tar xz openssl less bash mariadb-client su-exec shadow jq php82 php82-fpm php82-pear \
         php82-pecl-apcu \
         php82-bcmath \
         php82-calendar \
