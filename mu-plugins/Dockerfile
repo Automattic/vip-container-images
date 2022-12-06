@@ -10,7 +10,7 @@ RUN \
     rsync -a -r --delete --exclude-from="/mu-plugins-ext/.dockerignore" /mu-plugins-ext/* /shared && \
     rm -rf /mu-plugins-ext && \
     rm -rf /shared/tests /shared/__tests__ /shared/bin /shared/ci && \
-    date=$(date '+%Y%m%d%H%M%S') && gitsha=$(git rev-parse --short HEAD) && echo "{ \"tag\": \"staging\", \"stack_version\": \"${date}-${gitsha}\" }" > "/shared/.version"
+    gitsha=$(git rev-parse --short HEAD) && gitdate=$(git show -s --format=%cs "$gitsha") && date=$(date -d "$gitdate" '+%Y%m%d') && echo "{ \"tag\": \"staging\", \"stack_version\": \"${date}-${gitsha}\" }" > "/shared/.version"
 
 COPY run.sh /run.sh
 
