@@ -12,7 +12,7 @@ RUN \
         php8-fileinfo \
         php8-ftp \
         php8-gd \
-        # php8-pecl-gmagick \
+        php8-pecl-gmagick \
         php8-gmp \
         php8-iconv \
         php8-intl \
