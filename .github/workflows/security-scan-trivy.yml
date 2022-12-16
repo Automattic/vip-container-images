@@ -26,14 +26,12 @@ jobs:
           - mariadb-lite:10.3
           - mu-plugins:latest
           - nginx:latest
-          - php-fpm-alt:7.4
-          - php-fpm-alt:8.0
-          - php-fpm-alt:8.1
-          - php-fpm:latest
+          - php-fpm:7.4
+          - php-fpm:8.0
+          - php-fpm:8.1
+          - php-fpm:8.2
           - skeleton:latest
-          - statsd:latest
-          - traefik_openssl:v2.6.6
-          - wp-core-test-runner:latest
+          - traefik_openssl:2.9.6
           - wp-test-runner:latest
     steps:
       - name: Security Scan
