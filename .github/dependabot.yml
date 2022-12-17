@@ -41,11 +41,6 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    directory: "statsd/"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "docker"
     directory: "traefik/"
     schedule:
       interval: "weekly"
