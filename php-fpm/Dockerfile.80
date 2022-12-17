@@ -1,9 +1,8 @@
 FROM alpine:3.16.3@sha256:b95359c2505145f16c6aa384f9cc74eeff78eb36d308ca4fd902eeeb0a0b161b
 
-RUN echo "@testing https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
-
 RUN \
-    apk add --no-cache ca-certificates curl tar xz openssl less bash mariadb-client su-exec shadow jq php8 php8-fpm php8-pear \
+    echo "@testing https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
+    apk add --no-cache ca-certificates curl tar xz openssl less bash mariadb-client su-exec shadow jq icu-data-full php8 php8-fpm php8-pear \
         php8-pecl-apcu \
         php8-bcmath \
         php8-calendar \

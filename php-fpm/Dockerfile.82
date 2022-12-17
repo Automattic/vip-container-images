@@ -1,13 +1,15 @@
 FROM alpine:edge as build
-RUN echo https://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories
-RUN apk add --no-cache php82-dev gcc make php82-pear php82-openssl libc-dev
-RUN yes | pecl82 install memcache
+RUN apk add --no-cache php82-dev gcc make php82-pear php82-openssl libc-dev graphicsmagick-dev libtool
+RUN pecl82 channel-update pecl.php.net
+RUN pecl82 install memcache < /dev/null
+RUN pecl82 install channel://pecl.php.net/gmagick-2.0.6RC1 < /dev/null
 
 FROM alpine:edge
 
 RUN echo https://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories
 RUN \
-    apk add --no-cache ca-certificates curl tar xz openssl less bash mariadb-client su-exec shadow jq php82 php82-fpm php82-pear \
+    apk add --no-cache ca-certificates curl tar xz openssl less bash mariadb-client su-exec shadow jq icu-data-full php82 php82-fpm php82-pear \
+        graphicsmagick libgomp \
         php82-pecl-apcu \
         php82-bcmath \
         php82-calendar \
@@ -73,7 +75,7 @@ ENV WP_CLI_CONFIG_PATH /config/wp-cli.yaml
 ENV PHP_INI_DIR /etc/php82
 
 COPY rootfs82/ /
-COPY --from=build /usr/lib/php82/modules/memcache.so /usr/lib/php82/modules/memcache.so
+COPY --from=build /usr/lib/php82/modules/memcache.so /usr/lib/php82/modules/gmagick.so /usr/lib/php82/modules/
 
 WORKDIR /var/www/html
 STOPSIGNAL SIGQUIT
