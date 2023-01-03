@@ -94,8 +94,8 @@ if echo "$site_exist_check_output" | grep -Eq "(Site .* not found)|(The site you
       --skip-plugins #2>/dev/null
   fi
 
-  if wp cli has-command elasticpress; then
-    wp elasticpress index --yes --setup
+  if wp cli has-command vip-search; then
+    wp vip-search index --skip-confirm --setup
   fi
 
   wp user add-cap 1 view_query_monitor
