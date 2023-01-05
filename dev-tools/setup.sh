@@ -94,6 +94,11 @@ if echo "$site_exist_check_output" | grep -Eq "(Site .* not found)|(The site you
       --skip-plugins #2>/dev/null
   fi
 
+  if [ "$(echo "${LANDO_INFO}" | jq .elasticsearch.service)" != 'null' ] && [ "$(echo "${LANDO_INFO}" | jq .demo-app-code.service)" != 'null' ]; then
+    wp config set VIP_ENABLE_VIP_SEARCH true --raw
+    wp config set VIP_ENABLE_VIP_SEARCH_QUERY_INTEGRATION true --raw
+  fi
+
   if wp cli has-command vip-search; then
     wp vip-search index --skip-confirm --setup
   fi
