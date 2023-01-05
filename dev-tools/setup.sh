@@ -97,6 +97,14 @@ if echo "$site_exist_check_output" | grep -Eq "(Site .* not found)|(The site you
   if [ "$(echo "${LANDO_INFO}" | jq .elasticsearch.service)" != 'null' ] && [ "$(echo "${LANDO_INFO}" | jq .demo-app-code.service)" != 'null' ]; then
     wp config set VIP_ENABLE_VIP_SEARCH true --raw
     wp config set VIP_ENABLE_VIP_SEARCH_QUERY_INTEGRATION true --raw
+    echo "To disable the VIP Search integration, please run:"
+    if [ -n "${LANDO_APP_NAME}" ]; then
+      echo "vip dev-env exec --slug ${LANDO_APP_NAME} -- wp config delete VIP_ENABLE_VIP_SEARCH"
+      echo "vip dev-env exec --slug ${LANDO_APP_NAME} -- wp config delete VIP_ENABLE_VIP_SEARCH_QUERY_INTEGRATION"
+    else
+      echo "wp config delete VIP_ENABLE_VIP_SEARCH"
+      echo "wp config delete VIP_ENABLE_VIP_SEARCH_QUERY_INTEGRATION"
+    fi
   fi
 
   if wp cli has-command vip-search; then
