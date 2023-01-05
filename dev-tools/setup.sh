@@ -109,6 +109,16 @@ if echo "$site_exist_check_output" | grep -Eq "(Site .* not found)|(The site you
   fi
 
   if wp cli has-command vip-search; then
+    echo "Waiting for ElasticSearch to come online..."
+    second=0
+    while [ "$(curl -s http://elasticsearch:9200/_cluster/health | jq -r .status)" != 'green' ] && [ "${second}" -lt 60 ]; do
+      sleep 1
+      second=$((second+1))
+    done
+    if [ "$(curl -s http://elasticsearch:9200/_cluster/health | jq -r .status)" != 'green' ]; then
+        echo "WARNING: ElasticSearch has failed to come online"
+    fi
+
     wp vip-search index --skip-confirm --setup
   fi
 
