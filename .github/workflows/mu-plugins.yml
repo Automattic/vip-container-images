@@ -6,15 +6,17 @@ on:
       - master
     paths:
       - "mu-plugins/**"
+      - "mu-plugins-production/**"
       - ".github/workflows/mu-plugins.yml"
   pull_request:
     paths:
       - "mu-plugins/**"
+      - "mu-plugins-production/**"
       - ".github/workflows/mu-plugins.yml"
   workflow_dispatch:
   repository_dispatch:
     types:
-      - build-mu-plugins
+      - [build-mu-plugins-staging,build-mu-plugins-production]
 
 permissions:
   contents: read
@@ -48,13 +50,23 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
         if: github.event_name != 'pull_request'
 
+      - name: Set env for GitHub package name depending on event_type
+        run: |
+          if [[ "${{github.event_name}}" == "build-mu-plugins-staging" ]]; then
+            echo "PKG_NAME=mu-plugins" >> $GITHUB_ENV
+          fi
+
+          if [[ "${{github.event_name}}" == "build-mu-plugins-production" ]]; then
+            echo "PKG_NAME=mu-plugins" >> $GITHUB_ENV
+          fi
+
       - name: Build container image
         uses: docker/build-push-action@v3
         with:
-          context: mu-plugins
-          file: mu-plugins/Dockerfile
+          context: ${{env.PKG_NAME}}
+          file: ${{env.PKG_NAME}}/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: ${{ github.base_ref == null }}
           tags: |
-            ghcr.io/automattic/vip-container-images/mu-plugins:latest
-            ghcr.io/automattic/vip-container-images/mu-plugins:0.1
+            ghcr.io/automattic/vip-container-images/${{env.PKG_NAME}}:latest
+            ghcr.io/automattic/vip-container-images/${{env.PKG_NAME}}:0.1
