@@ -7,10 +7,12 @@ on:
     paths:
       - "mu-plugins/**"
       - ".github/workflows/mu-plugins.yml"
+      - "./.github/actions/build-docker-image/**"
   pull_request:
     paths:
       - "mu-plugins/**"
       - ".github/workflows/mu-plugins.yml"
+      - "./.github/actions/build-docker-image/**"
   workflow_dispatch:
   repository_dispatch:
     types:
@@ -40,15 +42,24 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v3
 
+      - name: Determine image tags
+        id: tags
+        run: |
+          if [ "${{ matrix.branch }}" = "staging" ]; then
+            echo "tags=ghcr.io/automattic/vip-container-images/mu-plugins:staging,ghcr.io/automattic/vip-container-images/mu-plugins:latest,ghcr.io/automattic/vip-container-images/mu-plugins:0.1" >> "${GITHUB_OUTPUT}"
+          elif [ "${{ matrix.branch }}" = "production" ]; then
+            echo "tags=ghcr.io/automattic/vip-container-images/mu-plugins:production" >> "${GITHUB_OUTPUT}"
+          else
+            echo "tags=ghcr.io/automattic/vip-container-images/mu-plugins:${{ matrix.branch }}" >> "${GITHUB_OUTPUT}"
+          fi
+
       - name: Build Docker image (${{ matrix.branch }})
         uses: ./.github/actions/build-docker-image
         with:
           context: mu-plugins
           file: mu-plugins/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
-          tags: |
-            ghcr.io/automattic/vip-container-images/mu-plugins:latest
-            ghcr.io/automattic/vip-container-images/mu-plugins:0.1
+          tags: ${{ steps.tags.outputs.tags }}
           args: branch=${{ matrix.branch }}
           registry: https://ghcr.io
           username: ${{ github.actor }}
