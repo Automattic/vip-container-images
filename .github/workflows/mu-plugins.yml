@@ -53,4 +53,4 @@ jobs:
           registry: https://ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-        if: github.event_name != 'repository_dispatch' || github.event.payload.branch == matrix.branch
+        if: github.event_name != 'repository_dispatch' || github.event.client_payload.branch == matrix.branch || github.event.client_payload.branch == ''
