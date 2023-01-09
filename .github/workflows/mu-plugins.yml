@@ -16,7 +16,8 @@ on:
   workflow_dispatch:
   repository_dispatch:
     types:
-      - [build-mu-plugins-staging,build-mu-plugins-production]
+      - build-mu-plugins-staging
+      - build-mu-plugins-production
 
 permissions:
   contents: read
@@ -52,12 +53,12 @@ jobs:
 
       - name: Set env for GitHub package name depending on event_type
         run: |
-          if [[ "${{github.event_name}}" == "build-mu-plugins-staging" ]]; then
+          if [[ "${{github.event.event_type}}" == "build-mu-plugins-staging" ]]; then
             echo "PKG_NAME=mu-plugins" >> $GITHUB_ENV
           fi
 
-          if [[ "${{github.event_name}}" == "build-mu-plugins-production" ]]; then
-            echo "PKG_NAME=mu-plugins" >> $GITHUB_ENV
+          if [[ "${{github.event.event_type}}" == "build-mu-plugins-production" ]]; then
+            echo "PKG_NAME=mu-plugins-production" >> $GITHUB_ENV
           fi
 
       - name: Build container image
