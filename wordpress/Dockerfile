@@ -1,4 +1,4 @@
-FROM ghcr.io/automattic/vip-container-images/alpine:3.17.0@sha256:755d1f3dc85bfa36a20290c6b76644c3bfee6fa8aaa975da893a45420698c209 AS build
+FROM ghcr.io/automattic/vip-container-images/alpine:3.17.1@sha256:fbd2cb3cd937080dd4a701d0433e7b0604260e3542a805cef815790e2f921ebf AS build
 ARG WP_GIT_REF
 RUN apk add --no-cache git git-subtree patch
 RUN mkdir /wordpress
@@ -17,5 +17,5 @@ RUN \
 
 COPY extra/ /wordpress/wordpress/
 
-FROM ghcr.io/automattic/vip-container-images/alpine:3.17.0@sha256:755d1f3dc85bfa36a20290c6b76644c3bfee6fa8aaa975da893a45420698c209
+FROM ghcr.io/automattic/vip-container-images/alpine:3.17.1@sha256:fbd2cb3cd937080dd4a701d0433e7b0604260e3542a805cef815790e2f921ebf
 COPY --from=build /wordpress/wordpress/ /wp/
