@@ -57,3 +57,4 @@ jobs:
           cache-to: type=gha,mode=max,scope=traefik
           tags: |
             ghcr.io/automattic/vip-container-images/traefik_openssl:${{ steps.getversion.outputs.version }}
+            ghcr.io/automattic/vip-container-images/traefik_openssl:latest
