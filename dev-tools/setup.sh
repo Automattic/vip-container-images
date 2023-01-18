@@ -59,6 +59,18 @@ fi
 echo "Copying dev-env-plugin.php to mu-plugins"
 cp /dev-tools/dev-env-plugin.php /wp/wp-content/mu-plugins/
 
+if [ "$(echo "${LANDO_INFO}" | jq .elasticsearch.service)" != 'null' ]; then
+  echo "Waiting for Elasticsearch to come online..."
+  second=0
+  while [ "$(curl -s http://elasticsearch:9200/_cluster/health | jq -r .status)" != 'green' ] && [ "${second}" -lt 60 ]; do
+    sleep 1
+    second=$((second+1))
+  done
+  if [ "$(curl -s http://elasticsearch:9200/_cluster/health | jq -r .status)" != 'green' ]; then
+      echo "WARNING: ElasticSearch has failed to come online"
+  fi
+fi
+
 echo "Checking for WordPress installation..."
 
 site_exist_check_output=$(wp option get siteurl 2>&1);
@@ -109,16 +121,6 @@ if echo "$site_exist_check_output" | grep -Eq "(Site .* not found)|(The site you
   fi
 
   if wp cli has-command vip-search; then
-    echo "Waiting for ElasticSearch to come online..."
-    second=0
-    while [ "$(curl -s http://elasticsearch:9200/_cluster/health | jq -r .status)" != 'green' ] && [ "${second}" -lt 60 ]; do
-      sleep 1
-      second=$((second+1))
-    done
-    if [ "$(curl -s http://elasticsearch:9200/_cluster/health | jq -r .status)" != 'green' ]; then
-        echo "WARNING: ElasticSearch has failed to come online"
-    fi
-
     wp vip-search index --skip-confirm --setup
   fi
 
