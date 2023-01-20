@@ -61,13 +61,9 @@ cp /dev-tools/dev-env-plugin.php /wp/wp-content/mu-plugins/
 
 if [ -n "${LANDO_INFO}" ] && [ "$(echo "${LANDO_INFO}" | jq .elasticsearch.service)" != 'null' ]; then
   echo "Waiting for Elasticsearch to come online..."
-  second=0
-  while [ "$(curl -s http://elasticsearch:9200/_cluster/health | jq -r .status)" != 'green' ] && [ "${second}" -lt 60 ]; do
-    sleep 1
-    second=$((second+1))
-  done
-  if [ "$(curl -s http://elasticsearch:9200/_cluster/health | jq -r .status)" != 'green' ]; then
-      echo "WARNING: ElasticSearch has failed to come online"
+  status="$(curl -s 'http://elasticsearch:9200/_cluster/health?wait_for_status=yellow&timeout=60' | jq -r .status)"
+  if [ "${status}" != 'green' ] && [ "${status}" != 'yellow' ]; then
+      echo "WARNING: Elasticsearch has failed to come online"
   fi
 fi
 
