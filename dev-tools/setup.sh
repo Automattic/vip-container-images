@@ -59,7 +59,7 @@ fi
 echo "Copying dev-env-plugin.php to mu-plugins"
 cp /dev-tools/dev-env-plugin.php /wp/wp-content/mu-plugins/
 
-if [ "$(echo "${LANDO_INFO}" | jq .elasticsearch.service)" != 'null' ]; then
+if [ -n "${LANDO_INFO}" ] && [ "$(echo "${LANDO_INFO}" | jq .elasticsearch.service)" != 'null' ]; then
   echo "Waiting for Elasticsearch to come online..."
   second=0
   while [ "$(curl -s http://elasticsearch:9200/_cluster/health | jq -r .status)" != 'green' ] && [ "${second}" -lt 60 ]; do
@@ -106,7 +106,7 @@ if echo "$site_exist_check_output" | grep -Eq "(Site .* not found)|(The site you
       --skip-plugins #2>/dev/null
   fi
 
-  if [ "$(echo "${LANDO_INFO}" | jq .elasticsearch.service)" != 'null' ] && [ "$(echo "${LANDO_INFO}" | jq .['demo-app-code.service'])" != 'null' ]; then
+  if [ -n "${LANDO_INFO}" ] && [ "$(echo "${LANDO_INFO}" | jq .elasticsearch.service)" != 'null' ] && [ "$(echo "${LANDO_INFO}" | jq .['demo-app-code.service'])" != 'null' ]; then
     wp config set VIP_ENABLE_VIP_SEARCH true --raw
     wp config set VIP_ENABLE_VIP_SEARCH_QUERY_INTEGRATION true --raw
     echo "Automatically set constants VIP_ENABLE_VIP_SEARCH and VIP_ENABLE_VIP_SEARCH_QUERY_INTEGRATION to true. For more information, see https://docs.wpvip.com/how-tos/vip-search/enable/"
