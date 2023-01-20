@@ -63,7 +63,7 @@ if [ -n "${LANDO_INFO}" ] && [ "$(echo "${LANDO_INFO}" | jq .elasticsearch.servi
   echo "Waiting for Elasticsearch to come online..."
   status="$(curl -s 'http://elasticsearch:9200/_cluster/health?wait_for_status=yellow&timeout=60' | jq -r .status)"
   if [ "${status}" != 'green' ] && [ "${status}" != 'yellow' ]; then
-      echo "WARNING: ElasticSearch has failed to come online"
+      echo "WARNING: Elasticsearch has failed to come online"
   fi
 fi
 
