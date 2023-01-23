@@ -1,7 +1,7 @@
 FROM ghcr.io/automattic/vip-container-images/alpine:3.17.1@sha256:fbd2cb3cd937080dd4a701d0433e7b0604260e3542a805cef815790e2f921ebf
 
 RUN \
-    apk add --no-cache git shadow && \
+    apk add --no-cache git && \
     git clone --depth 1 --no-remote-submodules -b staging https://github.com/Automattic/vip-go-mu-plugins /shared && \
     git clone --depth 1 https://github.com/Automattic/vip-go-mu-plugins-ext /mu-plugins-ext && \
     cd /shared && \
