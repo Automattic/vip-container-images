@@ -2,7 +2,7 @@ FROM alpine:3.16.3@sha256:b95359c2505145f16c6aa384f9cc74eeff78eb36d308ca4fd902ee
 
 RUN \
     echo "@testing https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
-    apk add --no-cache ca-certificates curl tar xz openssl less bash mariadb-client su-exec shadow jq icu-data-full php8 php8-fpm php8-pear \
+    apk add --no-cache ca-certificates curl tar xz openssl less bash mariadb-client su-exec shadow git jq icu-data-full php8 php8-fpm php8-pear \
         php8-pecl-apcu \
         php8-bcmath \
         php8-calendar \
@@ -60,7 +60,8 @@ RUN install -d -m 0777 -o www-data -g www-data /var/www/html
 
 RUN \
     wget -O /usr/local/bin/phpunit https://phar.phpunit.de/phpunit-9.phar && chmod 0755 /usr/local/bin/phpunit && \
-    wget -O /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && chmod 0755 /usr/local/bin/wp
+    wget -O /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && chmod 0755 /usr/local/bin/wp && \
+    wget -q https://getcomposer.org/installer -O - | php -- --install-dir=/usr/bin/ --filename=composer
 
 ENV WP_CLI_CONFIG_PATH /config/wp-cli.yaml
 ENV PHP_INI_DIR /etc/php8

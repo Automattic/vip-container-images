@@ -18,5 +18,4 @@ RUN \
 COPY extra/ /wordpress/wordpress/
 
 FROM ghcr.io/automattic/vip-container-images/alpine:3.17.1@sha256:fbd2cb3cd937080dd4a701d0433e7b0604260e3542a805cef815790e2f921ebf
-RUN apk add --no-cache shadow
 COPY --from=build /wordpress/wordpress/ /wp/
