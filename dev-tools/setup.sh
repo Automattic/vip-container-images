@@ -25,6 +25,16 @@ do
   fi
 done
 
+echo 'Waiting for mu-plugins...'
+i=0;
+while [ ! -f /wp/wp-content/mu-plugins/000-vip-init.php ]; do
+  sleep 1
+  i=$((i+1))
+  if [ $i -eq 60 ]; then
+    echo "ERROR: mu-plugins not found. Please try to restart or destroy the environment"
+    exit 1;
+  fi
+done
 
 if [ -r /wp/config/wp-config.php ]; then
   echo "Already existing wp-config.php file"
