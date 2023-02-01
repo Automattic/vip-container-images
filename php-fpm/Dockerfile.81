@@ -71,6 +71,7 @@ RUN \
 ENV WP_CLI_CONFIG_PATH /config/wp-cli.yaml
 ENV PHP_INI_DIR /etc/php81
 
+COPY rootfs-common/ /
 COPY rootfs81/ /
 COPY --from=build /usr/lib/php81/modules/gmagick.so /usr/lib/php81/modules/
 
