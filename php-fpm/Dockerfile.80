@@ -66,7 +66,9 @@ RUN \
 ENV WP_CLI_CONFIG_PATH /config/wp-cli.yaml
 ENV PHP_INI_DIR /etc/php8
 
+COPY rootfs-common/ /
 COPY rootfs80/ /
+
 
 WORKDIR /var/www/html
 STOPSIGNAL SIGQUIT
