@@ -1,7 +1,7 @@
 #!/bin/sh
 
-XDEBUG_CONFIG_TEMPLATE_LOCATION=/etc/php8/conf.d/xdebug.ini.template
-XDEBUG_CONFIG_TARGET_LOCATION=/etc/php8/conf.d/docker-php-ext-xdebug.ini
+XDEBUG_CONFIG_TEMPLATE_LOCATION="${PHP_INI_DIR}/conf.d/xdebug.ini.template"
+XDEBUG_CONFIG_TARGET_LOCATION="${PHP_INI_DIR}/conf.d/docker-php-ext-xdebug.ini"
 
 if [ "enable" = "$XDEBUG" ]; then
     echo "Enabling XDebug"
@@ -19,4 +19,4 @@ else
     rm -f "${PHP_INI_DIR}/conf.d/99-mailhog.ini"
 fi
 
-exec /usr/sbin/php-fpm8
+exec /usr/sbin/php-fpm
