@@ -65,7 +65,7 @@ if ! mysql -h "$db_host" -u wordpress -pwordpress wordpress -e "SELECT 'testing_
   echo "CREATE USER IF NOT EXISTS 'wordpress'@'%' IDENTIFIED BY 'wordpress'" | mysql -h "$db_host" -u "$db_admin_user"
   echo "GRANT ALL ON *.* TO 'wordpress'@'localhost' WITH GRANT OPTION;" | mysql -h "$db_host" -u "$db_admin_user"
   echo "GRANT ALL ON *.* TO 'wordpress'@'%' WITH GRANT OPTION;" | mysql -h "$db_host" -u "$db_admin_user"
-  echo "CREATE DATABASE wordpress;" | mysql -h "$db_host" -u "$db_admin_user"
+  echo "CREATE DATABASE IF NOT EXISTS wordpress;" | mysql -h "$db_host" -u "$db_admin_user"
 fi
 
 echo "Copying dev-env-plugin.php to mu-plugins"
