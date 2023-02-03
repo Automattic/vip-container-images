@@ -4,6 +4,13 @@
  */
 
 /**
+ * Adjust HTTP_HOST for GitHub Codespaces.
+ */
+if ( isset( $_SERVER['CODESPACES'] ) && 'true' === $_SERVER['CODESPACES'] && ! empty( $_SERVER['HTTP_X_FORWARDED_HOST'] ) ) {
+	$_SERVER['HTTP_HOST'] = $_SERVER['HTTP_X_FORWARDED_HOST'];
+}
+
+/**
  * Override WP_HOME and WP_SITEURL with the values from $_SERVER['HTTP_HOST'] if it's set.
  *
  * This is needed for the cases where something is already bound to default 80 or 443 ports and Lando's proxy falls back onto a different available port.
