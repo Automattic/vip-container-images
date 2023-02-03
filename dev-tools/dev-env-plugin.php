@@ -1,5 +1,8 @@
 <?php
 
+if ( isset( $_SERVER['CODESPACES'] ) && 'true' === $_SERVER['CODESPACES'] && ! empty( $_SERVER['HTTP_X_FORWARDED_HOST'] ) ) {
+	$_SERVER['HTTP_HOST'] = $_SERVER['HTTP_X_FORWARDED_HOST'];
+}
 
 /******************
  * Handle HTTPS
