@@ -48,7 +48,7 @@ jobs:
         run: echo "version=$(head -n 1 traefik/Dockerfile | sed -e 's/FROM traefik:\(.*\)/\1/')" >> $GITHUB_OUTPUT
 
       - name: Build container image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           file: traefik/Dockerfile
           platforms: linux/amd64,linux/arm64
