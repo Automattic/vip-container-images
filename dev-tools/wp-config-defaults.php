@@ -80,6 +80,11 @@ if ( ! defined( 'WP_MAX_MEMORY_LIMIT' ) ) {
 	define( 'WP_MAX_MEMORY_LIMIT', '512M' );
 }
 
+// VIP Env constants needed before pre-vip-config
+define( 'VIP_GO_APP_ENVIRONMENT', 'local' );
+define( 'VIP_GO_ENV', 'local' );
+
+
 /**
  * Pre VIP Config
  *
@@ -105,9 +110,6 @@ if ( ! defined( 'WP_CRON_CONTROL_SECRET' ) ) {
  */
 define( 'WPCOM_IS_VIP_ENV', false );
 define( 'FILES_CLIENT_SITE_ID', 200508 );
-
-define( 'VIP_GO_APP_ENVIRONMENT', 'local' );
-define( 'VIP_GO_ENV', 'local' );
 
 /**
  * VIP Config
