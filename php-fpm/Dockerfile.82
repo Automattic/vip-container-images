@@ -8,7 +8,7 @@ FROM alpine:edge
 
 RUN echo https://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories
 RUN \
-    apk add --no-cache ca-certificates curl tar xz openssl less bash mariadb-client su-exec shadow git jq icu-data-full php82 php82-fpm php82-pear \
+    apk add --no-cache ca-certificates curl tar xz openssl less bash mariadb-client su-exec shadow git jq icu-data-full ghostscript php82 php82-fpm php82-pear \
         graphicsmagick libgomp \
         php82-pecl-apcu \
         php82-bcmath \
