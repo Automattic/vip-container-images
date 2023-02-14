@@ -1,32 +1,34 @@
 <?php
+ 
+/*
+Plugin Name: Memcached
+Description: Memcached backend for the WP Object Cache.
+Version: 3.2.2
+Plugin URI: http://wordpress.org/extend/plugins/memcached/
+Author: Automattic
+ 
+Install this file to wp-content/object-cache.php
+*/
+ 
+define( 'VIP_OBJECT_CACHE_DROPIN_STABLE', __DIR__ .'/object-cache-stable.php' );
+define( 'VIP_OBJECT_CACHE_DROPIN_NEXT', __DIR__ .'/object-cache-next.php' );
 
-/**
- * Plugin Name: Memcached
- * Description: Memcached backend for the WP Object Cache.
- * Version: 4.0.0
- * Author: Automattic
- * Plugin URI: https://wordpress.org/plugins/memcached/
- * License: GPLv2 or later
- *
- * This file is require'd from wp-content/object-cache.php
- */
-
-// Will use the "next" version on these specified environment types by default.
+// Add environment names to this array to switch them to object-cache-next.php
 if ( ! defined( 'VIP_USE_NEXT_OBJECT_CACHE_DROPIN' ) ) {
-	if ( in_array( VIP_GO_APP_ENVIRONMENT, [ 'develop', 'preprod', 'staging' ], true ) ) {
+	if ( in_array( VIP_GO_APP_ENVIRONMENT, [
+	], true ) ) {
 		define( 'VIP_USE_NEXT_OBJECT_CACHE_DROPIN', true );
 	}
 }
 
-if ( defined( 'VIP_USE_ALPHA_OBJECT_CACHE_DROPIN' ) && true === VIP_USE_ALPHA_OBJECT_CACHE_DROPIN ) {
-	require_once __DIR__ . '/wp-cache-memcached/object-cache.php';
-} elseif ( defined( 'VIP_USE_NEXT_OBJECT_CACHE_DROPIN' ) && true === VIP_USE_NEXT_OBJECT_CACHE_DROPIN ) {
-	require_once __DIR__ . '/object-cache/object-cache-next.php';
+// If site is testing next version of object cache dropin, load it
+if ( defined( 'VIP_USE_NEXT_OBJECT_CACHE_DROPIN' ) && true === VIP_USE_NEXT_OBJECT_CACHE_DROPIN && is_readable( VIP_OBJECT_CACHE_DROPIN_NEXT ) ) {
+	require_once( VIP_OBJECT_CACHE_DROPIN_NEXT );
 } else {
-	require_once __DIR__ . '/object-cache/object-cache-stable.php';
+	// Else, load stable cache dropin (default)
+	require_once( VIP_OBJECT_CACHE_DROPIN_STABLE );
 }
 
-// Load in the apc user cache.
-if ( file_exists( dirname( __DIR__ ) . '/lib/class-apc-cache-interceptor.php' ) ) {
-	require_once dirname( __DIR__ ) . '/lib/class-apc-cache-interceptor.php';
+if ( file_exists( ABSPATH . '/wp-content/mu-plugins/lib/class-apc-cache-interceptor.php' ) ) {
+	require_once( ABSPATH . '/wp-content/mu-plugins/lib/class-apc-cache-interceptor.php' );
 }
