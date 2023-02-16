@@ -14,26 +14,34 @@ docker pull ghcr.io/automattic/vip-container-images/alpine:3.16.0
 
 ### Using image locally in dev-env
 
-The easiest way is to reconfigure lando file in specific `dev-env` to build image directly from this repository.
-For example for `dev-tools` you could do something like this:
+The easiest way is to update the needed service in `.lando.yml` in the environment's base folder (`.local/share/vip/dev-environment/$ENV_SLUG`)
 
-```
-services:
+For example, for `dev-tools` you could do something like this:
 
+```yaml
   devtools:
     type: compose
     services:
       build:
-        context: ~/git/automattic/vip-container-images
-        dockerfile: ~/git/automattic/vip-container-images/dev-tools/Dockerfile
-      command: sleep infinity
-      volumes:
-        - devtools:/dev-tools
-    volumes:
-      devtools: {}
+        context: /Users/user/vip-container-images/dev-tools
+        dockerfile: /Users/user/vip-container-images/dev-tools/Dockerfile
+  # the rest is omitted
 ```
 
-Note: Lando will try to pull image from remote repository if you would use `image` instead of `build` which would probably fail if your image is only local one.
+For WordPress we'll also need to pass WP_GIT_REF argument, here's an example entry to build an image for trunk:
+
+```yaml
+  wordpress:
+    type: compose
+    services:
+      # image: ghcr.io/automattic/vip-container-images/wordpress:trunk
+      build:
+        context: /Users/user/vip-container-images/wordpress
+        dockerfile: /Users/rinat/projects/vip-go-platform-stack/vip-container-images/wordpress/Dockerfile
+        args:
+          - WP_GIT_REF=HEAD
+  # the rest is omitted
+```
 
 ## Publishing the images
 
@@ -45,9 +53,11 @@ This repository has Dependabot [set up](.github/dependabot.yml). Whenever a Dock
 
 ## Adding, Updating and Deleting versions of WordPress
 
+Adding and updating existing version is handled by [update-wp-versions workflow](/.github/workflows/update-wp-versions.yml). Removal is manual either by updating versions.json or running the utility script.
+
 We have utility scripts to add and remove the versions of WordPress, based on the versions.json we kick off the image builds for every specified version. We use [official GitHub repo for WordPress](https://github.com/WordPress/WordPress). 
 
-Basic syntax is as follows
+Basic syntax is as follows:
 
 `$> wordpress/add-version.sh <TAG> <REF> [cacheable=true] [locked=false] [prerelease=false]`
 
@@ -62,4 +72,5 @@ This will add a 5.9 and point to 5.9.3 tag.
 
 `$> wordpress/delete-version.sh 5.9`
 This can be used to delete tag.
+
 Alternatively, this also can be done by removing the related entry from `wordpress/versions.json`
