@@ -27,7 +27,7 @@ done
 
 echo 'Waiting for mu-plugins...'
 i=0;
-while [ ! -f /wp/wp-content/mu-plugins/000-vip-init.php ]; do
+while [ ! -f /wp/wp-content/mu-plugins/.version ]; do
   sleep 1
   i=$((i+1))
   if [ $i -eq 60 ]; then

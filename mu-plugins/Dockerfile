@@ -1,17 +1,19 @@
-FROM ghcr.io/automattic/vip-container-images/alpine:3.17.1@sha256:fbd2cb3cd937080dd4a701d0433e7b0604260e3542a805cef815790e2f921ebf
+FROM ghcr.io/automattic/vip-container-images/alpine:3.17.2@sha256:d0d035a71e27df5abee64bb9254632bb63a6dd3e03dbc16bcaca680519d607bd
 
 RUN \
     apk add --no-cache git && \
-    git clone --depth 1 --no-remote-submodules -b staging https://github.com/Automattic/vip-go-mu-plugins /shared && \
+    git clone --depth 1 --no-remote-submodules -b staging https://github.com/Automattic/vip-go-mu-plugins /mu-plugins && \
     git clone --depth 1 https://github.com/Automattic/vip-go-mu-plugins-ext /mu-plugins-ext && \
-    cd /shared && \
+    cd /mu-plugins && \
     sed -i -e "s,git@github.com:,https://github.com/," .gitmodules && \
     git submodule update --init --recursive --depth 1 && \
-    rsync -a -r --delete --exclude-from="/mu-plugins-ext/.dockerignore" /mu-plugins-ext/* /shared && \
+    rsync -a -r --delete --exclude-from="/mu-plugins-ext/.dockerignore" /mu-plugins-ext/* /mu-plugins && \
     rm -rf /mu-plugins-ext && \
-    rm -rf /shared/tests /shared/__tests__ /shared/bin /shared/ci && \
-    gitsha=$(git rev-parse --short HEAD) && gitdate=$(git show -s --format=%cs "$gitsha") && date=$(date -d "$gitdate" '+%Y%m%d') && echo "{ \"tag\": \"staging\", \"stack_version\": \"${date}-${gitsha}\" }" > "/shared/.version"
+    rm -rf /mu-plugins/tests /mu-plugins/__tests__ /mu-plugins/bin /mu-plugins/ci && \
+    gitsha=$(git rev-parse --short HEAD) && gitdate=$(git show -s --format=%cs "$gitsha") && date=$(date -d "$gitdate" '+%Y%m%d') && echo "{ \"tag\": \"staging\", \"stack_version\": \"${date}-${gitsha}\" }" > "/mu-plugins/.version" && \
+    install -d -m 0755 /shared
 
 COPY run.sh /run.sh
 
+VOLUME ["/shared"]
 CMD ["/bin/sh", "/run.sh"]
