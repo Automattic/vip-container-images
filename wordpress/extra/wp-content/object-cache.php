@@ -11,6 +11,10 @@
  * This file is require'd from wp-content/object-cache.php
  */
 
+ if ( ! defined( 'WPMU_PLUGIN_DIR' ) ) {
+	define( 'WPMU_PLUGIN_DIR', WP_CONTENT_DIR . '/mu-plugins' );
+}
+
 $mu_plugins_file = ABSPATH . '/wp-content/mu-plugins/drop-ins/object-cache.php';
 if ( file_exists( $mu_plugins_file ) ) {
 	require_once $mu_plugins_file;
