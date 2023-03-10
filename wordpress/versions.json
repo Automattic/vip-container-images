@@ -33,5 +33,12 @@
     "cacheable": false,
     "locked": false,
     "prerelease": true
+  },
+  {
+    "ref": "dfe2c959482ceab459d7c41b8f7b6ac9a442fa7c",
+    "tag": "6.2",
+    "cacheable": false,
+    "locked": false,
+    "prerelease": true
   }
 ]
