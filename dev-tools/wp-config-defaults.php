@@ -6,8 +6,9 @@
 /**
  * Adjust HTTP_HOST for GitHub Codespaces.
  */
-if ( isset( $_SERVER['CODESPACES'] ) && 'true' === $_SERVER['CODESPACES'] && ! empty( $_SERVER['HTTP_X_FORWARDED_HOST'] ) ) {
+if ( ! empty( $_SERVER['HTTP_X_FORWARDED_HOST'] ) && substr( $_SERVER['HTTP_X_FORWARDED_HOST'], -strlen( '.github.dev' ) ) === '.github.dev' ) {
 	$_SERVER['HTTP_HOST'] = $_SERVER['HTTP_X_FORWARDED_HOST'];
+	$_ENV['HTTP_HOST']    = $_SERVER['HTTP_HOST'];
 }
 
 /**
