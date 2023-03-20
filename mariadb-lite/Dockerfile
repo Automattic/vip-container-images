@@ -1,4 +1,4 @@
-FROM mariadb:10.3@sha256:5157cee1d3297142bbcd7798787395086b3c1bd2f424362a02a022f203d1c944
+FROM mariadb:10.3@sha256:86ed17d0b023938ee974ccddb91b184eb06b69d281bd5ecba02f38909b3b186c
 
 RUN \
     apt-get -qq update && \
