@@ -101,6 +101,7 @@ if echo "$site_exist_check_output" | grep -Eq "(Site .* not found)|(The site you
       --admin_email="vip@localhost.local" \
       --admin_password="password" \
       --skip-email \
+      --skip-themes \
       --skip-plugins \
       --subdomains \
       --skip-config #2>/dev/null
@@ -113,6 +114,7 @@ if echo "$site_exist_check_output" | grep -Eq "(Site .* not found)|(The site you
       --admin_email="vip@localhost.local" \
       --admin_password="password" \
       --skip-email \
+      --skip-themes \
       --skip-plugins #2>/dev/null
   fi
 
