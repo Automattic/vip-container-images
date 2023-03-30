@@ -97,3 +97,19 @@ function dev_env_add_admin( $args, $assoc_args ) {
 		}
 	}
 }
+
+// Login the user automatically
+add_action('init', 'dev_env_auto_login');
+function dev_env_auto_login()
+{
+	// Check if the user is not already logged in and the query parameter exists
+	if (!is_user_logged_in() && isset($_GET['vip-dev-autologin'])) {
+		$user = get_user_by('login', 'vipgo');
+		wp_set_current_user($user->ID, $user->user_login);
+		wp_set_auth_cookie($user->ID);
+		do_action('wp_login', $user->user_login, $user);
+
+		wp_redirect(admin_url());
+		exit;
+	}
+}
