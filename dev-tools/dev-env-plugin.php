@@ -107,12 +107,12 @@ function dev_env_auto_login() {
 		return;
 	}
 
-	$expectd_key = getenv( 'VIP_DEV_AUTOLOGIN_KEY' ) ?? false;
-	if ( ! $expectd_key ) {
+	$expected_key = getenv( 'VIP_DEV_AUTOLOGIN_KEY' ) ?? false;
+	if ( ! $expected_key ) {
 		return;
 	}
 	$submitted_key = $_GET['vip-dev-autologin'] ?? false;
-	if ( $submitted_key !== $expectd_key ) {
+	if ( $submitted_key !== $expected_key ) {
 		return;
 	}
 
