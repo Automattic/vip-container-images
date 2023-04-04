@@ -16,11 +16,6 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    directory: "mariadb-lite/"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "docker"
     directory: "mu-plugins/"
     schedule:
       interval: "weekly"
