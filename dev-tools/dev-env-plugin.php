@@ -107,7 +107,7 @@ function dev_env_auto_login() {
 		return;
 	}
 
-	$expected_key = getenv( 'VIP_DEV_AUTOLOGIN_KEY' ) ?? false;
+	$expected_key = getenv( 'VIP_DEV_AUTOLOGIN_KEY' );
 	if ( ! $expected_key ) {
 		return;
 	}
