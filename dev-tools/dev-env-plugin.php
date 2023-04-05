@@ -125,6 +125,6 @@ function dev_env_auto_login() {
 	wp_set_auth_cookie( $user->ID );
 	do_action( 'wp_login', $user->user_login, $user );
 
-	wp_redirect( admin_url() );
+	wp_safe_redirect( admin_url() );
 	exit;
 }
