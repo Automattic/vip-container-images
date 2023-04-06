@@ -5,7 +5,7 @@
  ******************/
 
 add_filter( 'set_url_scheme', function( $url ) {
-	$proto = $_SERVER[ 'HTTP_X_FORWARDED_PROTO' ] ?? '';
+	$proto = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '';
 
 	if ( 'https' == $proto ) {
 		return str_replace( 'http://', 'https://', $url );
@@ -67,7 +67,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 function dev_env_add_admin( $args, $assoc_args ) {
 	$username = $assoc_args['username'] ?? '';
 	$password = $assoc_args['password'] ?? '';
-	$email = $assoc_args['email'] ?? $username . '@go-vip.net';
+	$email    = $assoc_args['email'] ?? $username . '@go-vip.net';
 
 	if ( ! $username || ! $password ) {
 		WP_CLI::error( 'Both username and password need to be provided!' );
@@ -96,4 +96,35 @@ function dev_env_add_admin( $args, $assoc_args ) {
 			restore_current_blog();
 		}
 	}
+}
+
+add_action( 'init', 'dev_env_auto_login' );
+function dev_env_auto_login() {
+	if ( 'local' !== VIP_GO_APP_ENVIRONMENT ) {
+		return;
+	}
+	if ( is_user_logged_in() ) {
+		return;
+	}
+
+	$expected_key = getenv( 'VIP_DEV_AUTOLOGIN_KEY' );
+	if ( ! $expected_key ) {
+		return;
+	}
+	$submitted_key = $_GET['vip-dev-autologin'] ?? false;
+	if ( $submitted_key !== $expected_key ) {
+		return;
+	}
+
+	$user = get_user_by( 'login', 'vipgo' );
+	if ( ! $user ) {
+		return;
+	}
+
+	wp_set_current_user( $user->ID, $user->user_login );
+	wp_set_auth_cookie( $user->ID );
+	do_action( 'wp_login', $user->user_login, $user );
+
+	wp_safe_redirect( admin_url() );
+	exit;
 }
