@@ -14,7 +14,7 @@ fi
 if [ -n "${LANDO_INFO}" ] && [ 'null' != "$(echo "${LANDO_INFO}" | jq -r .mailhog)" ]; then
     echo "sendmail_path = /usr/sbin/sendmail -S $(echo "${LANDO_INFO}" | jq -r '.mailhog.internal_connection.host + ":" + .mailhog.internal_connection.port')" > "${PHP_INI_DIR}/conf.d/99-mailhog.ini"
 elif [ -n "${LANDO_INFO}" ] && [ 'null' != "$(echo "${LANDO_INFO}" | jq -r .mailpit)" ]; then
-    echo "sendmail_path = /usr/bin/msmtp --host=mailpit --port=1025 -t --auto-from" > "${PHP_INI_DIR}/conf.d/99-mailpit.ini"
+    echo 'sendmail_path = "/usr/bin/msmtp --host=mailpit --port=1025 -t --auto-from"' > "${PHP_INI_DIR}/conf.d/99-mailpit.ini"
 elif [ -n "${ENABLE_MAILHOG}" ]; then
     echo "sendmail_path = /usr/sbin/sendmail -S mailhog:1025" > "${PHP_INI_DIR}/conf.d/99-mailhog.ini"
 else
