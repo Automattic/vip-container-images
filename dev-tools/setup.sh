@@ -1,16 +1,51 @@
 #!/bin/sh
 
 if [ $# -lt 4 ]; then
-  echo: "Syntax: setup.sh <db_host> <db_admin_user> <wp_domain> <wp_title> [<multisite_domain>] [<multisite_type>]"
+  echo "Syntax: setup.sh --host <db_host> --user <db_admin_user> --domain <wp_domain> --title <wp_title> [--ms-domain <multisite_domain>] [--subdomain]"
   exit 1
 fi
 
-db_host=$1
-db_admin_user=$2
-wp_url=$3
-wp_title=$4
-multisite_domain=$5
-multisite_type=$6
+subdomain=0
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --host)
+      db_host="$2"
+      shift 2
+      ;;
+    --user)
+      db_admin_user="$2"
+      shift 2
+      ;;
+    --domain)
+      wp_url="$2"
+      shift 2
+      ;;
+    --title)
+      wp_title="$2"
+      shift 2
+      ;;
+    --ms-domain)
+      multisite_domain="$2"
+      shift 2
+      ;;
+    --subdomain)
+      subdomain=1
+      shift 1
+      ;;
+    *)
+      echo "Unknown option: $1"
+      exit 1
+      ;;
+  esac
+done
+
+# Check if the required arguments are provided
+if [ -z "$db_host" ] || [ -z "$db_admin_user" ] || [ -z "$wp_url" ] || [ -z "$wp_title" ]; then
+  echo "Syntax: setup.sh --host <db_host> --user <db_admin_user> --domain <wp_domain> --title <wp_title> [--ms-domain <multisite_domain>] [--subdomain]"
+  exit 1
+fi
+
 
 # Make sure to check the core files are there before trying to install WordPress.
 echo "Waiting for core files to be copied"
@@ -46,7 +81,7 @@ else
   sed -e "s/%DB_HOST%/$db_host/" /dev-tools/wp-config.php.tpl > /wp/config/wp-config.php
   if [ -n "$multisite_domain" ]; then
     sed -e "s/%DOMAIN%/$multisite_domain/" /dev-tools/wp-config-multisite.php.tpl >> /wp/config/wp-config.php
-    if [ "$multisite_type" == "subdirectory" ]; then
+    if [ "$subdomain" -eq 0 ]; then
       sed -i "s/define( 'SUBDOMAIN_INSTALL', true );/define( 'SUBDOMAIN_INSTALL', false );/" /wp/config/wp-config.php
     fi
   fi
@@ -108,7 +143,7 @@ if echo "$site_exist_check_output" | grep -Eq "(Site .* not found)|(The site you
       --skip-themes \
       --skip-plugins \
       --skip-config \
-      $(if [ -z "$multisite_type" ] || [ "$multisite_type" != "subdirectory" ]; then echo "--subdomains"; fi) #2>/dev/null
+      $(if [ "$subdomain" -eq 1 ]; then echo "--subdomains"; fi) #2>/dev/null
   else
     wp core install \
       --path=/wp \
