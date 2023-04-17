@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ $# -lt 4 ]; then
-  echo: "Syntax: setup.sh <db_host> <db_admin_user> <wp_domain> <wp_title> [<multisite_domain>]"
+  echo: "Syntax: setup.sh <db_host> <db_admin_user> <wp_domain> <wp_title> [<multisite_domain>] [<multisite_type>]"
   exit 1
 fi
 
@@ -10,6 +10,7 @@ db_admin_user=$2
 wp_url=$3
 wp_title=$4
 multisite_domain=$5
+multisite_type=$6
 
 # Make sure to check the core files are there before trying to install WordPress.
 echo "Waiting for core files to be copied"
@@ -45,6 +46,9 @@ else
   sed -e "s/%DB_HOST%/$db_host/" /dev-tools/wp-config.php.tpl > /wp/config/wp-config.php
   if [ -n "$multisite_domain" ]; then
     sed -e "s/%DOMAIN%/$multisite_domain/" /dev-tools/wp-config-multisite.php.tpl >> /wp/config/wp-config.php
+    if [ "$multisite_type" == "subdirectory" ]; then
+      sed -i "s/define( 'SUBDOMAIN_INSTALL', true );/define( 'SUBDOMAIN_INSTALL', false );/" /wp/config/wp-config.php
+    fi
   fi
   curl -s https://api.wordpress.org/secret-key/1.1/salt/ >> /wp/config/wp-config.php
 fi
@@ -103,8 +107,8 @@ if echo "$site_exist_check_output" | grep -Eq "(Site .* not found)|(The site you
       --skip-email \
       --skip-themes \
       --skip-plugins \
-      --subdomains \
-      --skip-config #2>/dev/null
+      --skip-config \
+      $(if [ -z "$multisite_type" ] || [ "$multisite_type" != "subdirectory" ]; then echo "--subdomains"; fi) #2>/dev/null
   else
     wp core install \
       --path=/wp \
