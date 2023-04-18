@@ -1,51 +1,62 @@
 #!/bin/sh
 
-if [ $# -lt 4 ]; then
-  echo "Syntax: setup.sh --host <db_host> --user <db_admin_user> --domain <wp_domain> --title <wp_title> [--ms-domain <multisite_domain>] [--subdomain]"
-  exit 1
-fi
-
 subdomain=0
 
-while [ "$#" -gt 0 ]; do
-  case "$1" in
-    --host)
-      db_host="$2"
-      shift 2
-      ;;
-    --user)
-      db_admin_user="$2"
-      shift 2
-      ;;
-    --domain)
-      wp_url="$2"
-      shift 2
-      ;;
-    --title)
-      wp_title="$2"
-      shift 2
-      ;;
-    --ms-domain)
-      multisite_domain="$2"
-      shift 2
-      ;;
-    --subdomain)
-      subdomain=1
-      shift 1
-      ;;
-    *)
-      echo "Unknown option: $1"
-      exit 1
-      ;;
-  esac
-done
+# Check if the first argument starts with '--'
+if [ "${1#--}" != "$1" ]; then
+  if [ $# -lt 8 ]; then
+    echo "Syntax: setup.sh --host <db_host> --user <db_admin_user> --domain <wp_domain> --title <wp_title> [--ms-domain <multisite_domain>] [--subdomain]"
+    exit 1
+  fi
 
-# Check if the required arguments are provided
-if [ -z "$db_host" ] || [ -z "$db_admin_user" ] || [ -z "$wp_url" ] || [ -z "$wp_title" ]; then
-  echo "Syntax: setup.sh --host <db_host> --user <db_admin_user> --domain <wp_domain> --title <wp_title> [--ms-domain <multisite_domain>] [--subdomain]"
-  exit 1
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      --host)
+        db_host="$2"
+        shift 2
+        ;;
+      --user)
+        db_admin_user="$2"
+        shift 2
+        ;;
+      --domain)
+        wp_url="$2"
+        shift 2
+        ;;
+      --title)
+        wp_title="$2"
+        shift 2
+        ;;
+      --ms-domain)
+        multisite_domain="$2"
+        shift 2
+        ;;
+      --subdomain)
+        subdomain=1
+        shift 1
+        ;;
+      *)
+        echo "Unknown option: $1"
+        exit 1
+        ;;
+    esac
+  done
+else
+  if [ $# -lt 4 ]; then
+    echo "Syntax: setup.sh <db_host> <db_admin_user> <wp_domain> <wp_title> [<multisite_domain>] [<subdomain>]"
+    exit 1
+  fi
+
+  db_host=$1
+  db_admin_user=$2
+  wp_url=$3
+  wp_title=$4
+  multisite_domain=$5
+
+  if [ -n "$6" ]; then
+    subdomain=1
+  fi
 fi
-
 
 # Make sure to check the core files are there before trying to install WordPress.
 echo "Waiting for core files to be copied"
