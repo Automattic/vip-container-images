@@ -1,10 +1,13 @@
-FROM alpine:3.17.0@sha256:8914eb54f968791faf6a8638949e480fef81e697984fba772b3976835194c6d4 AS build
-RUN apk add --no-cache php81-dev gcc make php81-pear php81-openssl libc-dev graphicsmagick-dev libtool
+FROM alpine:edge AS build
+RUN apk add --no-cache php81-dev php81-pear php81-openssl gcc make libc-dev graphicsmagick-dev libtool
 RUN pecl81 channel-update pecl.php.net
 RUN pecl81 install channel://pecl.php.net/gmagick-2.0.6RC1 < /dev/null
 
-FROM alpine:3.17.0@sha256:8914eb54f968791faf6a8638949e480fef81e697984fba772b3976835194c6d4
+FROM alpine:edge
 
+RUN \
+    echo https://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
+    echo https://dl-cdn.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories
 RUN \
     apk add --no-cache ca-certificates curl tar xz openssl less bash mariadb-client su-exec shadow git jq icu-data-full ghostscript msmtp php81 php81-fpm php81-pear \
         graphicsmagick libgomp \
@@ -18,13 +21,13 @@ RUN \
         php81-fileinfo \
         php81-ftp \
         php81-gd \
-        # php81-pecl-gmagick \
         php81-gmp \
         php81-iconv \
         php81-intl \
         php81-json \
         php81-mbstring \
-        # php81-pecl-mcrypt \
+        php81-pecl-igbinary \
+        php81-pecl-mcrypt \
         php81-pecl-memcache \
         php81-pecl-memcached \
         php81-mysqli \
@@ -46,7 +49,7 @@ RUN \
         php81-pecl-ssh2 \
         php81-sysvsem \
         php81-sysvshm \
-        # php81-pecl-timezonedb \
+        php81-pecl-timezonedb \
         php81-tokenizer \
         php81-pecl-xdebug \
         php81-xml \
@@ -54,7 +57,15 @@ RUN \
         php81-xmlwriter \
         php81-zip
 
-RUN ln -s /usr/sbin/php-fpm81 /usr/sbin/php-fpm
+RUN \
+    [ ! -f /usr/sbin/php-fpm ] && ln -s /usr/sbin/php-fpm81 /usr/sbin/php-fpm; \
+    [ ! -f /usr/bin/php ] && ln -s /usr/bin/php81 /usr/bin/php; \
+    [ ! -f /usr/bin/pecl ] && ln -s /usr/bin/pecl81 /usr/bin/pecl; \
+    [ ! -f /usr/bin/pear ] && ln -s /usr/bin/pear81 /usr/bin/pear; \
+    [ ! -f /usr/bin/peardev ] && ln -s /usr/bin/peardev81 /usr/bin/peardev; \
+    [ ! -f /usr/bin/phar ] && ln -s /usr/bin/phar81 /usr/bin/phar; \
+    [ ! -f /usr/bin/phar.phar ] && ln -s /usr/bin/phar81 /usr/bin/phar.phar; \
+    true
 
 RUN \
     pecl update-channels && \

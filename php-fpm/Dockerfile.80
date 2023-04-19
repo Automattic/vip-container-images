@@ -1,7 +1,7 @@
-FROM alpine:3.16.3@sha256:b95359c2505145f16c6aa384f9cc74eeff78eb36d308ca4fd902eeeb0a0b161b
+FROM alpine:edge
 
 RUN \
-    echo "@testing https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
+    echo https://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
     apk add --no-cache ca-certificates curl tar xz openssl less bash mariadb-client su-exec shadow git jq icu-data-full ghostscript msmtp php8 php8-fpm php8-pear \
         php8-pecl-apcu \
         php8-bcmath \
@@ -13,12 +13,13 @@ RUN \
         php8-fileinfo \
         php8-ftp \
         php8-gd \
-        php8-pecl-gmagick@testing \
+        php8-pecl-gmagick \
         php8-gmp \
         php8-iconv \
         php8-intl \
         php8-json \
         php8-mbstring \
+        php8-pecl-igbinary \
         php8-pecl-mcrypt \
         php8-pecl-memcache \
         php8-pecl-memcached \
@@ -49,7 +50,14 @@ RUN \
         php8-xmlwriter \
         php8-zip
 
-RUN ln -s /usr/sbin/php-fpm8 /usr/sbin/php-fpm
+RUN \
+    [ ! -f /usr/sbin/php-fpm ] && ln -s /usr/sbin/php-fpm8 /usr/sbin/php-fpm; \
+    [ ! -f /usr/bin/php ] && ln -s /usr/bin/php8 /usr/bin/php; \
+    [ ! -f /usr/bin/pecl ] && ln -s /usr/bin/pecl8 /usr/bin/pecl; \
+    [ ! -f /usr/bin/pear ] && ln -s /usr/bin/pear8 /usr/bin/pear; \
+    [ ! -f /usr/bin/peardev ] && ln -s /usr/bin/peardev8 /usr/bin/peardev; \
+    [ ! -f /usr/bin/phar ] && ln -s /usr/bin/phar8 /usr/bin/phar; \
+    [ ! -f /usr/bin/phar.phar ] && ln -s /usr/bin/phar8 /usr/bin/phar.phar
 
 RUN \
     pecl update-channels && \
@@ -68,7 +76,6 @@ ENV PHP_INI_DIR /etc/php8
 
 COPY rootfs-common/ /
 COPY rootfs80/ /
-
 
 WORKDIR /var/www/html
 STOPSIGNAL SIGQUIT

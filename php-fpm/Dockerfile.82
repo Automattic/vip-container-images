@@ -1,7 +1,6 @@
 FROM alpine:edge as build
 RUN apk add --no-cache php82-dev gcc make php82-pear php82-openssl libc-dev graphicsmagick-dev libtool
 RUN pecl82 channel-update pecl.php.net
-RUN pecl82 install memcache < /dev/null
 RUN pecl82 install channel://pecl.php.net/gmagick-2.0.6RC1 < /dev/null
 
 FROM alpine:edge
@@ -24,11 +23,11 @@ RUN \
         php82-gmp \
         php82-iconv \
         php82-intl \
-        # php82-json \
         php82-mbstring \
-        # php82-pecl-mcrypt \
-        # php82-pecl-memcache \
-        # php82-pecl-memcached \
+        php82-pecl-igbinary \
+        php82-pecl-mcrypt \
+        php82-pecl-memcache \
+        php82-pecl-memcached \
         php82-mysqli \
         php82-mysqlnd \
         php82-opcache \
@@ -56,9 +55,14 @@ RUN \
         php82-xmlwriter \
         php82-zip
 
-RUN ln -s /usr/sbin/php-fpm82 /usr/sbin/php-fpm
-RUN ln -s /usr/bin/pecl82 /usr/bin/pecl
-RUN ln -s /usr/bin/php82 /usr/bin/php
+RUN \
+    [ ! -f /usr/sbin/php-fpm ] && ln -s /usr/sbin/php-fpm82 /usr/sbin/php-fpm; \
+    [ ! -f /usr/bin/php ] && ln -s /usr/bin/php82 /usr/bin/php; \
+    [ ! -f /usr/bin/pecl ] && ln -s /usr/bin/pecl82 /usr/bin/pecl; \
+    [ ! -f /usr/bin/pear ] && ln -s /usr/bin/pear82 /usr/bin/pear; \
+    [ ! -f /usr/bin/peardev ] && ln -s /usr/bin/peardev82 /usr/bin/peardev; \
+    [ ! -f /usr/bin/phar ] && ln -s /usr/bin/phar82 /usr/bin/phar; \
+    [ ! -f /usr/bin/phar.phar ] && ln -s /usr/bin/phar82 /usr/bin/phar.phar
 
 RUN \
     pecl update-channels && \
@@ -77,7 +81,7 @@ ENV PHP_INI_DIR /etc/php82
 
 COPY rootfs-common/ /
 COPY rootfs82/ /
-COPY --from=build /usr/lib/php82/modules/memcache.so /usr/lib/php82/modules/gmagick.so /usr/lib/php82/modules/
+COPY --from=build /usr/lib/php82/modules/gmagick.so /usr/lib/php82/modules/
 
 WORKDIR /var/www/html
 STOPSIGNAL SIGQUIT
