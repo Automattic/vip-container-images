@@ -54,4 +54,4 @@ jobs:
           cache-to: type=gha,mode=max,scope=dev-tools
           tags: |
             ghcr.io/automattic/vip-container-images/dev-tools:latest
-            ghcr.io/automattic/vip-container-images/dev-tools:1.0
+            ghcr.io/automattic/vip-container-images/dev-tools:0.9
