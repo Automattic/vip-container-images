@@ -5,8 +5,8 @@ define( 'DB_USER', 'wordpress' );
 define( 'DB_PASSWORD', 'wordpress' );
 define( 'DB_HOST', '%DB_HOST%' );
 
-define( 'DB_CHARSET', 'utf8' );
-define( 'DB_COLLATE', '' );
+define( 'DB_CHARSET', 'utf8mb4' );
+define( 'DB_COLLATE', 'utf8mb4_unicode_520_ci' );
 
 $table_prefix = 'wp_';
 
