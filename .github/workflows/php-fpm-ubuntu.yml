@@ -1,4 +1,4 @@
-name: Build PHP-FPM
+name: Build PHP-FPM (Ubuntu)
 
 on:
   push:
