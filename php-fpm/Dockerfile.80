@@ -2,7 +2,8 @@ FROM alpine:edge
 
 RUN \
     echo https://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
-    apk add --no-cache ca-certificates curl tar xz openssl less bash mariadb-client su-exec shadow git jq icu-data-full ghostscript msmtp php8 php8-fpm php8-pear \
+    echo "@317m https://dl-cdn.alpinelinux.org/alpine/v3.17/main" >> /etc/apk/repositories && \
+    apk add --no-cache ca-certificates curl tar xz openssl less bash mysql-client@317m mariadb-common@317m su-exec shadow git jq icu-data-full ghostscript msmtp php8 php8-fpm php8-pear \
         php8-pecl-apcu \
         php8-bcmath \
         php8-calendar \

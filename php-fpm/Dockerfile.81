@@ -7,9 +7,8 @@ FROM alpine:edge
 
 RUN \
     echo https://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
-    echo https://dl-cdn.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories
-RUN \
-    apk add --no-cache ca-certificates curl tar xz openssl less bash mariadb-client su-exec shadow git jq icu-data-full ghostscript msmtp php81 php81-fpm php81-pear \
+    echo "@317m https://dl-cdn.alpinelinux.org/alpine/v3.17/main" >> /etc/apk/repositories && \
+    apk add --no-cache ca-certificates curl tar xz openssl less bash mysql-client@317m mariadb-common@317m su-exec shadow git jq icu-data-full ghostscript msmtp php81 php81-fpm php81-pear \
         graphicsmagick libgomp \
         php81-pecl-apcu \
         php81-bcmath \
