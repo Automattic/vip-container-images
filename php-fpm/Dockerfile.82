@@ -1,13 +1,14 @@
-FROM alpine:edge as build
+FROM alpine:edge AS build
 RUN apk add --no-cache php82-dev gcc make php82-pear php82-openssl libc-dev graphicsmagick-dev libtool
 RUN pecl82 channel-update pecl.php.net
 RUN pecl82 install channel://pecl.php.net/gmagick-2.0.6RC1 < /dev/null
 
 FROM alpine:edge
 
-RUN echo https://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories
 RUN \
-    apk add --no-cache ca-certificates curl tar xz openssl less bash mariadb-client su-exec shadow git jq icu-data-full ghostscript msmtp php82 php82-fpm php82-pear \
+    echo https://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
+    echo "@317m https://dl-cdn.alpinelinux.org/alpine/v3.17/main" >> /etc/apk/repositories && \
+    apk add --no-cache ca-certificates curl tar xz openssl less bash mysql-client@317m mariadb-common@317m su-exec shadow git jq icu-data-full ghostscript msmtp php82 php82-fpm php82-pear \
         graphicsmagick libgomp \
         php82-pecl-apcu \
         php82-bcmath \
