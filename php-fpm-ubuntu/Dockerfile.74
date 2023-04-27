@@ -44,7 +44,6 @@ RUN \
     wget -q https://getcomposer.org/installer -O - | php -- --install-dir=/usr/bin/ --filename=composer
 
 ENV WP_CLI_CONFIG_PATH /config/wp-cli.yaml
-ENV PHP_INI_DIR /etc/php8
 
 COPY --from=build /usr/lib/php/20190902/timezonedb.so /usr/lib/php/20190902/timezonedb.so
 COPY rootfs/ /
