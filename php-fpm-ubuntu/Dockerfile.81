@@ -1,0 +1,59 @@
+FROM ubuntu:22.04 AS build
+RUN \
+    export DEBIAN_FRONTEND=noninteractive && \
+    apt-get -q update && \
+    apt-get -y install eatmydata && \
+    eatmydata apt-get install -y software-properties-common gnupg --no-install-recommends && \
+    eatmydata add-apt-repository -y ppa:ondrej/php && \
+    eatmydata apt-get install -y php8.1-dev php8.1-xml && \
+    eatmydata apt-get install -y php-pear --no-install-recommends && \
+    pecl install timezonedb
+
+FROM ubuntu:22.04
+
+# Extra PHP extensions: msgpack (because of memcache)
+# We lack: newrelic
+RUN \
+    export DEBIAN_FRONTEND=noninteractive && \
+    apt-get -q update && \
+    apt-get -y install eatmydata && \
+    eatmydata apt-get install -y software-properties-common gnupg --no-install-recommends && \
+    eatmydata add-apt-repository -y ppa:ondrej/php && \
+    eatmydata apt-get install -y curl less git jq mysql-client openssl wget && \
+    eatmydata apt-get install -y ghostscript msmtp --no-install-recommends && \
+    eatmydata apt-get install -y \
+        php8.1-cli php8.1-fpm \
+        php8.1-apcu php8.1-bcmath php8.1-curl php8.1-gd php8.1-gmagick php8.1-gmp php8.1-gnupg php8.1-intl php8.1-igbinary php8.1-mbstring php8.1-mcrypt \
+        php8.1-memcache php8.1-memcached php8.1-mysql php8.1-soap php8.1-sqlite3 php8.1-ssh2 php8.1-xdebug php8.1-xml php8.1-zip && \
+    eatmydata apt-get install -y php-pear --no-install-recommends && \
+    phpdismod ffi gettext readline sysvmsg xsl xdebug && \
+    eatmydata apt-get remove --purge -y software-properties-common && \
+    rm -rf /var/lib/apt/lists/* && \
+    eatmydata apt-get autoremove --purge -y && \
+    ln -s /usr/sbin/php-fpm8.1 /usr/sbin/php-fpm
+
+RUN \
+    usermod -d /home/www-data -s /bin/bash www-data && \
+    install -d -D -m 0750 -o www-data -g www-data /home/www-data && \
+    install -d -D -m 0777 -o www-data -g www-data /var/www/html && \
+    install -d -D -m 0755 -o www-data -g www-data /run/php
+
+RUN \
+    wget -O /usr/local/bin/phpunit https://phar.phpunit.de/phpunit-9.phar && chmod 0755 /usr/local/bin/phpunit && \
+    wget -O /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && chmod 0755 /usr/local/bin/wp && \
+    wget -q https://getcomposer.org/installer -O - | php -- --install-dir=/usr/bin/ --filename=composer
+
+ENV WP_CLI_CONFIG_PATH /config/wp-cli.yaml
+ENV PHP_INI_DIR /etc/php8
+
+COPY --from=build /usr/lib/php/20210902/timezonedb.so /usr/lib/php/20210902/timezonedb.so
+COPY rootfs/ /
+COPY rootfs-php/ /etc/php/8.1/
+
+RUN phpenmod timezonedb
+
+WORKDIR /var/www/html
+STOPSIGNAL SIGQUIT
+EXPOSE 9000
+ENTRYPOINT ["docker-php-entrypoint"]
+CMD ["run.sh"]
