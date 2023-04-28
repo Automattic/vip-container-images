@@ -8,3 +8,4 @@ xdebug.start_with_request=yes
 xdebug.client_host=host.docker.internal
 
 xdebug.log=/tmp/xdebug.log
+xdebug.discover_client_host=true
