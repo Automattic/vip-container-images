@@ -19,3 +19,5 @@ COPY extra/ /wordpress/wordpress/
 
 FROM ghcr.io/automattic/vip-container-images/alpine:3.17.3@sha256:062a1ec3e5d1d7c471add8bb689ccd26a3d6a734c802bbbc37d8f456ddb27b40
 COPY --from=build /wordpress/wordpress/ /wp/
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
