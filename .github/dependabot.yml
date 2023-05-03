@@ -31,11 +31,6 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    directory: "php-fpm-ubuntu/"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "docker"
     directory: "skeleton/"
     schedule:
       interval: "weekly"

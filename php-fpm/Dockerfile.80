@@ -1,71 +1,42 @@
-FROM alpine:edge
+FROM ubuntu:22.04 AS build
+RUN \
+    export DEBIAN_FRONTEND=noninteractive && \
+    apt-get -q update && \
+    apt-get -y install eatmydata && \
+    eatmydata apt-get install -y software-properties-common gnupg --no-install-recommends && \
+    eatmydata add-apt-repository -y ppa:ondrej/php && \
+    eatmydata apt-get install -y php8.0-dev php8.0-xml && \
+    eatmydata apt-get install -y php-pear --no-install-recommends && \
+    pecl install timezonedb
+
+FROM ubuntu:22.04
+
+# Extra PHP extensions: msgpack (because of memcache)
+# We lack: newrelic
+RUN \
+    export DEBIAN_FRONTEND=noninteractive && \
+    apt-get -q update && \
+    apt-get -y install eatmydata && \
+    eatmydata apt-get install -y software-properties-common gnupg --no-install-recommends && \
+    eatmydata add-apt-repository -y ppa:ondrej/php && \
+    eatmydata apt-get install -y curl less git jq mysql-client openssl wget && \
+    eatmydata apt-get install -y ghostscript msmtp --no-install-recommends && \
+    eatmydata apt-get install -y \
+        php8.0-cli php8.0-fpm \
+        php8.0-apcu php8.0-bcmath php8.0-curl php8.0-gd php8.0-gmagick php8.0-gmp php8.0-gnupg php8.0-intl php8.0-igbinary php8.0-mbstring php8.0-mcrypt \
+        php8.0-memcache php8.0-memcached php8.0-mysql php8.0-soap php8.0-sqlite3 php8.0-ssh2 php8.0-xdebug php8.0-xml php8.0-zip && \
+    eatmydata apt-get install -y php-pear --no-install-recommends && \
+    phpdismod ffi gettext readline sysvmsg xsl xdebug && \
+    eatmydata apt-get remove --purge -y software-properties-common && \
+    rm -rf /var/lib/apt/lists/* && \
+    eatmydata apt-get autoremove --purge -y && \
+    ln -s /usr/sbin/php-fpm8.0 /usr/sbin/php-fpm
 
 RUN \
-    echo https://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
-    echo "@317m https://dl-cdn.alpinelinux.org/alpine/v3.17/main" >> /etc/apk/repositories && \
-    apk add --no-cache ca-certificates curl tar xz openssl less bash mysql-client@317m mariadb-common@317m su-exec shadow git jq icu-data-full ghostscript msmtp php8 php8-fpm php8-pear \
-        php8-pecl-apcu \
-        php8-bcmath \
-        php8-calendar \
-        php8-ctype \
-        php8-curl \
-        php8-dom \
-        php8-exif \
-        php8-fileinfo \
-        php8-ftp \
-        php8-gd \
-        php8-pecl-gmagick \
-        php8-gmp \
-        php8-iconv \
-        php8-intl \
-        php8-json \
-        php8-mbstring \
-        php8-pecl-igbinary \
-        php8-pecl-mcrypt \
-        php8-pecl-memcache \
-        php8-pecl-memcached \
-        php8-mysqli \
-        php8-mysqlnd \
-        php8-opcache \
-        php8-openssl \
-        php8-pcntl \
-        php8-pdo \
-        php8-pdo_sqlite \
-        php8-phar \
-        php8-posix \
-        php8-session \
-        php8-shmop \
-        php8-simplexml \
-        php8-soap \
-        php8-sockets \
-        php8-sodium \
-        php8-sqlite3 \
-        php8-pecl-ssh2 \
-        php8-sysvsem \
-        php8-sysvshm \
-        php8-pecl-timezonedb \
-        php8-tokenizer \
-        php8-pecl-xdebug \
-        php8-xml \
-        php8-xmlreader \
-        php8-xmlwriter \
-        php8-zip
-
-RUN \
-    [ ! -f /usr/sbin/php-fpm ] && ln -s /usr/sbin/php-fpm8 /usr/sbin/php-fpm; \
-    [ ! -f /usr/bin/php ] && ln -s /usr/bin/php8 /usr/bin/php; \
-    [ ! -f /usr/bin/pecl ] && ln -s /usr/bin/pecl8 /usr/bin/pecl; \
-    [ ! -f /usr/bin/pear ] && ln -s /usr/bin/pear8 /usr/bin/pear; \
-    [ ! -f /usr/bin/peardev ] && ln -s /usr/bin/peardev8 /usr/bin/peardev; \
-    [ ! -f /usr/bin/phar ] && ln -s /usr/bin/phar8 /usr/bin/phar; \
-    [ ! -f /usr/bin/phar.phar ] && ln -s /usr/bin/phar8 /usr/bin/phar.phar
-
-RUN \
-    pecl update-channels && \
-    rm -rf /tmp/pear ~/.pearrc
-
-RUN adduser -u 82 -D -S -G www-data www-data
-RUN install -d -m 0777 -o www-data -g www-data /var/www/html
+    usermod -d /home/www-data -s /bin/bash www-data && \
+    install -d -D -m 0750 -o www-data -g www-data /home/www-data && \
+    install -d -D -m 0777 -o www-data -g www-data /var/www/html && \
+    install -d -D -m 0755 -o www-data -g www-data /run/php
 
 RUN \
     wget -O /usr/local/bin/phpunit https://phar.phpunit.de/phpunit-9.phar && chmod 0755 /usr/local/bin/phpunit && \
@@ -73,10 +44,12 @@ RUN \
     wget -q https://getcomposer.org/installer -O - | php -- --install-dir=/usr/bin/ --filename=composer
 
 ENV WP_CLI_CONFIG_PATH /config/wp-cli.yaml
-ENV PHP_INI_DIR /etc/php8
 
-COPY rootfs-common/ /
-COPY rootfs80/ /
+COPY --from=build /usr/lib/php/20200930/timezonedb.so /usr/lib/php/20200930/timezonedb.so
+COPY rootfs/ /
+COPY rootfs-php/ /etc/php/8.0/
+
+RUN phpenmod timezonedb
 
 WORKDIR /var/www/html
 STOPSIGNAL SIGQUIT
