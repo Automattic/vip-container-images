@@ -2,8 +2,10 @@
 
 define( 'OPTIPNG', '/usr/bin/optipng' );
 define( 'PNGQUANT', '/usr/bin/pngquant' );
+define( 'PNGCRUSH', '/usr/bin/pngcrush' );
 define( 'CWEBP', '/usr/bin/cwebp' );
 define( 'JPEGOPTIM', '/usr/bin/jpegoptim' );
+define( 'JPEGTRAN', '/usr/bin/jpegtran' );
 
 if ( function_exists( 'add_filter' ) ) {
 	add_filter( 'override_raw_data_fetch', function ( $_overridden_data, $url ) {

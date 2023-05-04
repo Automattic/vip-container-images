@@ -11,7 +11,7 @@ FROM alpine:3.17.3@sha256:124c7d2707904eea7431fffe91522a01e5a861a624ee31d03372cc
 RUN \
     apk add --no-cache \
         php81 php81-fpm php81-curl php81-gd php81-opcache php81-openssl graphicsmagick  \
-        optipng pngquant libwebp-tools jpegoptim && \
+        optipng pngquant libwebp-tools jpegoptim libjpeg-turbo-utils pngcrush && \
     ln -s /usr/sbin/php-fpm81 /usr/sbin/php-fpm
 
 # These packages are required to download composer, install PHPUnit and run tests
