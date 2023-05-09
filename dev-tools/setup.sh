@@ -126,7 +126,7 @@ cp /dev-tools/dev-env-plugin.php /wp/wp-content/mu-plugins/
 if [ -n "${ENABLE_ELASTICSEARCH}" ] || { [ -n "${LANDO_INFO}" ] && [ "$(echo "${LANDO_INFO}" | jq .elasticsearch.service)" != 'null' ]; }; then
   echo "Waiting for Elasticsearch to come online..."
   second=0
-  while ! curl -s 'http://elasticsearch:9200/_cluster/health' > /dev/null; do
+  while ! curl -s 'http://elasticsearch:9200/_cluster/health' > /dev/null && [ "${second}" -lt 60 ]; do
     sleep 1
     second=$((second+1))
   done
@@ -140,8 +140,8 @@ fi
 echo "Checking for WordPress installation..."
 
 site_exist_check_output=$(wp option get siteurl 2>&1);
-
 site_exist_return_value=$?;
+
 if echo "$site_exist_check_output" | grep -Eq "(Site .* not found)|(The site you have requested is not installed)"; then
   echo "No installation found, installing WordPress..."
 
