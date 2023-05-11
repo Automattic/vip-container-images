@@ -139,10 +139,8 @@ fi
 
 echo "Checking for WordPress installation..."
 
-site_exist_check_output=$(wp option get siteurl 2>&1);
-
-site_exist_return_value=$?;
-if echo "$site_exist_check_output" | grep -Eq "(Site .* not found)|(The site you have requested is not installed)"; then
+wp cache flush
+if ! wp core is-installed; then
   echo "No installation found, installing WordPress..."
 
   # Ensuring wp-config-defaults is up to date
@@ -193,9 +191,6 @@ if echo "$site_exist_check_output" | grep -Eq "(Site .* not found)|(The site you
   fi
 
   wp user add-cap 1 view_query_monitor
-elif [ "$site_exist_return_value" != 0 ] ; then
-  echo "ERROR: Could not find out if site exists."
-  echo "$site_exist_check_output"
 else
   echo "WordPress already installed"
 fi
