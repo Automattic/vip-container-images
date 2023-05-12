@@ -99,12 +99,14 @@ else
   curl -s https://api.wordpress.org/secret-key/1.1/salt/ >> /wp/config/wp-config.php
 fi
 
-echo "Waiting for MySQL to come online..."
+echo -n "Waiting for MySQL to come online"
 second=0
 while ! mysqladmin ping -h "${db_host}" --silent && [ "${second}" -lt 60 ]; do
+  echo -n "."
   sleep 1
   second=$((second+1))
 done
+echo ""
 if ! mysqladmin ping -h "${db_host}" --silent; then
     echo "ERROR: mysql has failed to come online"
     exit 1;
@@ -124,12 +126,14 @@ echo "Copying dev-env-plugin.php to mu-plugins"
 cp /dev-tools/dev-env-plugin.php /wp/wp-content/mu-plugins/
 
 if [ -n "${ENABLE_ELASTICSEARCH}" ] || { [ -n "${LANDO_INFO}" ] && [ "$(echo "${LANDO_INFO}" | jq .elasticsearch.service)" != 'null' ]; }; then
-  echo "Waiting for Elasticsearch to come online..."
+  echo -n "Waiting for Elasticsearch to come online"
   second=0
   while ! curl -s 'http://elasticsearch:9200/_cluster/health' > /dev/null && [ "${second}" -lt 60 ]; do
+    echo -n "."
     sleep 1
     second=$((second+1))
   done
+  echo ""
   status="$(curl -s 'http://elasticsearch:9200/_cluster/health?wait_for_status=yellow&timeout=60s' | jq -r .status)"
   if [ "${status}" != 'green' ] && [ "${status}" != 'yellow' ]; then
       echo "WARNING: Elasticsearch has failed to come online"
