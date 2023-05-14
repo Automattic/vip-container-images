@@ -19,7 +19,7 @@ RUN \
     apt-get -y install eatmydata && \
     eatmydata apt-get install -y software-properties-common gnupg --no-install-recommends && \
     eatmydata add-apt-repository -y ppa:ondrej/php && \
-    eatmydata apt-get install -y curl less git jq mysql-client openssl wget && \
+    eatmydata apt-get install -y curl less git jq mysql-client openssl wget cron && \
     eatmydata apt-get install -y ghostscript msmtp --no-install-recommends && \
     eatmydata apt-get install -y \
         php8.1-cli php8.1-fpm \

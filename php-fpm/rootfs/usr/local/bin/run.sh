@@ -17,4 +17,17 @@ else
     phpdismod mailhog mailpit
 fi
 
-exec /usr/sbin/php-fpm
+cleanup() {
+    if [ -n "${ENABLE_CRON}" ]; then
+        /usr/sbin/service cron stop
+    fi
+}
+
+trap cleanup EXIT INT TERM
+
+if [ -n "${ENABLE_CRON}" ]; then
+    echo "*/10 * * * * /usr/local/bin/wp core is-installed && /usr/bin/flock -n /tmp/wp-cron.lock /usr/local/bin/wp cron event run --due-now" | crontab -u www-data -
+    /usr/sbin/service cron start
+fi
+
+/usr/sbin/php-fpm
