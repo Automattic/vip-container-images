@@ -16,6 +16,7 @@ jobs:
     permissions:
       packages: write
       contents: read
+      deployments: write
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -33,6 +34,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Start Deployment
+        uses: bobheadxi/deployments@v1.4.0
+        id: deployment
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: skeleton-latest
+
       - name: Build container image
         uses: docker/build-push-action@v4
         with:
@@ -42,3 +51,14 @@ jobs:
           push: true
           tags: |
             ghcr.io/automattic/vip-container-images/skeleton:latest
+
+      - name: Update Deployment
+        uses: bobheadxi/deployments@v1.4.0
+        if: always()
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+          env: ${{ steps.deployment.outputs.env }}
+          env_url: https://ghcr.io/automattic/vip-container-images/skelton:latest
