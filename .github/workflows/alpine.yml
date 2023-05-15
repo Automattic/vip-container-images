@@ -65,8 +65,8 @@ jobs:
           cache-from: type=gha,scope=alpine
           cache-to: type=gha,mode=max,scope=alpine
           tags: |
-            ghcr.io/automattic/vip-container-images/alpine:latest
-            ghcr.io/automattic/vip-container-images/alpine:${{ steps.getversion.outputs.version }}
+            ghcr.io/${{ github.repository }}/alpine:latest
+            ghcr.io/${{ github.repository }}/alpine:${{ steps.getversion.outputs.version }}
 
       - name: Update Deployment
         uses: bobheadxi/deployments@v1.4.0
@@ -77,4 +77,4 @@ jobs:
           status: ${{ job.status }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
           env: ${{ steps.deployment.outputs.env }}
-          env_url: https://ghcr.io/automattic/vip-container-images/alpine:latest
+          env_url: https://ghcr.io/${{ github.repository }}/alpine:latest

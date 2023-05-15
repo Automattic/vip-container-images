@@ -62,8 +62,8 @@ jobs:
           cache-from: type=gha,scope=dev-tools
           cache-to: type=gha,mode=max,scope=dev-tools
           tags: |
-            ghcr.io/automattic/vip-container-images/dev-tools:latest
-            ghcr.io/automattic/vip-container-images/dev-tools:0.9
+            ghcr.io/${{ github.repository }}/dev-tools:latest
+            ghcr.io/${{ github.repository }}/dev-tools:0.9
 
       - name: Update Deployment
         uses: bobheadxi/deployments@v1.4.0
@@ -74,4 +74,4 @@ jobs:
           status: ${{ job.status }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
           env: ${{ steps.deployment.outputs.env }}
-          env_url: https://ghcr.io/automattic/vip-container-images/dev-tools:latest
+          env_url: https://ghcr.io/${{ github.repository }}/dev-tools:latest

@@ -65,8 +65,8 @@ jobs:
           cache-from: type=gha,scope=traefik
           cache-to: type=gha,mode=max,scope=traefik
           tags: |
-            ghcr.io/automattic/vip-container-images/traefik_openssl:${{ steps.getversion.outputs.version }}
-            ghcr.io/automattic/vip-container-images/traefik_openssl:latest
+            ghcr.io/${{ github.repository }}/traefik_openssl:${{ steps.getversion.outputs.version }}
+            ghcr.io/${{ github.repository }}/traefik_openssl:latest
 
       - name: Update Deployment
         uses: bobheadxi/deployments@v1.4.0
@@ -77,4 +77,4 @@ jobs:
           status: ${{ job.status }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
           env: ${{ steps.deployment.outputs.env }}
-          env_url: https://ghcr.io/automattic/vip-container-images/traefik_openssl:latest
+          env_url: https://ghcr.io/${{ github.repository }}/traefik_openssl:latest

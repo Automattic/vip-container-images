@@ -65,8 +65,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: ${{ github.base_ref == null }}
           tags: |
-            ghcr.io/automattic/vip-container-images/mu-plugins:latest
-            ghcr.io/automattic/vip-container-images/mu-plugins:0.1
+            ghcr.io/${{ github.repository }}/mu-plugins:latest
+            ghcr.io/${{ github.repository }}/mu-plugins:0.1
 
       - name: Update Deployment
         uses: bobheadxi/deployments@v1.4.0
@@ -77,4 +77,4 @@ jobs:
           status: ${{ job.status }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
           env: ${{ steps.deployment.outputs.env }}
-          env_url: https://ghcr.io/automattic/vip-container-images/mu-plugins:latest
+          env_url: https://ghcr.io/${{ github.repository }}/mu-plugins:latest

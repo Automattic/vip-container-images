@@ -75,8 +75,8 @@ jobs:
           cache-from: type=gha,scope=php-fpm-${{ matrix.php.suffix }}
           cache-to: type=gha,mode=max,scope=php-fpm-${{ matrix.php.suffix }}
           tags: |
-            ghcr.io/automattic/vip-container-images/php-fpm-alt:${{ matrix.php.name }}
-            ghcr.io/automattic/vip-container-images/php-fpm:${{ matrix.php.name }}
+            ghcr.io/${{ github.repository }}/php-fpm-alt:${{ matrix.php.name }}
+            ghcr.io/${{ github.repository }}/php-fpm:${{ matrix.php.name }}
 
       - name: Update Deployment
         uses: bobheadxi/deployments@v1.4.0
@@ -87,4 +87,4 @@ jobs:
           status: ${{ job.status }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
           env: ${{ steps.deployment.outputs.env }}
-          env_url: https://ghcr.io/automattic/vip-container-images/php-fpm:${{ matrix.php.name }}
+          env_url: https://ghcr.io/${{ github.repository }}/php-fpm:${{ matrix.php.name }}

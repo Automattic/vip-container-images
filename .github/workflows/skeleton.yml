@@ -60,7 +60,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: ${{ github.base_ref == null }}
           tags: |
-            ghcr.io/automattic/vip-container-images/skeleton:latest
+            ghcr.io/${{ github.repository }}/skeleton:latest
 
       - name: Update Deployment
         uses: bobheadxi/deployments@v1.4.0
@@ -71,4 +71,4 @@ jobs:
           status: ${{ job.status }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
           env: ${{ steps.deployment.outputs.env }}
-          env_url: https://ghcr.io/automattic/vip-container-images/skeleton:latest
+          env_url: https://ghcr.io/${{ github.repository }}/skeleton:latest

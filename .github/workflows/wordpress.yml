@@ -57,7 +57,7 @@ jobs:
         id: extra-tags
         run: |
           if [ "${{ matrix.wp.locked }}" = "true" ]; then
-            echo "tags=ghcr.io/automattic/vip-container-images/wordpress:${{ matrix.wp.tag }}-locked" >> $GITHUB_OUTPUT
+            echo "tags=ghcr.io/${{ github.repository }}/wordpress:${{ matrix.wp.tag }}-locked" >> $GITHUB_OUTPUT
           else
             echo "tags=" >> $GITHUB_OUTPUT
           fi
@@ -95,7 +95,7 @@ jobs:
           cache-to: type=gha,mode=max,scope=wordpress-${{ matrix.wp.ref }}
           no-cache: ${{ matrix.wp.cacheable == false }}
           tags: |
-            ghcr.io/automattic/vip-container-images/wordpress:${{ matrix.wp.tag }}
+            ghcr.io/${{ github.repository }}/wordpress:${{ matrix.wp.tag }}
             ${{ steps.extra-tags.outputs.tags }}
 
       - name: Update Deployment
@@ -107,4 +107,4 @@ jobs:
           status: ${{ job.status }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
           env: ${{ steps.deployment.outputs.env }}
-          env_url: https://ghcr.io/automattic/vip-container-images/wordpress:${{ matrix.wp.tag }}
+          env_url: https://ghcr.io/${{ github.repository }}/wordpress:${{ matrix.wp.tag }}

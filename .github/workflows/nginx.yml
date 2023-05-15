@@ -65,8 +65,8 @@ jobs:
           cache-to: type=gha,mode=max,scope=nginx
           push: ${{ github.base_ref == null }}
           tags: |
-            ghcr.io/automattic/vip-container-images/nginx:latest
-            ghcr.io/automattic/vip-container-images/nginx:${{ steps.getversion.outputs.version }}
+            ghcr.io/${{ github.repository }}/nginx:latest
+            ghcr.io/${{ github.repository }}/nginx:${{ steps.getversion.outputs.version }}
 
       - name: Update Deployment
         uses: bobheadxi/deployments@v1.4.0
@@ -77,4 +77,4 @@ jobs:
           status: ${{ job.status }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
           env: ${{ steps.deployment.outputs.env }}
-          env_url: https://ghcr.io/automattic/vip-container-images/nginx:latest
+          env_url: https://ghcr.io/${{ github.repository }}/nginx:latest

@@ -54,7 +54,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ghcr.io/automattic/vip-container-images/wp-test-runner
+          images: ghcr.io/${{ github.repository }}/wp-test-runner
           tags: |
             type=raw,value=latest
 
@@ -84,4 +84,4 @@ jobs:
           status: ${{ job.status }}
           deployment_id: ${{ steps.deployment.outputs.deployment_id }}
           env: ${{ steps.deployment.outputs.env }}
-          env_url: https://ghcr.io/automattic/vip-container-images/wp-test-runner:latest
+          env_url: https://ghcr.io/${{ github.repository }}/wp-test-runner:latest
