@@ -44,6 +44,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+      deployments: write
     strategy:
       fail-fast: false
       matrix:
@@ -75,6 +76,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Start Deployment
+        uses: bobheadxi/deployments@v1.4.0
+        id: deployment
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: wordpress-${{ matrix.wp.tag }}
+
       - name: Build WordPress image
         uses: docker/build-push-action@v4
         with:
@@ -88,3 +97,14 @@ jobs:
           tags: |
             ghcr.io/automattic/vip-container-images/wordpress:${{ matrix.wp.tag }}
             ${{ steps.extra-tags.outputs.tags }}
+
+      - name: Update Deployment
+        uses: bobheadxi/deployments@v1.4.0
+        if: always()
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+          env: ${{ steps.deployment.outputs.env }}
+          env_url: https://ghcr.io/automattic/vip-container-images/wordpress:${{ matrix.wp.tag }}
