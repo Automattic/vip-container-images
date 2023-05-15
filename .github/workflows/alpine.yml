@@ -26,6 +26,7 @@ jobs:
     permissions:
       packages: write
       contents: read
+      deployments: write
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -47,6 +48,14 @@ jobs:
         id: getversion
         run: echo "version=$(head -n 1 alpine/Dockerfile | sed -e 's/FROM alpine:\(.*\)/\1/')" >> $GITHUB_OUTPUT
 
+      - name: Start Deployment
+        uses: bobheadxi/deployments@v1.4.0
+        id: deployment
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: alpine-latest
+
       - name: Build container image
         uses: docker/build-push-action@v4
         with:
@@ -58,3 +67,14 @@ jobs:
           tags: |
             ghcr.io/automattic/vip-container-images/alpine:latest
             ghcr.io/automattic/vip-container-images/alpine:${{ steps.getversion.outputs.version }}
+
+      - name: Update Deployment
+        uses: bobheadxi/deployments@v1.4.0
+        if: always()
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+          env: ${{ steps.deployment.outputs.env }}
+          env_url: https://ghcr.io/automattic/vip-container-images/alpine:latest
