@@ -26,6 +26,7 @@ jobs:
     permissions:
       packages: write
       contents: read
+      deployments: write
     strategy:
       fail-fast: false
       matrix:
@@ -55,6 +56,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Start Deployment
+        uses: bobheadxi/deployments@v1.4.0
+        id: deployment
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: php-fpm-${{ matrix.php.name }}
+
       - name: Build container image
         uses: docker/build-push-action@v4
         with:
@@ -65,4 +74,17 @@ jobs:
           pull: true
           cache-from: type=gha,scope=php-fpm-${{ matrix.php.suffix }}
           cache-to: type=gha,mode=max,scope=php-fpm-${{ matrix.php.suffix }}
-          tags: ghcr.io/automattic/vip-container-images/php-fpm-alt:${{ matrix.php.name }}, ghcr.io/automattic/vip-container-images/php-fpm:${{ matrix.php.name }}
+          tags: |
+            ghcr.io/automattic/vip-container-images/php-fpm-alt:${{ matrix.php.name }}
+            ghcr.io/automattic/vip-container-images/php-fpm:${{ matrix.php.name }}
+
+      - name: Update Deployment
+        uses: bobheadxi/deployments@v1.4.0
+        if: always()
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+          env: ${{ steps.deployment.outputs.env }}
+          env_url: https://ghcr.io/automattic/vip-container-images/php-fpm:${{ matrix.php.name }}
