@@ -9,7 +9,7 @@ fi
 
 if wp core is-installed --network; then
     urls="$(wp site list --field=url)"
-    for url in $urls; do
+    for url in ${urls}; do
         wp --url="${url}" cron event run --due-now
     done
 else
