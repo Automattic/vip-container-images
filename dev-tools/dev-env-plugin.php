@@ -128,3 +128,5 @@ function dev_env_auto_login() {
 	wp_safe_redirect( admin_url() );
 	exit;
 }
+
+ini_set( 'error_log', '/dev/stderr' );
