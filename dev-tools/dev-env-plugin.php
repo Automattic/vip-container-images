@@ -129,4 +129,7 @@ function dev_env_auto_login() {
 	exit;
 }
 
-ini_set( 'error_log', '/dev/stderr' );
+// Force log to `/dev/stderr` so we get the errors in docker logs
+if ( 'Linux' === PHP_OS ) {
+	ini_set( 'error_log', '/dev/stderr' );
+}
