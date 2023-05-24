@@ -149,6 +149,6 @@ if ( ! defined( 'JETPACK_STAGING_MODE' ) ) {
 }
 
 // Force log to `/dev/stderr` so we get the errors in docker logs
-if ( 'Linux' === PHP_OS ) {
+if ( 'Windows' !== PHP_OS_FAMILY ) {
 	ini_set( 'error_log', '/dev/stderr' );
 }

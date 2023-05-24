@@ -130,6 +130,6 @@ function dev_env_auto_login() {
 }
 
 // Force log to `/dev/stderr` so we get the errors in docker logs
-if ( 'Linux' === PHP_OS ) {
+if ( 'Windows' !== PHP_OS_FAMILY ) {
 	ini_set( 'error_log', '/dev/stderr' );
 }
