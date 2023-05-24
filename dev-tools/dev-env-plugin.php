@@ -103,7 +103,13 @@ function dev_env_auto_login() {
 	if ( 'local' !== VIP_GO_APP_ENVIRONMENT ) {
 		return;
 	}
+
+	$submitted_key = $_GET['vip-dev-autologin'] ?? false;
 	if ( is_user_logged_in() ) {
+		if ( $submitted_key ) {
+			wp_safe_redirect( admin_url() );
+			exit;
+		}
 		return;
 	}
 
@@ -111,7 +117,6 @@ function dev_env_auto_login() {
 	if ( ! $expected_key ) {
 		return;
 	}
-	$submitted_key = $_GET['vip-dev-autologin'] ?? false;
 	if ( $submitted_key !== $expected_key ) {
 		return;
 	}
