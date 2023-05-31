@@ -26,6 +26,11 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "docker"
+    directory: "photon/"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "docker"
     directory: "php-fpm/"
     schedule:
       interval: "weekly"
