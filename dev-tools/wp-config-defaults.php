@@ -147,3 +147,8 @@ if ( ! defined( 'FORCE_SSL_ADMIN' ) ) {
 if ( ! defined( 'JETPACK_STAGING_MODE' ) ) {
 	define( 'JETPACK_STAGING_MODE', true );
 }
+
+// Force log to `/dev/stderr` so we get the errors in docker logs
+if ( 'Windows' !== PHP_OS_FAMILY ) {
+	ini_set( 'error_log', '/dev/stderr' );
+}
