@@ -1,4 +1,4 @@
-FROM nginx:1.23.4-alpine@sha256:dd2a9179765849767b10e2adde7e10c4ad6b7e4d4846e6b77ec93f080cd2db27
+FROM nginx:1.25.0-alpine@sha256:2e776a66a3556f001aba13431b26e448fe8acba277bf93d2ab1a785571a46d90
 
 RUN apk add --no-cache shadow
 

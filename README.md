@@ -55,7 +55,7 @@ This repository has Dependabot [set up](.github/dependabot.yml). Whenever a Dock
 
 Adding and updating existing version is handled by [update-wp-versions workflow](/.github/workflows/update-wp-versions.yml). Removal is manual either by updating versions.json or running the utility script.
 
-We have utility scripts to add and remove the versions of WordPress, based on the versions.json we kick off the image builds for every specified version. We use [official GitHub repo for WordPress](https://github.com/WordPress/WordPress). 
+We have utility scripts to add and remove the versions of WordPress, based on the versions.json we kick off the image builds for every specified version. We use [official GitHub repo for WordPress](https://github.com/WordPress/WordPress).
 
 Basic syntax is as follows:
 
