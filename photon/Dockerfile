@@ -10,7 +10,7 @@ RUN \
 FROM alpine:3.18.0@sha256:02bb6f428431fbc2809c5d1b41eab5a68350194fb508869a33cb1af4444c9b11
 RUN \
     apk add --no-cache \
-        php81 php81-fpm php81-curl php81-gd php81-opcache php81-openssl graphicsmagick  \
+        php81 php81-fpm php81-curl php81-gd php81-opcache php81-openssl graphicsmagick libgomp  \
         optipng pngquant libwebp-tools jpegoptim libjpeg-turbo-utils pngcrush && \
     ln -s /usr/sbin/php-fpm81 /usr/sbin/php-fpm
 
