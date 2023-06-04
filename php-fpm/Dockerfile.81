@@ -19,7 +19,7 @@ RUN \
     apt-get -y install eatmydata && \
     eatmydata apt-get install -y software-properties-common gnupg --no-install-recommends && \
     eatmydata add-apt-repository -y ppa:ondrej/php && \
-    eatmydata apt-get install -y curl less git jq mysql-client openssl wget && \
+    eatmydata apt-get install -y curl less git jq mysql-client openssl wget cron && \
     eatmydata apt-get install -y ghostscript msmtp --no-install-recommends && \
     eatmydata apt-get install -y \
         php8.1-cli php8.1-fpm \
@@ -30,7 +30,8 @@ RUN \
     eatmydata apt-get remove --purge -y software-properties-common && \
     rm -rf /var/lib/apt/lists/* && \
     eatmydata apt-get autoremove --purge -y && \
-    ln -s /usr/sbin/php-fpm8.1 /usr/sbin/php-fpm
+    ln -s /usr/sbin/php-fpm8.1 /usr/sbin/php-fpm && \
+    chmod 02755 /usr/bin/crontab
 
 RUN \
     usermod -d /home/www-data -s /bin/bash www-data && \
