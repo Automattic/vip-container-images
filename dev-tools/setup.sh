@@ -72,7 +72,7 @@ do
   fi
 done
 
-if mountpoint -q /wp/wp-content/mu-plugins; then
+if [ -n "${LANDO_INFO}" ] && [ "$(echo "${LANDO_INFO}" | jq -r '.["vip-mu-plugins"]')" != 'null' ]; then
   echo 'Waiting for mu-plugins...'
   i=0;
   while [ ! -f /wp/wp-content/mu-plugins/.version ]; do
@@ -144,7 +144,7 @@ fi
 echo "Checking for WordPress installation..."
 
 wp cache flush
-if ! wp core is-installed; then
+if ! wp core is-installed --skip-plugins --skip-themes; then
   echo "No installation found, installing WordPress..."
 
   # Ensuring wp-config-defaults is up to date
