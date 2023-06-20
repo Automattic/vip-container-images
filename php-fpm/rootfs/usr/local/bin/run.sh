@@ -3,7 +3,6 @@
 if [ "enable" = "$XDEBUG" ]; then
     echo "Enabling XDebug"
     phpenmod -s fpm xdebug
-    cp "$XDEBUG_CONFIG_TEMPLATE_LOCATION" "$XDEBUG_CONFIG_TARGET_LOCATION"
 else
     echo "Disabling XDebug"
     phpdismod -s fpm xdebug
