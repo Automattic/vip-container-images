@@ -1,12 +1,5 @@
 [
   {
-    "ref": "97f1622d0711ff5bfadea81076743c3559c59192",
-    "tag": "6.3",
-    "cacheable": false,
-    "locked": false,
-    "prerelease": true
-  },
-  {
     "ref": "6.2.2",
     "tag": "6.2",
     "cacheable": true,
@@ -44,6 +37,13 @@
   {
     "ref": "HEAD",
     "tag": "trunk",
+    "cacheable": false,
+    "locked": false,
+    "prerelease": true
+  },
+  {
+    "ref": "97f1622d0711ff5bfadea81076743c3559c59192",
+    "tag": "6.3",
     "cacheable": false,
     "locked": false,
     "prerelease": true
