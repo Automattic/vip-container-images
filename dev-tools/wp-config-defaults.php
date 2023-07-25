@@ -118,6 +118,9 @@ define( 'FILES_CLIENT_SITE_ID', 200508 );
 if ( file_exists( ABSPATH . '/wp-content/vip-config/vip-config.php' ) ) {
 	require_once( ABSPATH . '/wp-content/vip-config/vip-config.php' );
 }
+if ( file_exists( ABSPATH . '/vip-config/vip-config.php' ) ) {
+	require_once( ABSPATH . '/vip-config/vip-config.php' );
+}
 
 /**
  * Enterprise Search
