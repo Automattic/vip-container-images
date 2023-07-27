@@ -111,6 +111,10 @@ if ( ! defined( 'WP_CRON_CONTROL_SECRET' ) ) {
  */
 define( 'WPCOM_IS_VIP_ENV', false );
 define( 'FILES_CLIENT_SITE_ID', 200508 );
+define( 'FILES_ACCESS_TOKEN', 'local-dev-token' );
+define( 'VIP_FILESYSTEM_USE_STREAM_WRAPPER', false );
+// Depending on your needs you may want to flip this between true and false
+// define( 'WPCOM_VIP_USE_JETPACK_PHOTON', false );
 
 /**
  * VIP Config
