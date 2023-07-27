@@ -12,6 +12,20 @@ if ( ! empty( $_SERVER['HTTP_X_FORWARDED_HOST'] ) && substr( $_SERVER['HTTP_X_FO
 }
 
 /**
+ * @var bool $has_photon_service Whether or not the current environment has a Photon service.
+ */
+$has_photon_service = false;
+
+/**
+ * Do Lando-specific things.
+ */
+if ( isset( $_ENV['LANDO_INFO'] ) ) {
+	$lando_info = json_decode( $_ENV['LANDO_INFO'], true );
+
+	$has_photon_service = is_array( $lando_info ) && isset( $lando_info['photon'] ) && $lando_info['photon']['healthy'];
+}
+
+/**
  * Override WP_HOME and WP_SITEURL with the values from $_SERVER['HTTP_HOST'] if it's set.
  *
  * This is needed for the cases where something is already bound to default 80 or 443 ports and Lando's proxy falls back onto a different available port.
@@ -111,10 +125,14 @@ if ( ! defined( 'WP_CRON_CONTROL_SECRET' ) ) {
  */
 define( 'WPCOM_IS_VIP_ENV', false );
 define( 'FILES_CLIENT_SITE_ID', 200508 );
-define( 'FILES_ACCESS_TOKEN', 'local-dev-token' );
 define( 'VIP_FILESYSTEM_USE_STREAM_WRAPPER', false );
-// Depending on your needs you may want to flip this between true and false
-// define( 'WPCOM_VIP_USE_JETPACK_PHOTON', false );
+
+// We only want this defined if Photon service is present and healthy
+if ( $has_photon_service ) {
+	define( 'FILES_ACCESS_TOKEN', 'local-dev-token' );
+	// Depending on your needs you may want to flip this between true and false
+	// define( 'WPCOM_VIP_USE_JETPACK_PHOTON', false );
+}
 
 /**
  * VIP Config
