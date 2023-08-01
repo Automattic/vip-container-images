@@ -85,10 +85,10 @@ if [ -n "${LANDO_INFO}" ] && [ "$(echo "${LANDO_INFO}" | jq -r '.["vip-mu-plugin
   done
 fi
 
+cp /dev-tools/wp-config-defaults.php /wp/config/
 if [ -r /wp/config/wp-config.php ]; then
   echo "Already existing wp-config.php file"
 else
-  cp /dev-tools/wp-config-defaults.php /wp/config/
   sed -e "s/%DB_HOST%/$db_host/" /dev-tools/wp-config.php.tpl > /wp/config/wp-config.php
   if [ -n "$multisite_domain" ]; then
     sed -e "s/%DOMAIN%/$multisite_domain/" /dev-tools/wp-config-multisite.php.tpl >> /wp/config/wp-config.php
