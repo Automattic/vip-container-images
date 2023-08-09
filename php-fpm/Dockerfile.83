@@ -1,0 +1,81 @@
+FROM ubuntu:22.04 AS build
+RUN \
+    export DEBIAN_FRONTEND=noninteractive && \
+    apt-get -q update && \
+    apt-get -y install eatmydata && \
+    eatmydata apt-get install -y software-properties-common gnupg libmcrypt-dev zlib1g-dev libmemcached-dev libgraphicsmagick1-dev --no-install-recommends && \
+    eatmydata add-apt-repository -y ppa:ondrej/php && \
+    eatmydata apt-get install -y php8.3-dev php8.3-xml && \
+    eatmydata apt-get install -y php-pear --no-install-recommends && \
+    pecl install timezonedb && \
+    pecl install apcu && \
+    pecl install igbinary && \
+    pecl install mcrypt && \
+    pecl install memcache && \
+    pecl install memcached && \
+    pecl install channel://pecl.php.net/gmagick-2.0.6RC1
+
+FROM ubuntu:22.04
+
+# We lack: newrelic
+# Missing: php8.3-gnupg php8.3-ssh2 php8.3-xdebug
+RUN \
+    export DEBIAN_FRONTEND=noninteractive && \
+    apt-get -q update && \
+    apt-get -y install eatmydata && \
+    eatmydata apt-get install -y software-properties-common gnupg libmcrypt4 zlib1g libmemcached11 libgraphicsmagick-q16-3 --no-install-recommends && \
+    eatmydata add-apt-repository -y ppa:ondrej/php && \
+    eatmydata apt-get install -y curl less git jq mysql-client openssl wget cron vim nano && \
+    eatmydata apt-get install -y ghostscript msmtp --no-install-recommends && \
+    eatmydata apt-get install -y \
+        php8.3-cli php8.3-fpm \
+        php8.3-bcmath php8.3-curl php8.3-gd php8.3-gmp php8.3-intl php8.3-mbstring \
+        php8.3-mysql php8.3-soap php8.3-sqlite3 php8.3-xml php8.3-zip && \
+    eatmydata apt-get install -y php-pear --no-install-recommends && \
+    phpdismod ffi gettext readline sysvmsg xsl xdebug && \
+    eatmydata apt-get remove --purge -y software-properties-common && \
+    rm -rf /var/lib/apt/lists/* && \
+    eatmydata apt-get autoremove --purge -y && \
+    ln -s /usr/sbin/php-fpm8.3 /usr/sbin/php-fpm && \
+    chmod 02755 /usr/bin/crontab
+
+RUN \
+    usermod -d /home/www-data -s /bin/bash www-data && \
+    install -d -D -m 0750 -o www-data -g www-data /home/www-data && \
+    install -d -D -m 0777 -o www-data -g www-data /var/www/html && \
+    install -d -D -m 0755 -o www-data -g www-data /run/php
+
+RUN \
+    wget -O /usr/local/bin/phpunit https://phar.phpunit.de/phpunit-9.phar && chmod 0755 /usr/local/bin/phpunit && \
+    wget -O /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && chmod 0755 /usr/local/bin/wp && \
+    wget -q https://getcomposer.org/installer -O - | php -- --install-dir=/usr/bin/ --filename=composer
+
+ENV WP_CLI_CONFIG_PATH /config/wp-cli.yaml
+
+COPY --from=build \
+        /usr/lib/php/20220830/timezonedb.so \
+        /usr/lib/php/20220830/apcu.so \
+        /usr/lib/php/20220830/igbinary.so \
+        /usr/lib/php/20220830/mcrypt.so \
+        /usr/lib/php/20220830/memcache.so \
+        /usr/lib/php/20220830/memcached.so \
+        /usr/lib/php/20220830/gmagick.so \
+    /usr/lib/php/20220830/
+COPY rootfs/ /
+COPY rootfs-php/ /etc/php/8.3/
+
+RUN \
+    echo "extension=apcu.so" > /etc/php/8.3/mods-available/apcu.ini && \
+    echo "extension=igbinary.so" > /etc/php/8.3/mods-available/igbinary.ini && \
+    echo "extension=mcrypt.so" > /etc/php/8.3/mods-available/mcrypt.ini && \
+    echo "extension=memcache.so" > /etc/php/8.3/mods-available/memcache.ini && \
+    echo "extension=memcached.so" > /etc/php/8.3/mods-available/memcached.ini && \
+    echo "extension=gmagick.so" > /etc/php/8.3/mods-available/gmagick.ini
+
+RUN phpenmod timezonedb apcu igbinary mcrypt memcache memcached
+
+WORKDIR /var/www/html
+STOPSIGNAL SIGQUIT
+EXPOSE 9000
+ENTRYPOINT ["docker-php-entrypoint"]
+CMD ["run.sh"]
