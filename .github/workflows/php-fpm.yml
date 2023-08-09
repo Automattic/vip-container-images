@@ -38,6 +38,8 @@ jobs:
             suffix: "81"
           - name: "8.2"
             suffix: "82"
+          - name: "8.3"
+            suffix: "83"
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
