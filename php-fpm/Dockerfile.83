@@ -6,14 +6,23 @@ RUN \
     eatmydata apt-get install -y software-properties-common gnupg libmcrypt-dev zlib1g-dev libmemcached-dev libgraphicsmagick1-dev --no-install-recommends && \
     eatmydata add-apt-repository -y ppa:ondrej/php && \
     eatmydata apt-get install -y php8.3-dev php8.3-xml && \
-    eatmydata apt-get install -y php-pear --no-install-recommends && \
-    pecl install timezonedb && \
-    pecl install apcu && \
-    pecl install igbinary && \
-    pecl install mcrypt && \
-    pecl install memcache && \
-    pecl install memcached && \
-    pecl install channel://pecl.php.net/gmagick-2.0.6RC1
+    eatmydata apt-get install -y php-pear --no-install-recommends
+
+RUN \
+    cp \
+        /usr/share/libtool/build-aux/config.sub \
+        /usr/share/libtool/build-aux/config.guess \
+        /usr/share/libtool/build-aux/ltmain.sh \
+        /usr/bin/shtool \
+        /usr/lib/php/20230831/build
+
+RUN pecl install timezonedb
+RUN pecl install apcu
+RUN pecl install igbinary
+RUN pecl install mcrypt
+RUN pecl install memcache
+RUN pecl install memcached
+RUN pecl install channel://pecl.php.net/gmagick-2.0.6RC1
 
 FROM ubuntu:22.04
 
@@ -53,14 +62,14 @@ RUN \
 ENV WP_CLI_CONFIG_PATH /config/wp-cli.yaml
 
 COPY --from=build \
-        /usr/lib/php/20220830/timezonedb.so \
-        /usr/lib/php/20220830/apcu.so \
-        /usr/lib/php/20220830/igbinary.so \
-        /usr/lib/php/20220830/mcrypt.so \
-        /usr/lib/php/20220830/memcache.so \
-        /usr/lib/php/20220830/memcached.so \
-        /usr/lib/php/20220830/gmagick.so \
-    /usr/lib/php/20220830/
+        /usr/lib/php/20230831/timezonedb.so \
+        /usr/lib/php/20230831/apcu.so \
+        /usr/lib/php/20230831/igbinary.so \
+        /usr/lib/php/20230831/mcrypt.so \
+        /usr/lib/php/20230831/memcache.so \
+        /usr/lib/php/20230831/memcached.so \
+        /usr/lib/php/20230831/gmagick.so \
+    /usr/lib/php/20230831/
 COPY rootfs/ /
 COPY rootfs-php/ /etc/php/8.3/
 
