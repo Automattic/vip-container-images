@@ -1,4 +1,4 @@
-FROM ghcr.io/automattic/vip-container-images/alpine:3.18.3@sha256:3ce417e785786119ded6f22268ce321153a22a9aef2ec6f0ac44773a08bfc3d4
+FROM ghcr.io/automattic/vip-container-images/alpine:3.18.3@sha256:971ebed27bb94a751e26a17b8dc77b9f1b57e4a02c51b834f59025ee94eea1f4
 
 RUN \
     apk add --no-cache git && \
