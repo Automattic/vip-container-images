@@ -100,7 +100,7 @@ function dev_env_add_admin( $args, $assoc_args ) {
 
 add_action( 'init', 'dev_env_auto_login' );
 function dev_env_auto_login() {
-	if ( 'local' !== VIP_GO_APP_ENVIRONMENT ) {
+	if ( defined( 'VIP_GO_APP_ENVIRONMENT' ) && 'local' !== VIP_GO_APP_ENVIRONMENT ) {
 		return;
 	}
 
