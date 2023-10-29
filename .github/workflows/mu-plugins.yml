@@ -52,7 +52,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: mu-plugins
-          file: mu-plugins/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: ${{ github.base_ref == null }}
           tags: |

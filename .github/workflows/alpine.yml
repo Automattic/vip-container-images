@@ -50,7 +50,7 @@ jobs:
       - name: Build container image
         uses: docker/build-push-action@v5
         with:
-          file: alpine/Dockerfile
+          context: alpine
           platforms: linux/amd64,linux/arm64
           push: ${{ github.base_ref == null }}
           cache-from: type=gha,scope=alpine

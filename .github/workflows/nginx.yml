@@ -50,7 +50,7 @@ jobs:
       - name: Build container image
         uses: docker/build-push-action@v5
         with:
-          file: nginx/Dockerfile
+          context: nginx
           platforms: linux/amd64,linux/arm64
           cache-from: type=gha,scope=nginx
           cache-to: type=gha,mode=max,scope=nginx
