@@ -7,7 +7,8 @@ RUN \
     eatmydata add-apt-repository -y ppa:ondrej/php && \
     eatmydata apt-get install -y php8.1-dev php8.1-xml && \
     eatmydata apt-get install -y php-pear --no-install-recommends && \
-    pecl install timezonedb
+    pecl install timezonedb && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 FROM ubuntu:22.04
 
@@ -28,7 +29,7 @@ RUN \
     eatmydata apt-get install -y php-pear --no-install-recommends && \
     phpdismod ffi gettext readline sysvmsg xsl xdebug && \
     eatmydata apt-get remove --purge -y software-properties-common && \
-    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* && \
     eatmydata apt-get autoremove --purge -y && \
     ln -s /usr/sbin/php-fpm8.1 /usr/sbin/php-fpm && \
     chmod 02755 /usr/bin/crontab
