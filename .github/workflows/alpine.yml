@@ -7,10 +7,12 @@ on:
     paths:
       - "alpine/**"
       - ".github/workflows/alpine.yml"
+      - ".github/actions/build-docker-image/**"
   pull_request:
     paths:
       - "alpine/**"
       - ".github/workflows/alpine.yml"
+      - ".github/actions/build-docker-image/**"
 
 permissions:
   contents: read
@@ -26,6 +28,7 @@ jobs:
     permissions:
       packages: write
       contents: read
+      pull-requests: write
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
