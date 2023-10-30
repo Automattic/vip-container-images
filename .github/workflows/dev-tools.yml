@@ -47,7 +47,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: dev-tools
-          file: dev-tools/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: ${{ github.base_ref == null }}
           cache-from: type=gha,scope=dev-tools
