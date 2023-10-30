@@ -6,7 +6,8 @@ RUN \
     eatmydata apt-get install -y software-properties-common gnupg libmcrypt-dev zlib1g-dev libmemcached-dev libgraphicsmagick1-dev --no-install-recommends && \
     eatmydata add-apt-repository -y ppa:ondrej/php && \
     eatmydata apt-get install -y php8.3-dev php8.3-xml && \
-    eatmydata apt-get install -y php-pear --no-install-recommends
+    eatmydata apt-get install -y php-pear --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 RUN pecl install timezonedb
 RUN pecl install apcu
@@ -35,7 +36,7 @@ RUN \
     eatmydata apt-get install -y php-pear --no-install-recommends && \
     phpdismod ffi gettext readline sysvmsg xsl xdebug && \
     eatmydata apt-get remove --purge -y software-properties-common && \
-    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* && \
     eatmydata apt-get autoremove --purge -y && \
     ln -s /usr/sbin/php-fpm8.3 /usr/sbin/php-fpm && \
     chmod 02755 /usr/bin/crontab
