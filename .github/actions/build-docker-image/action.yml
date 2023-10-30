@@ -110,7 +110,7 @@ runs:
       id: fc
       with:
         issue-number: ${{ github.event.pull_request.number }}
-        body-includes: "## Trivy Scan Report"
+        body-includes: ${{ inputs.primaryTag }}
       if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name && github.event.sender.login != 'dependabot[bot]'
 
     - name: Create or update comment
