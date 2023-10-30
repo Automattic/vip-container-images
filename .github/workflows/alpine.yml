@@ -45,7 +45,7 @@ jobs:
 
       - name: Get image version
         id: getversion
-        run: echo "version=$(head -n 1 alpine/Dockerfile | sed -e 's/FROM alpine:\(.*\)/\1/')" >> $GITHUB_OUTPUT
+        run: echo "version=$(head -n 1 alpine/Dockerfile | sed -r -e 's/^([^:]+):([^ @$-]+).*/\2/')" >> $GITHUB_OUTPUT
 
       - name: Build container image
         uses: docker/build-push-action@v5
