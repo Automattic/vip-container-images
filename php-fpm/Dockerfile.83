@@ -8,14 +8,6 @@ RUN \
     eatmydata apt-get install -y php8.3-dev php8.3-xml && \
     eatmydata apt-get install -y php-pear --no-install-recommends
 
-RUN \
-    cp \
-        /usr/share/libtool/build-aux/config.sub \
-        /usr/share/libtool/build-aux/config.guess \
-        /usr/share/libtool/build-aux/ltmain.sh \
-        /usr/bin/shtool \
-        /usr/lib/php/20230831/build
-
 RUN pecl install timezonedb
 RUN pecl install apcu
 RUN pecl install igbinary
