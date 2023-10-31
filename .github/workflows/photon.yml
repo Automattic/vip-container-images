@@ -41,6 +41,3 @@ jobs:
           cache-from: type=gha,scope=photon
           cache-to: type=gha,mode=max,scope=photon
           primaryTag: ghcr.io/automattic/vip-container-images/photon:latest
-          registry: https://ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}

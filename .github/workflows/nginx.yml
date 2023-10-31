@@ -46,6 +46,3 @@ jobs:
           cache-to: type=gha,mode=max,scope=nginx
           primaryTag: ghcr.io/automattic/vip-container-images/nginx:${{ steps.getversion.outputs.version }}
           tags: ghcr.io/automattic/vip-container-images/nginx:latest
-          registry: https://ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}

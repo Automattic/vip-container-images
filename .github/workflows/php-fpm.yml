@@ -57,6 +57,3 @@ jobs:
           cache-to: type=gha,mode=max,scope=php-fpm-${{ matrix.php.suffix }}
           primaryTag: ghcr.io/automattic/vip-container-images/php-fpm:${{ matrix.php.name }}
           tags: ghcr.io/automattic/vip-container-images/php-fpm-alt:${{ matrix.php.name }}
-          registry: https://ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}

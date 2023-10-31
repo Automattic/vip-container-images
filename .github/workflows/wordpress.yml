@@ -75,6 +75,3 @@ jobs:
           no-cache: ${{ matrix.wp.cacheable == false }}
           primaryTag: ghcr.io/automattic/vip-container-images/wordpress:${{ matrix.wp.tag }}
           tags: ${{ steps.extra-tags.outputs.tags }}
-          registry: https://ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
