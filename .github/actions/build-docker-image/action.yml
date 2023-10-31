@@ -96,14 +96,14 @@ runs:
         format: template
         template: "@.github/actions/build-docker-image/markdown.tpl"
         output: trivy.md
-      if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name && github.event.sender.login != 'dependabot[bot]'
+      if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
 
     - name: Security Scan
       uses: aquasecurity/trivy-action@master
       with:
         image-ref: ${{ inputs.primaryTag }}
         format: table
-      if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name || github.event.sender.login == 'dependabot[bot]'
+      if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
 
     - name: Find Trivy Scan Report comment
       uses: peter-evans/find-comment@v2
@@ -111,7 +111,7 @@ runs:
       with:
         issue-number: ${{ github.event.pull_request.number }}
         body-includes: ${{ inputs.primaryTag }}
-      if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name && github.event.sender.login != 'dependabot[bot]'
+      if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
 
     - name: Create or update comment
       uses: peter-evans/create-or-update-comment@v3
@@ -120,4 +120,4 @@ runs:
         issue-number: ${{ github.event.pull_request.number }}
         body-path: trivy.md
         edit-mode: replace
-      if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name && github.event.sender.login != 'dependabot[bot]'
+      if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
