@@ -13,6 +13,7 @@ on:
       - "alpine/**"
       - ".github/workflows/alpine.yml"
       - ".github/actions/build-docker-image/**"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -44,5 +45,6 @@ jobs:
           push: ${{ github.base_ref == null }}
           cache-from: type=gha,scope=alpine
           cache-to: type=gha,mode=max,scope=alpine
+          no-cache: ${{ github.event_name == 'workflow_dispatch' }}
           primaryTag: ghcr.io/automattic/vip-container-images/alpine:${{ steps.getversion.outputs.version }}
           tags: ghcr.io/automattic/vip-container-images/alpine:latest
