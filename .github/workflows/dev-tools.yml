@@ -13,6 +13,7 @@ on:
       - "dev-tools/**"
       - ".github/workflows/dev-tools.yml"
       - ".github/actions/build-docker-image/**"
+  workflow_dispatch:
 
 permissions:
   contents: read
