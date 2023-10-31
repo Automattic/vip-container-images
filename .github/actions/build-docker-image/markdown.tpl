@@ -2,7 +2,6 @@
 {{- if . }}
 {{- range . }}
 ## {{ .Target }}
-### Vulnerabilities
 {{- if (eq (len .Vulnerabilities) 0) }}
 No vulnerabilities found.
 {{- else }}
@@ -13,18 +12,6 @@ No vulnerabilities found.
 {{- end }}
 
 {{- end }} <!-- Vulnerabilities -->
-
-### Misconfigurations
-{{- if (eq (len .Misconfigurations ) 0) }}
-No misconfigurations found.
-{{- else }}
-| Type | Misconfiguration ID | Check | Severity | Message |
-| ---- | ------------------- | ----- | -------- | ------- |
-{{- range .Misconfigurations }}
-| {{ .Type }} | {{ .ID }} | {{ .Title }} | {{ .Severity }} | {{ .Message }}<br>{{ .PrimaryURL }} |
-{{- end }}
-
-{{- end }} <!-- Misconfigurations -->
 
 {{- end }} <!-- Targets -->
 

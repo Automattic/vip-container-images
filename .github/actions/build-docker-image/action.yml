@@ -90,20 +90,34 @@ runs:
         build-args: ${{ inputs.args }}
 
     - name: Security Scan
-      uses: aquasecurity/trivy-action@master
+      uses: ./.github/actions/trivy
       with:
-        image-ref: ${{ inputs.primaryTag }}
-        format: template
-        template: "@.github/actions/build-docker-image/markdown.tpl"
-        output: trivy.md
-      if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
+        args: image --format json ${{ inputs.primaryTag }} --output trivy.json
 
-    - name: Security Scan
-      uses: aquasecurity/trivy-action@master
+    - name: Print report
+      uses: ./.github/actions/trivy
       with:
-        image-ref: ${{ inputs.primaryTag }}
-        format: table
-      if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+        args: convert --format=table trivy.json
+
+    - name: Generate SARIF
+      uses: ./.github/actions/trivy
+      with:
+        args: convert --format=sarif --output=trivy.sarif trivy.json
+      if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
+
+    - name: Upload SARIF
+      uses: github/codeql-action/upload-sarif@v2.22.5
+      with:
+        sarif_file: trivy.sarif
+        category: trivy
+      if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
+      continue-on-error: true
+
+    - name: Prepare markdown report
+      uses: ./.github/actions/trivy
+      with:
+        args: convert --format=template --template=@.github/actions/build-docker-image/markdown.tpl --output=trivy.md trivy.json
+      if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
 
     - name: Find Trivy Scan Report comment
       uses: peter-evans/find-comment@v2
