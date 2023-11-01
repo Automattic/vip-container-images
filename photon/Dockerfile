@@ -9,6 +9,7 @@ RUN \
 
 FROM alpine:3.18.4@sha256:eece025e432126ce23f223450a0326fbebde39cdf496a85d8c016293fc851978
 RUN \
+    apk upgrade --no-cache && \
     apk add --no-cache \
         php81 php81-fpm php81-curl php81-gd php81-opcache php81-openssl graphicsmagick libgomp  \
         optipng pngquant libwebp-tools jpegoptim libjpeg-turbo-utils pngcrush && \
