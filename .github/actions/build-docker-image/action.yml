@@ -89,6 +89,12 @@ runs:
           ${{ inputs.tags }}
         build-args: ${{ inputs.args }}
 
+    - name: Generate filename for SARIF
+      shell: bash
+      id: filename
+      run: |
+        echo "filename=trivy-$(basename "${{ inputs.primaryTag }}" | tr '\\/:' '-').sarif" >> "${GITHUB_OUTPUT}"
+
     - name: Security Scan
       uses: ./.github/actions/trivy
       with:
@@ -102,14 +108,13 @@ runs:
     - name: Generate SARIF
       uses: ./.github/actions/trivy
       with:
-        args: convert --format=sarif --output=trivy.sarif trivy.json
+        args: convert --format=sarif --output=${{ steps.filename.outputs.filename }} trivy.json
       if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
 
     - name: Upload SARIF
       uses: github/codeql-action/upload-sarif@v2.22.5
       with:
-        sarif_file: trivy.sarif
-        category: trivy
+        sarif_file: ${{ steps.filename.outputs.filename }}
       if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
       continue-on-error: true
 
