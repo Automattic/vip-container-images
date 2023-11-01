@@ -98,7 +98,7 @@ runs:
     - name: Security Scan
       uses: ./.github/actions/trivy
       with:
-        args: image --format json ${{ inputs.primaryTag }} --output trivy.json
+        args: image --format json --ignore-unfixed ${{ inputs.primaryTag }} --output trivy.json
 
     - name: Print report
       uses: ./.github/actions/trivy
