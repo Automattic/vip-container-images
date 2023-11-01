@@ -96,17 +96,17 @@ runs:
         echo "filename=trivy-$(basename "${{ inputs.primaryTag }}" | tr '\\/:' '-').sarif" >> "${GITHUB_OUTPUT}"
 
     - name: Security Scan
-      uses: ./.github/actions/trivy
+      uses: docker://aquasec/trivy:0.46.1
       with:
         args: image --format json --ignore-unfixed ${{ inputs.primaryTag }} --output trivy.json
 
     - name: Print report
-      uses: ./.github/actions/trivy
+      uses: docker://aquasec/trivy:0.46.1
       with:
         args: convert --format=table trivy.json
 
     - name: Generate SARIF
-      uses: ./.github/actions/trivy
+      uses: docker://aquasec/trivy:0.46.1
       with:
         args: convert --format=sarif --output=${{ steps.filename.outputs.filename }} trivy.json
       if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
@@ -119,7 +119,7 @@ runs:
       continue-on-error: true
 
     - name: Prepare markdown report
-      uses: ./.github/actions/trivy
+      uses: docker://aquasec/trivy:0.46.1
       with:
         args: convert --format=template --template=@.github/actions/build-docker-image/markdown.tpl --output=trivy.md trivy.json
       if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name

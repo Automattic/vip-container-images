@@ -1,5 +1,0 @@
-name: Trivy Scan
-description: Scan for vulnerabilities using Trivy
-runs:
-  using: docker
-  image: docker://aquasec/trivy:0.46.1
