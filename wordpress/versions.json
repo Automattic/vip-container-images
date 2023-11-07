@@ -4,7 +4,7 @@
     "tag": "6.4",
     "cacheable": true,
     "locked": true,
-    "prerelease": true
+    "prerelease": false
   },
   {
     "ref": "6.3.2",
