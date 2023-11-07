@@ -42,13 +42,6 @@
     "prerelease": false
   },
   {
-    "ref": "5.8.8",
-    "tag": "5.8",
-    "cacheable": true,
-    "locked": true,
-    "prerelease": false
-  },
-  {
     "ref": "HEAD",
     "tag": "trunk",
     "cacheable": false,
