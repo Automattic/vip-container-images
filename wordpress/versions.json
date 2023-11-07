@@ -49,10 +49,10 @@
     "prerelease": true
   },
   {
-    "ref": "acef64f03c67029e35e5f322e6f7fc4f9a6825e4",
+    "ref": "6.4",
     "tag": "6.4",
-    "cacheable": false,
-    "locked": false,
+    "cacheable": true,
+    "locked": true,
     "prerelease": true
   }
 ]
