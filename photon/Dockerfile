@@ -1,7 +1,7 @@
 FROM alpine:3.19.0@sha256:51b67269f354137895d43f3b3d810bfacd3945438e94dc5ac55fdac340352f48 AS build
 RUN apk add --no-cache php81-dev php81-pear php81-openssl gcc make libc-dev graphicsmagick-dev libtool subversion
-RUN pecl channel-update pecl.php.net
-RUN pecl install channel://pecl.php.net/gmagick-2.0.6RC1 < /dev/null
+RUN pecl81 channel-update pecl.php.net
+RUN pecl81 install channel://pecl.php.net/gmagick-2.0.6RC1 < /dev/null
 RUN \
     install -d -D /usr/share/webapps/photon && \
     svn co https://code.svn.wordpress.org/photon/ /usr/share/webapps/photon && \
