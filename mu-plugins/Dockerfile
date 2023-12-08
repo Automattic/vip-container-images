@@ -1,21 +1,19 @@
+FROM ghcr.io/automattic/vip-container-images/alpine:3.18.5@sha256:2f570165292f81b6c5a2a56f5517ef097a38de113b5682d7f34f9353bba89b34 AS build
+
+RUN apk add --no-cache git && mkdir -p /mu-plugins
+RUN git clone --depth 1 https://github.com/Automattic/vip-go-mu-plugins-ext /mu-plugins-ext
+RUN git clone --depth 1 --no-remote-submodules -b staging https://github.com/Automattic/vip-go-mu-plugins /mu-plugins-tmp
+WORKDIR /mu-plugins-tmp
+RUN sed -i -e "s,git@github.com:,https://github.com/," .gitmodules && git submodule update --init --recursive --depth 1 --single-branch --jobs 8
+RUN gitsha=$(git rev-parse --short HEAD) && gitdate=$(git show -s --format=%cs "$gitsha") && date=$(date -d "$gitdate" '+%Y%m%d') && echo "{ \"tag\": \"staging\", \"stack_version\": \"${date}-${gitsha}\" }" > "/mu-plugins/.version"
+RUN rsync -a -r --delete --exclude-from="/mu-plugins-tmp/.dockerignore" /mu-plugins-tmp/* /mu-plugins
+RUN rsync -a -r --delete --exclude-from="/mu-plugins-ext/.dockerignore" /mu-plugins-ext/* /mu-plugins
+
+
 FROM ghcr.io/automattic/vip-container-images/alpine:3.18.5@sha256:2f570165292f81b6c5a2a56f5517ef097a38de113b5682d7f34f9353bba89b34
 
-RUN \
-    apk add --no-cache git && \
-    mkdir -p /mu-plugins && \
-    git clone --depth 1 --no-remote-submodules -b staging https://github.com/Automattic/vip-go-mu-plugins /mu-plugins-tmp && \
-    # cp /mu-plugins/.dockerignore /.dockerignore && \
-    git clone --depth 1 https://github.com/Automattic/vip-go-mu-plugins-ext /mu-plugins-ext && \
-    cd /mu-plugins-tmp && \
-    sed -i -e "s,git@github.com:,https://github.com/," .gitmodules && \
-    git submodule update --init --recursive --depth 1 && \
-    gitsha=$(git rev-parse --short HEAD) && gitdate=$(git show -s --format=%cs "$gitsha") && date=$(date -d "$gitdate" '+%Y%m%d') && echo "{ \"tag\": \"staging\", \"stack_version\": \"${date}-${gitsha}\" }" > "/mu-plugins/.version" && \
-    rsync -a -r --delete --exclude-from="/mu-plugins-tmp/.dockerignore" /mu-plugins-tmp/* /mu-plugins && \
-    rsync -a -r --delete --exclude-from="/mu-plugins-ext/.dockerignore" /mu-plugins-ext/* /mu-plugins && \
-    rm -rf /mu-plugins-tmp /mu-plugins-ext && \
-    apk del git && \
-    install -d -m 0755 /shared
-
+RUN install -d -m 0755 /shared
+COPY --from=build /mu-plugins /mu-plugins
 COPY run.sh /run.sh
 
 VOLUME ["/shared"]
