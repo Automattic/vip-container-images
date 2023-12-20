@@ -35,10 +35,6 @@ jobs:
       fail-fast: false
       matrix:
         php:
-          - name: "7.4"
-            suffix: "74"
-          - name: "8.0"
-            suffix: "80"
           - name: "8.1"
             suffix: "81"
           - name: "8.2"
