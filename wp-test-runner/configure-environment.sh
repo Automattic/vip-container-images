@@ -8,7 +8,7 @@ set -e
 : "${MYSQL_HOST="db"}"
 : "${WP_VERSION:="latest"}"
 : "${PHPUNIT_VERSION:=""}"
-: "${PHP_VERSION:="7.4"}"
+: "${PHP_VERSION:="8.1"}"
 : "${DISABLE_XDEBUG:=""}"
 : "${APP_HOME:="/home/circleci/project"}"
 : "${PHP_OPTIONS:=""}"
@@ -52,7 +52,7 @@ elif [ -n "${PHPUNIT_VERSION}" ] && [ -x "/usr/local/bin/phpunit${PHPUNIT_VERSIO
 elif [ -x "${APP_HOME}/vendor/bin/phpunit" ]; then
 	PHPUNIT=~/.composer/vendor/bin/phpunit
 else
-	PHPUNIT=/usr/local/bin/phpunit7
+	PHPUNIT=/usr/local/bin/phpunit9
 fi
 
 echo "WordPress version: ${WP_VERSION}"
