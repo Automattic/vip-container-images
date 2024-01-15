@@ -11,21 +11,28 @@
  * This file is require'd from wp-content/object-cache.php
  */
 
- if ( ! defined( 'WPMU_PLUGIN_DIR' ) ) {
-	define( 'WPMU_PLUGIN_DIR', WP_CONTENT_DIR . '/mu-plugins' );
+// Will use the "next" version on these specified environment types by default.
+if ( ! defined( 'VIP_USE_NEXT_OBJECT_CACHE_DROPIN' ) ) {
+	if ( defined( 'VIP_GO_APP_ENVIRONMENT' ) && in_array( VIP_GO_APP_ENVIRONMENT, [ 'develop', 'preprod', 'staging' ], true ) ) {
+		define( 'VIP_USE_NEXT_OBJECT_CACHE_DROPIN', true );
+	} else {
+		define( 'VIP_USE_NEXT_OBJECT_CACHE_DROPIN', false );
+	}
 }
 
-$mu_plugins_file = ABSPATH . '/wp-content/mu-plugins/drop-ins/object-cache.php';
-if ( file_exists( $mu_plugins_file ) ) {
-	require_once $mu_plugins_file;
+// We'll want to use the Memcached adapter in the new drop-in.
+if ( ! defined( 'AUTOMATTIC_MEMCACHED_USE_MEMCACHED_EXTENSION' ) ) {
+	define( 'AUTOMATTIC_MEMCACHED_USE_MEMCACHED_EXTENSION', true );
+}
+
+// Fallback still used for local dev-envs, need to get those updated and then will remove the fallback here.
+if ( extension_loaded( 'memcached' ) ) {
+	require_once __DIR__ . '/wp-memcached/object-cache.php';
 } else {
-	// Fallback if the drop-in file is not present.
-	$fallback_file = __DIR__ . '/object-cache-stable.php';
-	if ( file_exists( $fallback_file ) ) {
-		require_once $fallback_file;
-	}
-	$apc_file = ABSPATH . '/wp-content/mu-plugins/lib/class-apc-cache-interceptor.php';
-	if ( file_exists( $apc_file ) ) {
-		require_once $apc_file;
-	}
+	require_once __DIR__ . '/object-cache/object-cache-stable.php';
+}
+
+// Load in the apc user cache.
+if ( file_exists( dirname( __DIR__ ) . '/lib/class-apc-cache-interceptor.php' ) ) {
+	require_once dirname( __DIR__ ) . '/lib/class-apc-cache-interceptor.php';
 }
