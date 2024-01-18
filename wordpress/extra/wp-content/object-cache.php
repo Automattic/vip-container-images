@@ -1,31 +1,10 @@
 <?php
 
-/**
- * Plugin Name: Memcached
- * Description: Memcached backend for the WP Object Cache.
- * Version: 4.0.0
- * Author: Automattic
- * Plugin URI: https://wordpress.org/plugins/memcached/
- * License: GPLv2 or later
- *
- * This file is require'd from wp-content/object-cache.php
- */
-
- if ( ! defined( 'WPMU_PLUGIN_DIR' ) ) {
-	define( 'WPMU_PLUGIN_DIR', WP_CONTENT_DIR . '/mu-plugins' );
+if ( file_exists( __DIR__ . '/mu-plugins/drop-ins/object-cache.php' ) ) {
+	require_once __DIR__ . '/mu-plugins/drop-ins/object-cache.php';
 }
 
-$mu_plugins_file = ABSPATH . '/wp-content/mu-plugins/drop-ins/object-cache.php';
-if ( file_exists( $mu_plugins_file ) ) {
-	require_once $mu_plugins_file;
-} else {
-	// Fallback if the drop-in file is not present.
-	$fallback_file = __DIR__ . '/object-cache-stable.php';
-	if ( file_exists( $fallback_file ) ) {
-		require_once $fallback_file;
-	}
-	$apc_file = ABSPATH . '/wp-content/mu-plugins/lib/class-apc-cache-interceptor.php';
-	if ( file_exists( $apc_file ) ) {
-		require_once $apc_file;
-	}
-}
+// We are not loading `../wp-includes/cache.php` as a fallback because `wp_start_object_cache()` does that for us.
+// If we load it here, `wp_using_ext_object_cache()` will return `true`; this may cause unwated side effects.
+// It is, however, still possible that `wp_using_ext_object_cache()` returns `true`; that happens if `advanced-cache.php`
+// loads `object-cache.php` before `wp_start_object_cache()` is called. However, this must not happen in a VIP environment.
