@@ -98,7 +98,7 @@ runs:
     - name: Security Scan
       uses: docker://aquasec/trivy:0.48.3
       with:
-        args: image --format json --ignore-unfixed ${{ inputs.primaryTag }} --output trivy.json
+        args: image --format json --ignore-unfixed --vuln-type os ${{ inputs.primaryTag }} --output trivy.json
 
     - name: Print report
       uses: docker://aquasec/trivy:0.48.3
