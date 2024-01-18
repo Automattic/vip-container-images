@@ -5,6 +5,11 @@ updates:
     schedule:
       interval: "weekly"
 
+  - package-ecosystem: "github-actions"
+    directory: "/.github/actions/build-docker-image"
+    schedule:
+      interval: "weekly"
+
   - package-ecosystem: "docker"
     directory: "alpine/"
     schedule:
