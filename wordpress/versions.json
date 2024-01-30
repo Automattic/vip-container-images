@@ -7,36 +7,29 @@
     "prerelease": false
   },
   {
-    "ref": "6.3.2",
+    "ref": "6.3.3",
     "tag": "6.3",
     "cacheable": true,
     "locked": true,
     "prerelease": false
   },
   {
-    "ref": "6.2.3",
+    "ref": "6.2.4",
     "tag": "6.2",
     "cacheable": true,
     "locked": true,
     "prerelease": false
   },
   {
-    "ref": "6.1.4",
+    "ref": "6.1.5",
     "tag": "6.1",
     "cacheable": true,
     "locked": true,
     "prerelease": false
   },
   {
-    "ref": "6.0.6",
+    "ref": "6.0.7",
     "tag": "6.0",
-    "cacheable": true,
-    "locked": true,
-    "prerelease": false
-  },
-  {
-    "ref": "5.9.8",
-    "tag": "5.9",
     "cacheable": true,
     "locked": true,
     "prerelease": false
