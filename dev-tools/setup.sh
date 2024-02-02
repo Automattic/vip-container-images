@@ -115,11 +115,23 @@ fi
 echo "Checking for database connectivity..."
 if ! mysql -h "$db_host" -u wordpress -pwordpress wordpress -e "SELECT 'testing_db'" >/dev/null 2>&1; then
   echo "No WordPress database exists, provisioning..."
-  echo "CREATE USER IF NOT EXISTS 'wordpress'@'localhost' IDENTIFIED BY 'wordpress'" | mysql -h "$db_host" -u "$db_admin_user"
-  echo "CREATE USER IF NOT EXISTS 'wordpress'@'%' IDENTIFIED BY 'wordpress'" | mysql -h "$db_host" -u "$db_admin_user"
-  echo "GRANT ALL ON *.* TO 'wordpress'@'localhost' WITH GRANT OPTION;" | mysql -h "$db_host" -u "$db_admin_user"
-  echo "GRANT ALL ON *.* TO 'wordpress'@'%' WITH GRANT OPTION;" | mysql -h "$db_host" -u "$db_admin_user"
-  echo "CREATE DATABASE IF NOT EXISTS wordpress;" | mysql -h "$db_host" -u "$db_admin_user"
+  {
+    echo "CREATE USER IF NOT EXISTS 'wordpress'@'localhost' IDENTIFIED BY 'wordpress';"
+    echo "CREATE USER IF NOT EXISTS 'wordpress'@'%' IDENTIFIED BY 'wordpress';"
+    echo "GRANT ALL ON *.* TO 'wordpress'@'localhost';"
+    echo "GRANT ALL ON *.* TO 'wordpress'@'%';"
+    echo "CREATE DATABASE IF NOT EXISTS wordpress;"
+  } | mysql -h "$db_host" -u "$db_admin_user"
+fi
+
+if ! mysql -h "${db_host}" -unetapp -pwordpress wordpress -e "SELECT 'testing_db'" >/dev/null 2>&1; then
+  echo "Creating netapp user..."
+  {
+    echo "CREATE USER IF NOT EXISTS 'netapp'@'localhost' IDENTIFIED BY 'wordpress';"
+    echo "CREATE USER IF NOT EXISTS 'netapp'@'%' IDENTIFIED BY 'wordpress';"
+    echo "GRANT ALL ON *.* TO 'netapp'@'localhost';"
+    echo "GRANT ALL ON *.* TO 'netapp'@'%';"
+  } | mysql -h "${db_host}" -u "${db_admin_user}"
 fi
 
 echo "Copying dev-env-plugin.php to mu-plugins"
