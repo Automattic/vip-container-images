@@ -125,7 +125,6 @@ if ! mysql -h "$db_host" -u wordpress -pwordpress wordpress -e "SELECT 'testing_
 fi
 
 if ! mysql -h "${db_host}" -unetapp -pwordpress wordpress -e "SELECT 'testing_db'" >/dev/null 2>&1; then
-  echo "Creating netapp user..."
   {
     echo "CREATE USER IF NOT EXISTS 'netapp'@'localhost' IDENTIFIED BY 'wordpress';"
     echo "CREATE USER IF NOT EXISTS 'netapp'@'%' IDENTIFIED BY 'wordpress';"
