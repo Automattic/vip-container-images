@@ -99,10 +99,10 @@ else
   curl -s https://api.wordpress.org/secret-key/1.1/salt/ >> /wp/config/wp-config.php
 fi
 
-echo -n "Waiting for MySQL to come online"
+printf "Waiting for MySQL to come online"
 second=0
 while ! mysqladmin ping -h "${db_host}" --silent && [ "${second}" -lt 60 ]; do
-  echo -n "."
+  printf "."
   sleep 1
   second=$((second+1))
 done
@@ -137,10 +137,10 @@ echo "Copying dev-env-plugin.php to mu-plugins"
 cp /dev-tools/dev-env-plugin.php /wp/wp-content/mu-plugins/
 
 if [ -n "${ENABLE_ELASTICSEARCH}" ] || { [ -n "${LANDO_INFO}" ] && [ "$(echo "${LANDO_INFO}" | jq .elasticsearch.service)" != 'null' ]; }; then
-  echo -n "Waiting for Elasticsearch to come online"
+  printf "Waiting for Elasticsearch to come online"
   second=0
   while ! curl -s 'http://elasticsearch:9200/_cluster/health' > /dev/null && [ "${second}" -lt 60 ]; do
-    echo -n "."
+    printf "."
     sleep 1
     second=$((second+1))
   done
@@ -162,6 +162,7 @@ if ! wp core is-installed --skip-plugins --skip-themes; then
   cp /dev-tools/wp-config-defaults.php /wp/config/
 
   if [ -n "$multisite_domain" ]; then
+    # shellcheck disable=SC2046
     wp core multisite-install \
       --path=/wp \
       --url="$wp_url" \
