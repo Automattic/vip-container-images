@@ -120,6 +120,8 @@ if ! mysql -h "$db_host" -u wordpress -pwordpress wordpress -e "SELECT 'testing_
     echo "CREATE USER IF NOT EXISTS 'wordpress'@'%' IDENTIFIED BY 'wordpress';"
     echo "GRANT ALL ON *.* TO 'wordpress'@'localhost';"
     echo "GRANT ALL ON *.* TO 'wordpress'@'%';"
+    echo "GRANT SET_ANY_DEFINER ON *.* TO 'wordpress'@'localhost';"
+    echo "GRANT SET_ANY_DEFINER ON *.* TO 'wordpress'@'%';"
     echo "CREATE DATABASE IF NOT EXISTS wordpress;"
   } | mysql -h "$db_host" -u "$db_admin_user"
 fi
