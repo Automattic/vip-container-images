@@ -112,28 +112,14 @@ if ! mysqladmin ping -h "${db_host}" --silent; then
     exit 1;
 fi
 
-echo "Checking for database connectivity..."
-if ! mysql -h "$db_host" -u wordpress -pwordpress wordpress -e "SELECT 'testing_db'" >/dev/null 2>&1; then
-  echo "No WordPress database exists, provisioning..."
-  {
-    echo "CREATE USER IF NOT EXISTS 'wordpress'@'localhost' IDENTIFIED BY 'wordpress';"
-    echo "CREATE USER IF NOT EXISTS 'wordpress'@'%' IDENTIFIED BY 'wordpress';"
-    echo "GRANT ALL ON *.* TO 'wordpress'@'localhost';"
-    echo "GRANT ALL ON *.* TO 'wordpress'@'%';"
-    echo "GRANT SET_ANY_DEFINER ON *.* TO 'wordpress'@'localhost';"
-    echo "GRANT SET_ANY_DEFINER ON *.* TO 'wordpress'@'%';"
-    echo "CREATE DATABASE IF NOT EXISTS wordpress;"
-  } | mysql -h "$db_host" -u "$db_admin_user"
-fi
-
-if ! mysql -h "${db_host}" -unetapp -pwordpress wordpress -e "SELECT 'testing_db'" >/dev/null 2>&1; then
-  {
-    echo "CREATE USER IF NOT EXISTS 'netapp'@'localhost' IDENTIFIED BY 'wordpress';"
-    echo "CREATE USER IF NOT EXISTS 'netapp'@'%' IDENTIFIED BY 'wordpress';"
-    echo "GRANT ALL ON *.* TO 'netapp'@'localhost';"
-    echo "GRANT ALL ON *.* TO 'netapp'@'%';"
-  } | mysql -h "${db_host}" -u "${db_admin_user}"
-fi
+{
+  echo "CREATE USER IF NOT EXISTS 'wordpress'@'%' IDENTIFIED BY 'wordpress';"
+  echo "CREATE USER IF NOT EXISTS 'netapp'@'%' IDENTIFIED BY 'wordpress';"
+  echo "GRANT ALL ON wordpress.* TO 'wordpress'@'%';"
+  echo "GRANT ALL ON wordpress.* TO 'netapp'@'%';"
+  echo "GRANT SET_ANY_DEFINER ON *.* TO 'wordpress'@'%';"
+  echo "CREATE DATABASE IF NOT EXISTS wordpress;"
+} | mysql -h "$db_host" -u "$db_admin_user"
 
 echo "Copying dev-env-plugin.php to mu-plugins"
 cp /dev-tools/dev-env-plugin.php /wp/wp-content/mu-plugins/
