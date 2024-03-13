@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Site Unavailable</title>
+	<style>
+		:root {
+			--background: radial-gradient(53.72% 53.72% at 50.00% 46.28%, #FCFAFA 0%, #F5F2F1 100%);
+			--background-inverse: radial-gradient(53.72% 53.72% at 50% 46.28%, #1B1918 0%, #080402 100%);
+			--border: #BFBCBB;
+			--border-inverse: #444140;
+			--text-primary: #13191E;
+			--text-secondary: #444140;
+			--text-primary-inverse: #FBFBFB;
+			--text-secondary-inverse: #D7D4D3;
+		}
+
+		body {
+			display: flex;
+			width: 100vw;
+			height: 100vh;
+			padding: clamp(1.00rem, calc(0.88rem + 0.60vw), 1.50rem);
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			box-sizing: border-box;
+			font-family: "Helvetica", "Helvetica Neue", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+			background: var(--background);
+			margin: 0;
+			color: var(--text-primary);
+		}
+
+		section {
+			display: flex;
+			padding: clamp(1.00rem, calc(0.88rem + 0.60vw), 1.50rem);
+			max-width: 25rem;
+			flex-direction: column;
+			justify-content: center;
+			align-items: stretch;
+			gap: clamp(1.00rem, calc(0.88rem + 0.60vw), 1.50rem);
+			flex: 0 1 auto;
+			box-sizing: border-box;
+			border-radius: .5rem;
+			border: 1px solid var(--border);
+		}
+
+		h1 {
+			font-size: clamp(1.38rem, calc(1.08rem + 1.52vw), 2.64rem);
+			line-height: clamp(1.1em, calc(1.25em + -0.4vw), 1.2em);
+			letter-spacing: -0.01em;
+			color: var(--text-primary);
+			font-weight: 400;
+			margin: 0;
+		}
+
+		h2 {
+			color: var(--text-primary);
+			line-height: clamp(1.1em, calc(1.25em + -0.4vw), 1.2em);
+			font-weight: 400;
+			margin: 0;
+		}
+
+		p {
+			margin: 0;
+			color: var(--text-secondary);
+			font-size: 1rem;
+			line-height: 140%;
+			font-weight: 400;
+		}
+
+		aside {
+			display: flex;
+			flex-direction: column;
+			align-items: stretch;
+			gap: clamp(0.75rem, calc(0.69rem + 0.30vw), 1.00rem);
+		}
+
+		small {
+			font-size: .875rem;
+			margin: 0;
+			color: var(--text-secondary);
+		}
+
+		hr {
+			margin: 0;
+			height: 1px;
+			border: 0;
+			border-top: 1px solid var(--border);
+		}
+
+		ul,
+		ol {
+			margin: 0;
+			padding-left: 1rem;
+		}
+
+		li {
+			padding-bottom: 0.5rem;
+		}
+
+		@media (prefers-color-scheme: dark) {
+			:root {
+				--background: var(--background-inverse);
+				--border: var(--border-inverse);
+				--text-primary: var(--text-primary-inverse);
+				--text-secondary: var(--text-secondary-inverse);
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<section>
+		<h1>Error processing the request</h1>
+		<p>Server couldn't handle the response from PHP.</p>
+		<h2>Troubleshooting steps</h2>
+		<ul>
+			<li>Check the server logs:
+				<ol>
+					<li>
+						<pre>vip dev-env logs -f --slug my-app</pre>
+					</li>
+					<li>Repeat the action that caused the error message to appear.</li>
+					<li>Check the log for the exact error message.</li>
+					<li>Refer to common errors below.</li>
+					<li>We recommend using XDebug to identify the problematic code.</li>
+				</ol>
+			</li>
+		</ul>
+		<h2>Common errors</h2>
+		<ul>
+			<li><b>502 upstream sent too big header while reading response header from upstream</b>
+				<br>
+				Application generated response headers that were too large for the server to handle. This can be caused by a
+				large number of cookies or other headers.
+			</li>
+			<li>
+				<b>504 upstream timed out (110: Operation timed out)</b>
+				<br>
+				Application took too long to respond to the request.
+				This can be caused by infinite loops, slow database queries, external remote requests, forgotten XDebug
+				sessions, or other long-running operations.
+			</li>
+		</ul>
+		<aside>
+			<hr>
+			<small>If you're unable to resolve the issue please <a
+					href="https://docs.wpvip.com/vip-support/#h-contacting-vip-support" target="_blank">contact
+					support</a>.</small>
+		</aside>
+	</section>
+</body>
+
+</html>
