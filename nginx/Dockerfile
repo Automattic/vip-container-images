@@ -1,4 +1,4 @@
-FROM nginx:1.25.4-alpine@sha256:02d8d94023878cedf3e3acc55372932a9ba1478b6e2f3357786d916c2af743ba
+FROM nginx:1.25.4-alpine@sha256:31bad00311cb5eeb8a6648beadcf67277a175da89989f14727420a80e2e76742
 
 RUN apk upgrade --no-cache && apk add --no-cache shadow
 
