@@ -35,7 +35,7 @@
     "prerelease": false
   },
   {
-    "ref": "6.0.7",
+    "ref": "6.0.8",
     "tag": "6.0",
     "cacheable": true,
     "locked": true,
