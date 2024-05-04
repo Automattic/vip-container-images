@@ -64,6 +64,7 @@ runs:
 
     - name: Build and push container image
       uses: docker/build-push-action@v5
+      id: push
       with:
         context: ${{ inputs.context }}
         file: ${{ inputs.file }}
@@ -76,6 +77,19 @@ runs:
         cache-from: ${{ inputs.cache-from }}
         cache-to: ${{ inputs.cache-to }}
         no-cache: ${{ inputs.no-cache }}
+
+    - name: Get image name
+      shell: bash
+      id: imagename
+      run: echo "image_name=$(echo "${{ inputs.primaryTag }}" | cut -d ':' -f 1)" >> "${GITHUB_OUTPUT}"
+
+    - name: Attest
+      uses: actions/attest-build-provenance@897ed5eab6ed058a474202017ada7f40bfa52940 # v1.0.0
+      with:
+        subject-name: ${{ steps.imagename.outputs.image_name }}
+        subject-digest: ${{ steps.push.outputs.digest }}
+        push-to-registry: false
+      if: inputs.push == 'true'
 
     - name: Load image to local Docker
       uses: docker/build-push-action@v5
