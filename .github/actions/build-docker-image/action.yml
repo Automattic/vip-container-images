@@ -88,7 +88,7 @@ runs:
       with:
         subject-name: ${{ steps.imagename.outputs.image_name }}
         subject-digest: ${{ steps.push.outputs.digest }}
-        push-to-registry: false
+        push-to-registry: true
       if: inputs.push == 'true'
 
     - name: Load image to local Docker
