@@ -84,7 +84,24 @@ runs:
       id: imagename
       run: echo "image_name=$(echo "${{ inputs.primaryTag }}" | cut -d ':' -f 1)" >> "${GITHUB_OUTPUT}"
 
-    - name: Attest
+    - name: Generate SBOM
+      uses: anchore/sbom-action@7ccf588e3cf3cc2611714c2eeae48550fbc17552 # v0.15.11
+      with:
+        image: ${{ inputs.primaryTag }}
+        format: 'cyclonedx-json'
+        output-file: 'sbom.cyclonedx.json'
+      if: inputs.push == 'true'
+
+    - name: Attest SBOM
+      uses: actions/attest-sbom@c168f2354d9bf9a30b63bd0c532cdf3f3bbd6dc3 # v1.0.0
+      with:
+        subject-name: ${{ steps.imagename.outputs.image_name }}
+        subject-digest: ${{ steps.push.outputs.digest }}
+        sbom-file: 'sbom.cyclonedx.json'
+        push-to-registry: true
+      if: inputs.push == 'true'
+
+    - name: Attest provenance
       uses: actions/attest-build-provenance@897ed5eab6ed058a474202017ada7f40bfa52940 # v1.0.0
       with:
         subject-name: ${{ steps.imagename.outputs.image_name }}
