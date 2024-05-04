@@ -31,6 +31,8 @@ jobs:
       contents: read
       pull-requests: write
       security-events: write
+      id-token: write
+      attestations: write
     strategy:
       fail-fast: false
       matrix:
