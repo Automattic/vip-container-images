@@ -97,7 +97,7 @@ runs:
       with:
         subject-name: ${{ steps.imagename.outputs.image_name }}
         subject-digest: ${{ steps.push.outputs.digest }}
-        sbom-file: 'sbom.cyclonedx.json'
+        sbom-path: 'sbom.cyclonedx.json'
         push-to-registry: true
       if: inputs.push == 'true'
 
