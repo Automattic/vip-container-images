@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 AS build
+FROM ubuntu:24.04 AS build
 RUN \
     export DEBIAN_FRONTEND=noninteractive && \
     apt-get -q update && \
@@ -17,7 +17,7 @@ RUN pecl install memcache
 RUN pecl install memcached
 RUN pecl install channel://pecl.php.net/gmagick-2.0.6RC1
 
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 # We lack: newrelic
 # Missing: php8.3-gnupg php8.3-ssh2 php8.3-xdebug
