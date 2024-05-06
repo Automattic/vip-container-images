@@ -1,26 +1,18 @@
-FROM ubuntu:22.04 AS build
+FROM ubuntu:24.04@sha256:3f85b7caad41a95462cf5b787d8a04604c8262cdcdf9a472b8c52ef83375fe15 AS build
 RUN \
     export DEBIAN_FRONTEND=noninteractive && \
     apt-get -q update && \
     apt-get -y install eatmydata && \
-    eatmydata apt-get install -y software-properties-common gnupg libmcrypt-dev zlib1g-dev libmemcached-dev libgraphicsmagick1-dev --no-install-recommends && \
+    eatmydata apt-get install -y software-properties-common gnupg --no-install-recommends && \
     eatmydata add-apt-repository -y ppa:ondrej/php && \
     eatmydata apt-get install -y php8.3-dev php8.3-xml && \
     eatmydata apt-get install -y php-pear --no-install-recommends && \
+    pecl install timezonedb && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
-RUN pecl install timezonedb
-RUN pecl install apcu
-RUN pecl install igbinary
-RUN pecl install mcrypt
-RUN pecl install memcache
-RUN pecl install memcached
-RUN pecl install channel://pecl.php.net/gmagick-2.0.6RC1
-
-FROM ubuntu:22.04
+FROM ubuntu:24.04@sha256:3f85b7caad41a95462cf5b787d8a04604c8262cdcdf9a472b8c52ef83375fe15
 
 # We lack: newrelic
-# Missing: php8.3-gnupg php8.3-ssh2 php8.3-xdebug
 RUN \
     export DEBIAN_FRONTEND=noninteractive && \
     apt-get -q update && \
@@ -31,8 +23,9 @@ RUN \
     eatmydata apt-get install -y ghostscript msmtp --no-install-recommends && \
     eatmydata apt-get install -y \
         php8.3-cli php8.3-fpm \
-        php8.3-bcmath php8.3-curl php8.3-gd php8.3-gmp php8.3-intl php8.3-mbstring \
-        php8.3-mysql php8.3-soap php8.3-sqlite3 php8.3-xml php8.3-zip && \
+        php8.3-apcu php8.3-bcmath php8.3-curl php8.3-gd php8.3-gmagick php8.3-gmp php8.3-gnupg php8.3-igbinary \
+        php8.3-intl php8.3-mbstring php8.3-mcrypt php8.3-memcache php8.3-memcached php8.3-mysql php8.3-soap \
+        php8.3-sqlite3 php8.3-ssh2 php8.3-xdebug php8.3-xml php8.3-zip && \
     eatmydata apt-get install -y php-pear --no-install-recommends && \
     phpdismod ffi gettext readline sysvmsg xsl xdebug && \
     eatmydata apt-get remove --purge -y software-properties-common && \
@@ -54,27 +47,11 @@ RUN \
 
 ENV WP_CLI_CONFIG_PATH /config/wp-cli.yaml
 
-COPY --from=build \
-        /usr/lib/php/20230831/timezonedb.so \
-        /usr/lib/php/20230831/apcu.so \
-        /usr/lib/php/20230831/igbinary.so \
-        /usr/lib/php/20230831/mcrypt.so \
-        /usr/lib/php/20230831/memcache.so \
-        /usr/lib/php/20230831/memcached.so \
-        /usr/lib/php/20230831/gmagick.so \
-    /usr/lib/php/20230831/
+COPY --from=build /usr/lib/php/20230831/timezonedb.so /usr/lib/php/20230831/
 COPY rootfs/ /
 COPY rootfs-php/ /etc/php/8.3/
 
-RUN \
-    echo "extension=apcu.so" > /etc/php/8.3/mods-available/apcu.ini && \
-    echo "extension=igbinary.so" > /etc/php/8.3/mods-available/igbinary.ini && \
-    echo "extension=mcrypt.so" > /etc/php/8.3/mods-available/mcrypt.ini && \
-    echo "extension=memcache.so" > /etc/php/8.3/mods-available/memcache.ini && \
-    echo "extension=memcached.so" > /etc/php/8.3/mods-available/memcached.ini && \
-    echo "extension=gmagick.so" > /etc/php/8.3/mods-available/gmagick.ini
-
-RUN phpenmod timezonedb apcu igbinary mcrypt memcache memcached
+RUN phpenmod timezonedb
 
 WORKDIR /var/www/html
 STOPSIGNAL SIGQUIT
