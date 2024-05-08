@@ -2,10 +2,10 @@
 
 if [ "enable" = "$XDEBUG" ]; then
     echo "Enabling XDebug"
-    phpenmod -s fpm xdebug
+    phpenmod xdebug
 else
     echo "Disabling XDebug"
-    phpdismod -s fpm xdebug
+    phpdismod xdebug
 fi
 
 if [ -n "${LANDO_INFO}" ] && [ 'null' != "$(echo "${LANDO_INFO}" | jq -r .mailhog)" ]; then

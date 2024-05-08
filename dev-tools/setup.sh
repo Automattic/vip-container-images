@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export XDEBUG_MODE=off
+
 subdomain=0
 
 # Check if the first argument starts with '--'
