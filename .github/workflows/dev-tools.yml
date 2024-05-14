@@ -42,6 +42,7 @@ jobs:
         with:
           context: dev-tools
           push: ${{ github.base_ref == null }}
+          no-cache: ${{ github.event_name == 'workflow_dispatch' }}
           cache-from: type=gha,scope=dev-tools
           cache-to: type=gha,mode=max,scope=dev-tools
           primaryTag: ghcr.io/automattic/vip-container-images/dev-tools:0.9

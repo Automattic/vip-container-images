@@ -48,5 +48,6 @@ jobs:
           push: ${{ github.base_ref == null }}
           cache-from: type=gha,scope=traefik
           cache-to: type=gha,mode=max,scope=traefik
+          no-cache: ${{ github.event_name == 'workflow_dispatch' }}
           primaryTag: ghcr.io/automattic/vip-container-images/traefik_openssl:${{ steps.getversion.outputs.version }}
           tags: ghcr.io/automattic/vip-container-images/traefik_openssl:latest
