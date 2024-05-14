@@ -53,6 +53,7 @@ jobs:
           context: php-fpm
           file: php-fpm/Dockerfile.${{ matrix.php.suffix }}
           push: ${{ github.base_ref == null }}
+          no-cache: ${{ github.event_name == 'workflow_dispatch' }}
           cache-from: type=gha,scope=php-fpm-${{ matrix.php.suffix }}
           cache-to: type=gha,mode=max,scope=php-fpm-${{ matrix.php.suffix }}
           primaryTag: ghcr.io/automattic/vip-container-images/php-fpm:${{ matrix.php.name }}

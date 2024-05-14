@@ -46,6 +46,7 @@ jobs:
         with:
           context: nginx
           push: ${{ github.base_ref == null }}
+          no-cache: ${{ github.event_name == 'workflow_dispatch' }}
           cache-from: type=gha,scope=nginx
           cache-to: type=gha,mode=max,scope=nginx
           primaryTag: ghcr.io/automattic/vip-container-images/nginx:${{ steps.getversion.outputs.version }}

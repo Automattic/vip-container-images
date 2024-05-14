@@ -75,6 +75,6 @@ jobs:
           args: WP_GIT_REF=${{ matrix.wp.ref }}
           cache-from: type=gha,scope=wordpress-${{ matrix.wp.ref }}
           cache-to: type=gha,mode=max,scope=wordpress-${{ matrix.wp.ref }}
-          no-cache: ${{ matrix.wp.cacheable == false }}
+          no-cache: ${{ matrix.wp.cacheable == false || github.event_name == 'workflow_dispatch' }}
           primaryTag: ghcr.io/automattic/vip-container-images/wordpress:${{ matrix.wp.tag }}
           tags: ${{ steps.extra-tags.outputs.tags }}
