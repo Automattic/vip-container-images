@@ -1,25 +1,25 @@
-FROM alpine:3.19.1@sha256:c5b1261d6d3e43071626931fc004f70149baeba2c8ec672bd4f27761f8e1ad6b AS build
-RUN apk add --no-cache php81-dev php81-pear php81-openssl gcc make libc-dev graphicsmagick-dev libtool subversion
-RUN pecl81 channel-update pecl.php.net
-RUN pecl81 install channel://pecl.php.net/gmagick-2.0.6RC1 < /dev/null
+FROM alpine:3.20.0@sha256:77726ef6b57ddf65bb551896826ec38bc3e53f75cdde31354fbffb4f25238ebd AS build
+RUN apk add --no-cache php82-dev php82-pear php82-openssl gcc make libc-dev graphicsmagick-dev libtool subversion
+RUN pecl82 channel-update pecl.php.net
+RUN pecl82 install channel://pecl.php.net/gmagick-2.0.6RC1 < /dev/null
 RUN \
     install -d -D /usr/share/webapps/photon && \
     svn co https://code.svn.wordpress.org/photon/ /usr/share/webapps/photon && \
     rm -rf /usr/share/webapps/photon/.svn /usr/share/webapps/photon/tests
 
-FROM alpine:3.19.1@sha256:c5b1261d6d3e43071626931fc004f70149baeba2c8ec672bd4f27761f8e1ad6b
+FROM alpine:3.20.0@sha256:77726ef6b57ddf65bb551896826ec38bc3e53f75cdde31354fbffb4f25238ebd
 RUN \
     apk upgrade --no-cache && \
     apk add --no-cache \
-        php81 php81-fpm php81-curl php81-gd php81-opcache php81-openssl graphicsmagick libgomp  \
+        php82 php82-fpm php82-curl php82-gd php82-opcache php82-openssl graphicsmagick libgomp  \
         optipng pngquant libwebp-tools jpegoptim libjpeg-turbo-utils pngcrush && \
-    ln -s /usr/sbin/php-fpm81 /usr/sbin/php-fpm
+    ln -s /usr/sbin/php-fpm82 /usr/sbin/php-fpm
 
 # These packages are required to download composer, install PHPUnit and run tests
-# RUN apk add --no-cache php81-dom php81-fileinfo php81-mbstring php81-phar php81-pdo php81-tokenizer php81-xml php81-xmlwriter
+# RUN apk add --no-cache php82-dom php82-fileinfo php82-mbstring php82-phar php82-pdo php82-tokenizer php82-xml php82-xmlwriter
 
 COPY rootfs /
-COPY --from=build /usr/lib/php81/modules/gmagick.so /usr/lib/php81/modules/
+COPY --from=build /usr/lib/php82/modules/gmagick.so /usr/lib/php82/modules/
 COPY --from=build /usr/share/webapps/photon /usr/share/webapps/photon
 
 RUN \
