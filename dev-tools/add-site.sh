@@ -18,24 +18,24 @@ done
 [ -z "$slug" ] && echo "ERROR: Missing or empty slug argument" && syntax
 [ -z "$title" ] && echo "ERROR: Missing or empty title argument" && syntax
 
-network_domain=$(wp --allow-root site list --field=domain | head -n1)
+network_domain=$(wp --allow-root site list --field=domain --skip-plugins --skip-themes | head -n1)
 
 site_domain=$slug.$network_domain
 
 echo "Checking if this is a multisite installation..."
-if ! wp --allow-root core is-installed --network; then
+if ! wp --allow-root core is-installed --network --skip-plugins --skip-themes; then
   echo "ERROR: Not a multisite"
   exit 1
 fi
 
 echo "Checking if $site_domain already belongs to another site..."
-if wp --allow-root --path=/wp site list --field=domain | grep -q "^$site_domain$"; then
+if wp --allow-root --path=/wp site list --field=domain --skip-plugins --skip-themes | grep -q "^$site_domain$"; then
   echo "ERROR: site with domain $site_domain already exists"
   exit 1
 fi
 
 echo "Creating the new site..."
-wp --allow-root --path=/wp site create --title="$title" --slug="$slug"
+wp --allow-root --skip-plugins --skip-themes --path=/wp site create --title="$title" --slug="$slug"
 
 echo
 echo "======================================================================"

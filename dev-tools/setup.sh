@@ -144,7 +144,7 @@ fi
 
 echo "Checking for WordPress installation..."
 
-wp cache flush
+wp cache flush --skip-plugins --skip-themes
 if ! wp core is-installed --skip-plugins --skip-themes; then
   echo "No installation found, installing WordPress..."
 
