@@ -78,12 +78,12 @@ function dev_env_add_admin( $args, $assoc_args ) {
 		return;
 	}
 
-	WP_CLI::runcommand( 'user create ' . $username . ' ' . $email . ' --user_pass=' . $password . ' --role=administrator' );
+	WP_CLI::runcommand( 'user create ' . $username . ' ' . $email . ' --user_pass=' . $password . ' --role=administrator' . ' --skip-plugins --skip-themes' );
 	WP_CLI::success( 'User "' . $username . '" created.' );
 
 	if ( is_multisite() ) {
 		// on multisite we do more setup
-		WP_CLI::runcommand( 'super-admin add ' . $username );
+		WP_CLI::runcommand( 'super-admin add ' . $username . ' --skip-plugins --skip-themes' );
 		WP_CLI::success( 'User "' . $username . '" added to super-admin list.' );
 
 		$sites = get_sites();
@@ -91,7 +91,7 @@ function dev_env_add_admin( $args, $assoc_args ) {
 			switch_to_blog( $site->blog_id );
 			$subsite_url = home_url();
 
-			WP_CLI::runcommand( 'user set-role ' . $username . ' administrator --url=' . $subsite_url );
+			WP_CLI::runcommand( 'user set-role ' . $username . ' administrator --url=' . $subsite_url . ' --skip-plugins --skip-themes' );
 
 			restore_current_blog();
 		}

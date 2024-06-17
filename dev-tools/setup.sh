@@ -61,27 +61,29 @@ else
 fi
 
 # Make sure to check the core files are there before trying to install WordPress.
-echo "Waiting for core files to be copied"
+echo "Waiting for WordPress core files to be copied"
 i=0;
 while [ ! -f /wp/wp-includes/pomo/mo.php ]
 do
+  printf "."
   sleep 0.5
   i=$((i+1))
-  # Roughly 1 minute
+  # Roughly 2 minutes
   if [ $i -eq 120 ]; then
-    echo "ERROR: WordPress core files not found. Please try to restart or destroy the environment"
+    echo "ERROR: Failed to copy WordPress core files in time. Please try to restart the environment."
     exit 1;
   fi
 done
 
 if [ -n "${LANDO_INFO}" ] && [ "$(echo "${LANDO_INFO}" | jq -r '.["vip-mu-plugins"]')" != 'null' ]; then
-  echo 'Waiting for mu-plugins...'
+  echo 'Waiting for MU-plugins to be copied'
   i=0;
   while [ ! -f /wp/wp-content/mu-plugins/.version ]; do
+    printf "."
     sleep 1
     i=$((i+1))
-    if [ $i -eq 60 ]; then
-      echo "ERROR: mu-plugins not found. Please try to restart or destroy the environment"
+    if [ $i -eq 120 ]; then
+      echo "ERROR: Failed to copy MU-plugins in time. Please try to restart the environment."
       exit 1;
     fi
   done
@@ -103,14 +105,14 @@ fi
 
 printf "Waiting for MySQL to come online"
 second=0
-while ! mysqladmin ping -h "${db_host}" --silent && [ "${second}" -lt 60 ]; do
+while ! mysqladmin ping -h "${db_host}" --silent && [ "${second}" -lt 120 ]; do
   printf "."
   sleep 1
   second=$((second+1))
 done
 echo ""
 if ! mysqladmin ping -h "${db_host}" --silent; then
-    echo "ERROR: mysql has failed to come online"
+    echo "ERROR: MySQL has failed to come online. Please check the database container logs for details."
     exit 1;
 fi
 
@@ -144,7 +146,7 @@ fi
 
 echo "Checking for WordPress installation..."
 
-wp cache flush
+wp cache flush --skip-plugins --skip-themes
 if ! wp core is-installed --skip-plugins --skip-themes; then
   echo "No installation found, installing WordPress..."
 
