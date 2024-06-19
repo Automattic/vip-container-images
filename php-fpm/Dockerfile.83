@@ -1,3 +1,14 @@
+FROM --platform=$BUILDPLATFORM tonistiigi/xx:latest@sha256:0cd3f05c72d6c9b038eb135f91376ee1169ef3a330d34e418e65e2a5c2e9c0d4 AS xx
+
+FROM --platform=$BUILDPLATFORM golang:1.17 AS cron-builder
+ARG TARGETPLATFORM
+COPY --from=xx / /
+
+WORKDIR /app
+ENV CGO_ENABLED=0
+RUN git clone --depth 1 --single-branch --no-tags https://github.com/Automattic/cron-control-runner.git .
+RUN xx-go build -o cron-control-runner main.go
+
 FROM ubuntu:24.04@sha256:3f85b7caad41a95462cf5b787d8a04604c8262cdcdf9a472b8c52ef83375fe15 AS build
 RUN \
     export DEBIAN_FRONTEND=noninteractive && \
@@ -21,7 +32,7 @@ RUN \
     eatmydata apt-get -y upgrade && \
     eatmydata apt-get install -y software-properties-common gnupg libmcrypt4 zlib1g libmemcached11 libgraphicsmagick-q16-3 --no-install-recommends && \
     eatmydata add-apt-repository -y ppa:ondrej/php && \
-    eatmydata apt-get install -y curl less git jq mysql-client openssl wget cron vim nano && \
+    eatmydata apt-get install -y curl less git jq mysql-client openssl wget vim nano && \
     eatmydata apt-get install -y ghostscript msmtp --no-install-recommends && \
     eatmydata apt-get install -y \
         php8.3-cli php8.3-fpm \
@@ -33,23 +44,27 @@ RUN \
     eatmydata apt-get remove --purge -y software-properties-common && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* && \
     eatmydata apt-get autoremove --purge -y && \
-    ln -s /usr/sbin/php-fpm8.3 /usr/sbin/php-fpm && \
-    chmod 02755 /usr/bin/crontab
+    ln -s /usr/sbin/php-fpm8.3 /usr/sbin/php-fpm
 
 RUN \
     usermod -d /home/www-data -s /bin/bash www-data && \
     install -d -D -m 0750 -o www-data -g www-data /home/www-data && \
     install -d -D -m 0777 -o www-data -g www-data /var/www/html && \
-    install -d -D -m 0755 -o www-data -g www-data /run/php
+    install -d -D -m 0755 -o www-data -g www-data /run/php && \
+    install -d -D -m 0755 -o root -g root /usr/local/share
 
 RUN \
     wget -O /usr/local/bin/phpunit https://phar.phpunit.de/phpunit-9.phar && chmod 0755 /usr/local/bin/phpunit && \
-    wget -O /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && chmod 0755 /usr/local/bin/wp && \
+    wget -O /usr/local/bin/wp.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
+        php -r '(new Phar("/usr/local/bin/wp.phar"))->extractTo("/usr/local/share/wp");' && \
+        mv /usr/local/bin/wp.phar /usr/local/bin/wp && \
+        chmod 0755 /usr/local/bin/wp && \
     wget -q https://getcomposer.org/installer -O - | php -- --install-dir=/usr/bin/ --filename=composer
 
-ENV WP_CLI_CONFIG_PATH /config/wp-cli.yaml
+ENV WP_CLI_CONFIG_PATH=/config/wp-cli.yaml
 
 COPY --from=build /usr/lib/php/20230831/timezonedb.so /usr/lib/php/20230831/
+COPY --from=cron-builder /app/cron-control-runner /usr/bin/
 COPY rootfs/ /
 COPY rootfs-php/ /etc/php/8.3/
 
