@@ -16,7 +16,9 @@ FROM ubuntu:24.04@sha256:3f85b7caad41a95462cf5b787d8a04604c8262cdcdf9a472b8c52ef
 RUN \
     export DEBIAN_FRONTEND=noninteractive && \
     apt-get -q update && \
-    apt-get -y install eatmydata && eatmydata apt-get -y upgrade && \
+    apt-get -y install eatmydata && \
+    mkdir -p /usr/lib/libeatmydata && ln -s -t /usr/lib/libeatmydata/ /usr/lib/$(uname -m)-linux-gnu/libeatmydata.so* && \
+    eatmydata apt-get -y upgrade && \
     eatmydata apt-get install -y software-properties-common gnupg libmcrypt4 zlib1g libmemcached11 libgraphicsmagick-q16-3 --no-install-recommends && \
     eatmydata add-apt-repository -y ppa:ondrej/php && \
     eatmydata apt-get install -y curl less git jq mysql-client openssl wget cron vim nano && \
