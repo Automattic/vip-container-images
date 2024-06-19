@@ -32,7 +32,7 @@ USER circleci
 
 ENV LD_PRELOAD=/usr/lib/libeatmydata/libeatmydata.so
 
-RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 ENV NVM_DIR /home/circleci/.nvm
 
 RUN \
