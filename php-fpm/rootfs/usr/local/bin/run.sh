@@ -17,7 +17,7 @@ else
 fi
 
 if [ -n "${ENABLE_CRON}" ]; then
-    /usr/bin/cron-control-runner -fpm-url unix:///run/php-fpm.sock -wp-cli-path /usr/local/bin/wp -wp-path /wp -prom-metrics-address :4444 &
+    /usr/bin/cron-control-runner -fpm-url tcp://127.0.0.1:9000 -wp-cli-path /usr/local/bin/wp -wp-path /wp -prom-metrics-address :4444 &
     PID=$!
     # shellcheck disable=SC2064
     trap "kill ${PID}" EXIT INT TERM
