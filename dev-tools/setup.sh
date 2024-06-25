@@ -103,6 +103,11 @@ else
   curl -s https://api.wordpress.org/secret-key/1.1/salt/ >> /wp/config/wp-config.php
 fi
 
+if [ -n "${LANDO_INFO}" ] && [ "$(echo "${LANDO_INFO}" | jq -r '.["demo-app-code"]')" = 'null' ] && [ -f /wp/wp-content/client-mu-plugins/composer.json ] && [ ! -d /wp/wp-content/client-mu-plugins/vendor ]; then
+  echo "Installing Composer dependencies for client-mu-plugins"
+  composer install -d /wp/wp-content/client-mu-plugins -n
+fi
+
 printf "Waiting for MySQL to come online"
 second=0
 while ! mysqladmin ping -h "${db_host}" --silent && [ "${second}" -lt 120 ]; do
