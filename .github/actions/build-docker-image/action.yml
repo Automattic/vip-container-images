@@ -63,7 +63,7 @@ runs:
       if: ${{ inputs.push }}
 
     - name: Build and push container image
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       id: push
       with:
         context: ${{ inputs.context }}
@@ -110,7 +110,7 @@ runs:
       if: inputs.push == 'true'
 
     - name: Load image to local Docker
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         load: true
         push: false
