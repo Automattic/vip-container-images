@@ -16,17 +16,11 @@ else
     phpdismod mailhog mailpit
 fi
 
-cleanup() {
-    if [ -n "${ENABLE_CRON}" ]; then
-        /usr/sbin/service cron stop
-    fi
-}
-
-trap cleanup EXIT INT TERM
-
 if [ -n "${ENABLE_CRON}" ]; then
-    echo "*/10 * * * * /usr/bin/flock -n /tmp/wp-cron.lock /usr/local/bin/wp-cron.sh" | crontab -u www-data -
-    /usr/sbin/service cron start
+    /usr/bin/cron-control-runner -fpm-url tcp://127.0.0.1:9000 -wp-cli-path /usr/local/bin/wp -wp-path /wp -prom-metrics-address :4444 &
+    PID=$!
+    # shellcheck disable=SC2064
+    trap "kill ${PID}" EXIT INT TERM
 fi
 
 /usr/sbin/php-fpm
