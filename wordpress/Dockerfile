@@ -1,4 +1,4 @@
-FROM ghcr.io/automattic/vip-container-images/alpine:3.20.0@sha256:0a542e7f28185eb313c89eeed7f7abdc6baab3bcc9ac6e0709f307be6a59a954 AS build
+FROM ghcr.io/automattic/vip-container-images/alpine:3.20.1@sha256:2959058d3f7a7765fd6676b154e9def4dfa16c6b1daa0caad98eebbdf052d2bf AS build
 ARG WP_GIT_REF
 RUN apk add --no-cache git git-subtree patch
 RUN mkdir /wordpress
@@ -17,7 +17,7 @@ RUN \
 
 COPY extra/ /wordpress/wordpress/
 
-FROM ghcr.io/automattic/vip-container-images/alpine:3.20.0@sha256:0a542e7f28185eb313c89eeed7f7abdc6baab3bcc9ac6e0709f307be6a59a954
+FROM ghcr.io/automattic/vip-container-images/alpine:3.20.1@sha256:2959058d3f7a7765fd6676b154e9def4dfa16c6b1daa0caad98eebbdf052d2bf
 COPY --from=build /wordpress/wordpress/ /wp/
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
