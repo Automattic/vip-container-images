@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 AS build
+FROM ubuntu:24.04@sha256:2e863c44b718727c860746568e1d54afd13b2fa71b160f5cd9058fc436217b30 AS build
 RUN \
     export DEBIAN_FRONTEND=noninteractive && \
     apt-get -q update && \
@@ -17,7 +17,7 @@ RUN \
     cd /mydumper && cmake . && make && make install && rm -rf /mydumper && rm -f mydumper.tar.gz && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
-FROM ubuntu:22.04
+FROM ubuntu:24.04@sha256:2e863c44b718727c860746568e1d54afd13b2fa71b160f5cd9058fc436217b30
 
 # Extra PHP extensions: msgpack (because of memcache)
 # We lack: newrelic
