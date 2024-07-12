@@ -3,8 +3,10 @@ RUN \
     export DEBIAN_FRONTEND=noninteractive && \
     apt-get -q update && \
     apt-get -y install eatmydata && \
-    eatmydata apt-get install -y software-properties-common gnupg --no-install-recommends && \
-    eatmydata add-apt-repository -y ppa:ondrej/php && \
+    eatmydata apt-get install -y curl lsb-release ca-certificates gnupg --no-install-recommends && \
+    echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list && \
+    curl -sSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x71DAEAAB4AD4CAB6" | gpg --dearmor > /etc/apt/trusted.gpg.d/ppa-ondrej-php.gpg && \
+    eatmydata apt-get -q update && \
     eatmydata apt-get install -y php8.3-dev php8.3-xml && \
     eatmydata apt-get install -y php-pear --no-install-recommends && \
     pecl install timezonedb && \
@@ -19,18 +21,19 @@ RUN \
     apt-get -y install eatmydata && \
     mkdir -p /usr/lib/libeatmydata && ln -s -t /usr/lib/libeatmydata/ /usr/lib/$(uname -m)-linux-gnu/libeatmydata.so* && \
     eatmydata apt-get -y upgrade && \
-    eatmydata apt-get install -y software-properties-common gnupg libmcrypt4 zlib1g libmemcached11 libgraphicsmagick-q16-3 --no-install-recommends && \
-    eatmydata add-apt-repository -y ppa:ondrej/php && \
-    eatmydata apt-get install -y curl less git jq mysql-client openssl wget vim nano && \
+    eatmydata apt-get install -y curl lsb-release ca-certificates gnupg libmcrypt4 zlib1g libmemcached11 libgraphicsmagick-q16-3 --no-install-recommends && \
+    echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list && \
+    curl -sSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x71DAEAAB4AD4CAB6" | gpg --dearmor > /etc/apt/trusted.gpg.d/ppa-ondrej-php.gpg && \
+    eatmydata apt-get -q update && \
+    eatmydata apt-get install -y less git jq mysql-client openssl wget vim nano && \
     eatmydata apt-get install -y ghostscript msmtp --no-install-recommends && \
-    eatmydata apt-get install -y \
+    eatmydata apt-get install -y --no-install-recommends \
         php8.3-cli php8.3-fpm \
         php8.3-apcu php8.3-bcmath php8.3-curl php8.3-gd php8.3-gmagick php8.3-gmp php8.3-gnupg php8.3-igbinary \
         php8.3-intl php8.3-mbstring php8.3-mcrypt php8.3-memcache php8.3-memcached php8.3-mysql php8.3-soap \
         php8.3-sqlite3 php8.3-ssh2 php8.3-xdebug php8.3-xml php8.3-zip && \
     eatmydata apt-get install -y php-pear --no-install-recommends && \
     phpdismod ffi gettext readline sysvmsg xsl xdebug && \
-    eatmydata apt-get remove --purge -y software-properties-common && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* && \
     eatmydata apt-get autoremove --purge -y && \
     ln -s /usr/sbin/php-fpm8.3 /usr/sbin/php-fpm
