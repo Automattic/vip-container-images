@@ -3,8 +3,10 @@ RUN \
     export DEBIAN_FRONTEND=noninteractive && \
     apt-get -q update && \
     apt-get -y install eatmydata && \
-    eatmydata apt-get install -y software-properties-common gnupg --no-install-recommends && \
-    eatmydata add-apt-repository -y ppa:ondrej/php && \
+    eatmydata apt-get install -y curl lsb-release ca-certificates gnupg --no-install-recommends && \
+    echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list && \
+    curl -sSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x71DAEAAB4AD4CAB6" | gpg --dearmor > /etc/apt/trusted.gpg.d/ppa-ondrej-php.gpg && \
+    eatmydata apt-get -q update && \
     eatmydata apt-get install -y php8.1-dev php8.1-xml && \
     eatmydata apt-get install -y php-pear --no-install-recommends && \
     pecl install timezonedb && \
@@ -20,17 +22,18 @@ RUN \
     apt-get -y install eatmydata && \
     mkdir -p /usr/lib/libeatmydata && ln -s -t /usr/lib/libeatmydata/ /usr/lib/$(uname -m)-linux-gnu/libeatmydata.so* && \
     eatmydata apt-get -y upgrade && \
-    eatmydata apt-get install -y software-properties-common gnupg --no-install-recommends && \
-    eatmydata add-apt-repository -y ppa:ondrej/php && \
-    eatmydata apt-get install -y curl less git jq mysql-client openssl wget vim nano && \
+    eatmydata apt-get install -y curl lsb-release ca-certificates gnupg --no-install-recommends && \
+    echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list && \
+    curl -sSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x71DAEAAB4AD4CAB6" | gpg --dearmor > /etc/apt/trusted.gpg.d/ppa-ondrej-php.gpg && \
+    eatmydata apt-get -q update && \
+    eatmydata apt-get install -y less git jq mysql-client openssl wget vim nano && \
     eatmydata apt-get install -y ghostscript msmtp --no-install-recommends && \
-    eatmydata apt-get install -y \
+    eatmydata apt-get install -y --no-install-recommends \
         php8.1-cli php8.1-fpm \
         php8.1-apcu php8.1-bcmath php8.1-curl php8.1-gd php8.1-gmagick php8.1-gmp php8.1-gnupg php8.1-intl php8.1-igbinary php8.1-mbstring php8.1-mcrypt \
         php8.1-memcache php8.1-memcached php8.1-mysql php8.1-soap php8.1-sqlite3 php8.1-ssh2 php8.1-xdebug php8.1-xml php8.1-zip && \
     eatmydata apt-get install -y php-pear --no-install-recommends && \
     phpdismod ffi gettext readline sysvmsg xsl xdebug && \
-    eatmydata apt-get remove --purge -y software-properties-common && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* && \
     eatmydata apt-get autoremove --purge -y && \
     ln -s /usr/sbin/php-fpm8.1 /usr/sbin/php-fpm
