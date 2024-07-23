@@ -17,6 +17,8 @@ $memcached_servers = array (
   ),
 );
 
+require( __DIR__ . '/wp-config-defaults.php' );
+
 if ( ! defined( 'WP_DEBUG' ) ) {
     define( 'WP_DEBUG', true );
 }
@@ -28,5 +30,3 @@ if ( ! defined( 'WP_DEBUG_LOG' ) ) {
 if ( ! defined( 'WP_DEBUG_DISPLAY' ) ) {
 	define( 'WP_DEBUG_DISPLAY', false );
 }
-
-require( __DIR__ . '/wp-config-defaults.php' );
