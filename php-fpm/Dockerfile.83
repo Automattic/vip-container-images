@@ -36,7 +36,11 @@ RUN \
     phpdismod ffi gettext readline sysvmsg xsl xdebug && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* && \
     eatmydata apt-get autoremove --purge -y && \
-    ln -s /usr/sbin/php-fpm8.3 /usr/sbin/php-fpm
+    ln -s /usr/sbin/php-fpm8.3 /usr/sbin/php-fpm && \
+    curl -L -o mydumper.deb https://github.com/mydumper/mydumper/releases/download/v0.16.3-6/mydumper_0.16.3-6.bullseye_amd64.deb && \
+    echo "46c404eae9efab7928faf099c5b17a58 mydumper.deb" | md5sum -c - && \
+    dpkg -i mydumper.deb && \
+    rm mydumper.deb
 
 RUN \
     deluser --remove-home --quiet ubuntu && \
