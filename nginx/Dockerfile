@@ -1,4 +1,4 @@
-FROM nginx:1.27.0-alpine@sha256:1e67a3c8607fe555f47dc8a72f25424b10273639136c061c508628da3112f90e
+FROM nginx:1.27.0-alpine@sha256:208b70eefac13ee9be00e486f79c695b15cef861c680527171a27d253d834be9
 
 RUN apk upgrade --no-cache && apk add --no-cache shadow openssl
 
