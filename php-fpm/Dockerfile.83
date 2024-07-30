@@ -52,9 +52,8 @@ RUN \
     install -d -D -m 0755 -o www-data -g www-data /run/php && \
     install -d -D -m 0755 -o root -g root /usr/local/share
 
-#RUN \
-#    wget -O /usr/local/bin/phpunit https://phar.phpunit.de/phpunit-9.phar && chmod 0755 /usr/local/bin/phpunit && \
 RUN \
+    wget -O /usr/local/bin/phpunit https://phar.phpunit.de/phpunit-9.phar && chmod 0755 /usr/local/bin/phpunit && \
     wget -O /usr/local/bin/wp.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
         php -r '(new Phar("/usr/local/bin/wp.phar"))->extractTo("/usr/local/share/wp");' && \
         mv /usr/local/bin/wp.phar /usr/local/bin/wp && \
