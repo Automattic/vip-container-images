@@ -7,7 +7,7 @@ RUN \
     echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list && \
     curl -sSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x71DAEAAB4AD4CAB6" | gpg --dearmor > /etc/apt/trusted.gpg.d/ppa-ondrej-php.gpg && \
     eatmydata apt-get -q update && \
-    eatmydata apt-get install -y php8.1-dev php8.1-xml cmake make libglib2.0-dev zlib1g-dev libpcre3-dev libssl-dev libzstd-dev libmysqlclient-dev && \
+    eatmydata apt-get install -y php8.1-dev php8.1-xml g++ cmake make libglib2.0-dev zlib1g-dev libpcre3-dev libssl-dev libzstd-dev libmysqlclient-dev && \
     eatmydata apt-get install -y php-pear --no-install-recommends && \
     pecl install timezonedb && \
     curl -SL "https://github.com/mydumper/mydumper/archive/refs/tags/v0.16.3-6.tar.gz" -o mydumper.tar.gz && \
