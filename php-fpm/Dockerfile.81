@@ -7,9 +7,14 @@ RUN \
     echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list && \
     curl -sSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x71DAEAAB4AD4CAB6" | gpg --dearmor > /etc/apt/trusted.gpg.d/ppa-ondrej-php.gpg && \
     eatmydata apt-get -q update && \
-    eatmydata apt-get install -y php8.1-dev php8.1-xml && \
+    eatmydata apt-get install -y php8.1-dev php8.1-xml g++ cmake make libglib2.0-dev zlib1g-dev libpcre3-dev libssl-dev libzstd-dev libmysqlclient-dev && \
     eatmydata apt-get install -y php-pear --no-install-recommends && \
     pecl install timezonedb && \
+    curl -SL "https://github.com/mydumper/mydumper/archive/refs/tags/v0.16.3-6.tar.gz" -o mydumper.tar.gz && \
+    echo "6af51d6e18fdf318710ba0c3d87f6ac7 mydumper.tar.gz" | md5sum -c - && \
+    mkdir /mydumper && \
+    tar -xzf mydumper.tar.gz --strip-components=1 -C /mydumper && \
+    cd /mydumper && cmake . && make && make install && rm -rf /mydumper && rm -f mydumper.tar.gz && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 FROM ubuntu:22.04
@@ -26,7 +31,7 @@ RUN \
     echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list && \
     curl -sSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x71DAEAAB4AD4CAB6" | gpg --dearmor > /etc/apt/trusted.gpg.d/ppa-ondrej-php.gpg && \
     eatmydata apt-get -q update && \
-    eatmydata apt-get install -y less git jq mysql-client openssl wget vim nano && \
+    eatmydata apt-get install -y less git jq mysql-client libmysqlclient21 openssl wget vim nano libpcre3 libglib2.0-0 libatomic1 && \
     eatmydata apt-get install -y ghostscript msmtp --no-install-recommends && \
     eatmydata apt-get install -y --no-install-recommends \
         php8.1-cli php8.1-fpm \
@@ -70,6 +75,7 @@ RUN \
     chmod +x /usr/bin/cron-control-runner
 
 COPY --from=build /usr/lib/php/20210902/timezonedb.so /usr/lib/php/20210902/timezonedb.so
+COPY --from=build /usr/local/bin/mydumper /usr/local/bin/myloader /usr/local/bin/
 COPY rootfs/ /
 COPY rootfs-php/ /etc/php/8.1/
 
