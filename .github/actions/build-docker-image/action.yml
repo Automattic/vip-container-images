@@ -93,7 +93,7 @@ runs:
       if: inputs.push == 'true'
 
     - name: Attest SBOM
-      uses: actions/attest-sbom@6d7733f629ce1368bd053e269afa8041a98a2b98 # v1.3.3
+      uses: actions/attest-sbom@f19ab44411e02574a74181cec8eb584319d0f779 # v1.4.0
       with:
         subject-name: ${{ steps.imagename.outputs.image_name }}
         subject-digest: ${{ steps.push.outputs.digest }}
@@ -102,7 +102,7 @@ runs:
       if: inputs.push == 'true'
 
     - name: Attest provenance
-      uses: actions/attest-build-provenance@5e9cb68e95676991667494a6a4e59b8a2f13e1d0 # v1.3.3
+      uses: actions/attest-build-provenance@210c1913531870065f03ce1f9440dd87bc0938cd # v1.4.0
       with:
         subject-name: ${{ steps.imagename.outputs.image_name }}
         subject-digest: ${{ steps.push.outputs.digest }}
