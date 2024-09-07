@@ -8,12 +8,10 @@ else
     phpdismod xdebug
 fi
 
-if [ -n "${LANDO_INFO}" ] && [ 'null' != "$(echo "${LANDO_INFO}" | jq -r .mailhog)" ]; then
-    phpenmod mailhog
-elif [ -n "${LANDO_INFO}" ] && [ 'null' != "$(echo "${LANDO_INFO}" | jq -r .mailpit)" ]; then
+if [ -n "${LANDO_INFO}" ] && [ 'null' != "$(echo "${LANDO_INFO}" | jq -r .mailpit)" ]; then
     phpenmod mailpit
 else
-    phpdismod mailhog mailpit
+    phpdismod mailpit
 fi
 
 if [ -n "${ENABLE_CRON}" ]; then
