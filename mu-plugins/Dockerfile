@@ -1,4 +1,4 @@
-FROM ghcr.io/automattic/vip-container-images/alpine:3.20.2@sha256:e3eae9b00692dc279d7efa683c44bd7ac4b0f5abcc9d96c4ba11f03851db9d95 AS build
+FROM ghcr.io/automattic/vip-container-images/alpine:3.20.3@sha256:69689b7134f1559bae811cdf06829b55410c7d389af8913fbb041518c3ef0b12 AS build
 
 RUN apk add --no-cache git && mkdir -p /mu-plugins
 RUN git clone --depth 1 https://github.com/Automattic/vip-go-mu-plugins-ext /mu-plugins-ext
@@ -10,7 +10,7 @@ RUN rsync -a -r --delete --exclude-from="/mu-plugins-tmp/.dockerignore" /mu-plug
 RUN rsync -a -r --delete --exclude-from="/mu-plugins-ext/.dockerignore" --exclude-from="/mu-plugins-ext/.devenvignore" /mu-plugins-ext/* /mu-plugins
 
 
-FROM ghcr.io/automattic/vip-container-images/alpine:3.20.2@sha256:e3eae9b00692dc279d7efa683c44bd7ac4b0f5abcc9d96c4ba11f03851db9d95
+FROM ghcr.io/automattic/vip-container-images/alpine:3.20.3@sha256:69689b7134f1559bae811cdf06829b55410c7d389af8913fbb041518c3ef0b12
 
 RUN install -d -m 0755 /shared
 COPY --from=build /mu-plugins /mu-plugins
