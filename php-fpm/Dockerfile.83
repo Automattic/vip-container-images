@@ -31,7 +31,7 @@ RUN \
     curl -sSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x71DAEAAB4AD4CAB6" | gpg --dearmor > /etc/apt/trusted.gpg.d/ppa-ondrej-php.gpg && \
     eatmydata apt-get -q update && \
     eatmydata apt-get install -y less git jq mysql-client libmysqlclient21 openssl wget vim nano libpcre3 libglib2.0-0 libatomic1 && \
-    eatmydata apt-get install -y ghostscript msmtp --no-install-recommends && \
+    eatmydata apt-get install -y ghostscript msmtp zstd --no-install-recommends && \
     eatmydata apt-get install -y --no-install-recommends \
         php8.3-cli php8.3-fpm \
         php8.3-apcu php8.3-bcmath php8.3-curl php8.3-gd php8.3-gmagick php8.3-gmp php8.3-gnupg php8.3-igbinary \
