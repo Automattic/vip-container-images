@@ -134,11 +134,21 @@ runs:
       shell: bash
       run: mkdir -p .cache/trivy/db
 
-    - name: Cache Trivy database
-      uses: actions/cache@v4.0.2
+    - name: Restore Trivy database
+      uses: actions/cache/restore@v4.0.2
       with:
         path: .cache/trivy/db
-        key: ${{ runner.os }}-trivy
+        key: trivy
+
+    - name: Calculate database hash
+      shell: bash
+      id: old_hash
+      run: |
+        if [ -f .cache/trivy/db/trivy.db ]; then
+          echo "hash=$(sha256sum -b .cache/trivy/db/trivy.db | awk '{print $1}')" >> "${GITHUB_OUTPUT}"
+        else
+          echo "hash=" >> "${GITHUB_OUTPUT}"
+        fi
 
     - name: Security Scan
       shell: bash
@@ -148,8 +158,25 @@ runs:
           -v $(pwd)/.cache:/root/.cache \
           -v $(pwd):/workdir \
           -w /workdir \
-          aquasec/trivy:0.55.2 image --format json --ignore-unfixed --pkg-types os ${{ inputs.primaryTag }} --output trivy.json
+          aquasec/trivy:0.55.2 image --format json --ignore-unfixed --pkg-types os --scanners vuln ${{ inputs.primaryTag }} --output trivy.json
         sudo chmod a+r -R .cache
+
+    - name: Calculate database hash
+      shell: bash
+      id: new_hash
+      run: |
+        if [ -f .cache/trivy/db/trivy.db ]; then
+          echo "hash=$(sha256sum -b .cache/trivy/db/trivy.db | awk '{print $1}')" >> "${GITHUB_OUTPUT}"
+        else
+          echo "hash=" >> "${GITHUB_OUTPUT}"
+        fi
+
+    - name: Cache Trivy database
+      uses: actions/cache/save@v4.0.2
+      with:
+        path: .cache/trivy/db
+        key: trivy
+      if: steps.old_hash.outputs.hash != steps.new_hash.outputs.hash && steps.new_hash.outputs.hash != ''
 
     - name: Print report
       uses: docker://aquasec/trivy:0.55.2
