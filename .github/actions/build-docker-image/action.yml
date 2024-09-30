@@ -149,6 +149,7 @@ runs:
           -v $(pwd):/workdir \
           -w /workdir \
           aquasec/trivy:0.55.2 image --format json --ignore-unfixed --pkg-types os ${{ inputs.primaryTag }} --output trivy.json
+        sudo chmod a+r -R .cache
 
     - name: Print report
       uses: docker://aquasec/trivy:0.55.2
