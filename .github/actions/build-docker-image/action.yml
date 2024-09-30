@@ -45,6 +45,10 @@ inputs:
     description: The password to use for the registry
     required: false
     default: ${{ github.token }}
+  auth_token:
+    description: The token to authenticate with GitHub
+    required: false
+    default: ${{ github.token }}
 runs:
   using: composite
   steps:
@@ -131,6 +135,8 @@ runs:
       uses: docker://aquasec/trivy:0.55.2
       with:
         args: image --format json --ignore-unfixed --vuln-type os ${{ inputs.primaryTag }} --output trivy.json
+      env:
+        ACTIONS_RUNTIME_TOKEN: ${{ inputs.auth_token }}
 
     - name: Print report
       uses: docker://aquasec/trivy:0.55.2
