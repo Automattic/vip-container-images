@@ -1,4 +1,5 @@
-FROM ghcr.io/automattic/vip-container-images/alpine:3.20.3@sha256:90c4596fadb8a2f99c0aeb10aac6833126ae2cc18e8d2336d9067eb68595f61a AS build
+# syntax=docker/dockerfile:1.7
+FROM --platform=$BUILDPLATFORM ghcr.io/automattic/vip-container-images/alpine:3.20.3@sha256:90c4596fadb8a2f99c0aeb10aac6833126ae2cc18e8d2336d9067eb68595f61a AS build
 ARG WP_GIT_REF
 RUN apk add --no-cache git git-subtree patch
 RUN mkdir /wordpress
