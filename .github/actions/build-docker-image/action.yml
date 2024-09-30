@@ -64,7 +64,6 @@ runs:
         registry: ${{ inputs.registry }}
         username: ${{ inputs.username }}
         password: ${{ inputs.password }}
-      if: ${{ inputs.push }}
 
     - name: Build and push container image
       uses: docker/build-push-action@v6
@@ -131,12 +130,25 @@ runs:
       run: |
         echo "filename=trivy-$(basename "${{ inputs.primaryTag }}" | tr '\\/:' '-').sarif" >> "${GITHUB_OUTPUT}"
 
-    - name: Security Scan
-      uses: docker://aquasec/trivy:0.55.2
+    - name: Create cache directory
+      shell: bash
+      run: mkdir -p .cache/trivy/db
+
+    - name: Cache Trivy database
+      uses: actions/cache@v4.0.2
       with:
-        args: image --format json --ignore-unfixed --vuln-type os ${{ inputs.primaryTag }} --output trivy.json
-      env:
-        ACTIONS_RUNTIME_TOKEN: ${{ inputs.auth_token }}
+        path: .cache/trivy/db
+        key: ${{ runner.os }}-trivy
+
+    - name: Security Scan
+      shell: bash
+      run: |
+        docker run --rm \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          -v $(pwd)/.cache:/root/.cache \
+          -v $(pwd):/workdir \
+          -w /workdir \
+          aquasec/trivy:0.55.2 image --format json --ignore-unfixed --pkg-types os ${{ inputs.primaryTag }} --output trivy.json
 
     - name: Print report
       uses: docker://aquasec/trivy:0.55.2
