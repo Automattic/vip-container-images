@@ -158,7 +158,7 @@ runs:
           -v $(pwd)/.cache:/root/.cache \
           -v $(pwd):/workdir \
           -w /workdir \
-          aquasec/trivy:0.56.1 image --format json --ignore-unfixed --pkg-types os --scanners vuln ${{ inputs.primaryTag }} --output trivy.json
+          aquasec/trivy:0.56.1 image --format json --ignore-unfixed --pkg-types os --scanners vuln ${{ inputs.primaryTag }} --db-repository public.ecr.aws/aquasecurity/trivy-db:2 --output trivy.json
         sudo chmod a+r -R .cache
 
     - name: Calculate database hash
