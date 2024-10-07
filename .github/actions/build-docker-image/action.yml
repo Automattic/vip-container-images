@@ -158,7 +158,7 @@ runs:
           -v $(pwd)/.cache:/root/.cache \
           -v $(pwd):/workdir \
           -w /workdir \
-          aquasec/trivy:0.55.2 image --format json --ignore-unfixed --pkg-types os --scanners vuln ${{ inputs.primaryTag }} --output trivy.json
+          aquasec/trivy:0.56.1 image --format json --ignore-unfixed --pkg-types os --scanners vuln ${{ inputs.primaryTag }} --db-repository public.ecr.aws/aquasecurity/trivy-db:2 --output trivy.json
         sudo chmod a+r -R .cache
 
     - name: Calculate database hash
@@ -179,12 +179,12 @@ runs:
       if: steps.old_hash.outputs.hash != steps.new_hash.outputs.hash && steps.new_hash.outputs.hash != ''
 
     - name: Print report
-      uses: docker://aquasec/trivy:0.55.2
+      uses: docker://aquasec/trivy:0.56.1
       with:
         args: convert --format=table trivy.json
 
     - name: Generate SARIF
-      uses: docker://aquasec/trivy:0.55.2
+      uses: docker://aquasec/trivy:0.56.1
       with:
         args: convert --format=sarif --output=${{ steps.filename.outputs.filename }} trivy.json
       if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
@@ -197,7 +197,7 @@ runs:
       continue-on-error: true
 
     - name: Prepare markdown report
-      uses: docker://aquasec/trivy:0.55.2
+      uses: docker://aquasec/trivy:0.56.1
       with:
         args: convert --format=template --template=@.github/actions/build-docker-image/markdown.tpl --output=trivy.md trivy.json
       if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
