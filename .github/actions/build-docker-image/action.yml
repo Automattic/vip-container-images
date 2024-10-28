@@ -135,7 +135,7 @@ runs:
       run: mkdir -p .cache/trivy/db
 
     - name: Restore Trivy database
-      uses: actions/cache/restore@v4.1.1
+      uses: actions/cache/restore@v4.1.2
       with:
         path: .cache/trivy/db
         key: trivy
@@ -172,7 +172,7 @@ runs:
         fi
 
     - name: Cache Trivy database
-      uses: actions/cache/save@v4.1.1
+      uses: actions/cache/save@v4.1.2
       with:
         path: .cache/trivy/db
         key: trivy
