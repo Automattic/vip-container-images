@@ -44,6 +44,7 @@ RUN \
     ln -s /usr/sbin/php-fpm8.2 /usr/sbin/php-fpm
 
 RUN \
+    deluser --remove-home --quiet ubuntu && \
     usermod -d /home/www-data -s /bin/bash www-data && \
     install -d -D -m 0750 -o www-data -g www-data /home/www-data && \
     install -d -D -m 0777 -o www-data -g www-data /var/www/html && \
