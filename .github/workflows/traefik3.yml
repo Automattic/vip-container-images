@@ -3,8 +3,7 @@ name: Build traefik3 with OpenSSL
 on:
   push:
     branches:
-      - **
-  workflow_dispatch:
+      - '**'
 
 permissions:
   contents: read
@@ -32,9 +31,8 @@ jobs:
         uses: ./.github/actions/build-docker-image
         with:
           context: traefik3
-          push: ${{ github.base_ref == null }}
+          push: true
           cache-from: type=gha,scope=traefik3
           cache-to: type=gha,mode=max,scope=traefik3
-          no-cache: ${{ github.event_name == 'workflow_dispatch' }}
           primaryTag: ghcr.io/automattic/vip-container-images/traefik3_openssl:${{ steps.getversion.outputs.version }}
           tags: ghcr.io/automattic/vip-container-images/traefik3_openssl:latest
