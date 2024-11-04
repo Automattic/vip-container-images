@@ -88,7 +88,7 @@ runs:
       run: echo "image_name=$(echo "${{ inputs.primaryTag }}" | cut -d ':' -f 1)" >> "${GITHUB_OUTPUT}"
 
     - name: Generate SBOM
-      uses: anchore/sbom-action@1ca97d9028b51809cf6d3c934c3e160716e1b605 # v0.17.5
+      uses: anchore/sbom-action@251a468eed47e5082b105c3ba6ee500c0e65a764 # v0.17.6
       with:
         image: ${{ inputs.primaryTag }}
         format: 'cyclonedx-json'
