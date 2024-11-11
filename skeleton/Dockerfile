@@ -1,4 +1,4 @@
-FROM ghcr.io/automattic/vip-container-images/alpine:3.20.3@sha256:c67d7460ba70b45bb0d887a5fa6b5449a1c1c453b792bfcf67e643a341c1ca64
+FROM ghcr.io/automattic/vip-container-images/alpine:3.20.3@sha256:8e5863007aca82e8c7094c8cc7283a0b70aff6e6842f31e90c6f1b07e14444ff
 
 RUN apk add --no-cache --virtual build-deps git && \
     git clone --depth=1 https://github.com/Automattic/vip-go-skeleton/ /clientcode && \
