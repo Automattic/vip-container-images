@@ -1,10 +1,10 @@
 [
   {
-    "ref": "6.7-branch",
+    "ref": "6.7",
     "tag": "6.7",
     "cacheable": true,
     "locked": true,
-    "prerelease": true
+    "prerelease": false
   },
   {
     "ref": "6.6.2",
