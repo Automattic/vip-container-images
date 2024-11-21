@@ -49,13 +49,6 @@
     "prerelease": false
   },
   {
-    "ref": "6.0.9",
-    "tag": "6.0",
-    "cacheable": true,
-    "locked": true,
-    "prerelease": false
-  },
-  {
     "ref": "HEAD",
     "tag": "trunk",
     "cacheable": false,
