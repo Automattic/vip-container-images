@@ -1,0 +1,88 @@
+FROM ubuntu:24.04@sha256:2e863c44b718727c860746568e1d54afd13b2fa71b160f5cd9058fc436217b30 AS build
+RUN \
+    export DEBIAN_FRONTEND=noninteractive && \
+    apt-get -q update && \
+    apt-get -y install eatmydata && \
+    eatmydata apt-get install -y curl lsb-release ca-certificates gnupg --no-install-recommends && \
+    echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list && \
+    curl -sSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x71DAEAAB4AD4CAB6" | gpg --dearmor > /etc/apt/trusted.gpg.d/ppa-ondrej-php.gpg && \
+    eatmydata apt-get -q update && \
+    eatmydata apt-get install -y php8.4-dev php8.4-xml g++ cmake make libglib2.0-dev zlib1g-dev libpcre3-dev libssl-dev libzstd-dev libmysqlclient-dev && \
+    eatmydata apt-get install -y php-pear --no-install-recommends && \
+    pecl install timezonedb && \
+    curl -SL "https://github.com/mydumper/mydumper/archive/refs/tags/v0.16.3-6.tar.gz" -o mydumper.tar.gz && \
+    echo "6af51d6e18fdf318710ba0c3d87f6ac7 mydumper.tar.gz" | md5sum -c - && \
+    mkdir /mydumper && \
+    tar -xzf mydumper.tar.gz --strip-components=1 -C /mydumper && \
+    cd /mydumper && cmake . && make && make install && rm -rf /mydumper && rm -f mydumper.tar.gz && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+
+FROM ubuntu:24.04@sha256:2e863c44b718727c860746568e1d54afd13b2fa71b160f5cd9058fc436217b30
+
+# We lack: newrelic
+RUN \
+    export DEBIAN_FRONTEND=noninteractive && \
+    apt-get -q update && \
+    apt-get -y install eatmydata && \
+    mkdir -p /usr/lib/libeatmydata && ln -s -t /usr/lib/libeatmydata/ /usr/lib/$(uname -m)-linux-gnu/libeatmydata.so* && \
+    eatmydata apt-get -y upgrade && \
+    eatmydata apt-get install -y curl lsb-release ca-certificates gnupg libmcrypt4 zlib1g libmemcached11 libgraphicsmagick-q16-3 --no-install-recommends && \
+    echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list && \
+    curl -sSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x71DAEAAB4AD4CAB6" | gpg --dearmor > /etc/apt/trusted.gpg.d/ppa-ondrej-php.gpg && \
+    eatmydata apt-get -q update && \
+    eatmydata apt-get install -y less git jq mysql-client libmysqlclient21 openssl wget vim nano libpcre3 libglib2.0-0 libatomic1 && \
+    eatmydata apt-get install -y ghostscript msmtp zstd --no-install-recommends && \
+    eatmydata apt-get install -y --no-install-recommends \
+        php8.4-cli php8.4-fpm \
+        php8.4-apcu php8.4-bcmath php8.4-curl php8.4-gd php8.4-gmagick php8.4-gmp php8.4-gnupg php8.4-igbinary \
+        php8.4-intl php8.4-mbstring php8.4-mcrypt php8.4-memcache php8.4-memcached php8.4-mysql php8.4-soap \
+        php8.4-sqlite3 php8.4-ssh2 php8.4-xdebug php8.4-xml php8.4-zip && \
+    eatmydata apt-get install -y php-pear --no-install-recommends && \
+    phpdismod ffi gettext readline sysvmsg xsl xdebug && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* && \
+    eatmydata apt-get autoremove --purge -y && \
+    ln -s /usr/sbin/php-fpm8.4 /usr/sbin/php-fpm
+
+RUN \
+    deluser --remove-home --quiet ubuntu && \
+    usermod -d /home/www-data -s /bin/bash www-data && \
+    install -d -D -m 0750 -o www-data -g www-data /home/www-data && \
+    install -d -D -m 0755 -o www-data -g www-data /run/php && \
+    install -d -D -m 0755 -o root -g root /usr/local/share
+
+RUN \
+    wget -O /usr/local/bin/phpunit https://phar.phpunit.de/phpunit-9.phar && chmod 0755 /usr/local/bin/phpunit && \
+    wget -O /usr/local/bin/wp.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
+        php -r '(new Phar("/usr/local/bin/wp.phar"))->extractTo("/usr/local/share/wp");' && \
+        mv /usr/local/bin/wp.phar /usr/local/bin/wp && \
+        chmod 0755 /usr/local/bin/wp && \
+    wget -q https://getcomposer.org/installer -O - | php -- --install-dir=/usr/bin/ --filename=composer
+
+ENV WP_CLI_CONFIG_PATH=/config/wp-cli.yaml
+
+RUN \
+    ARCH="$(arch)"; \
+    LATEST=$(curl -w '%{url_effective}' -ILsS https://github.com/Automattic/cron-control-runner/releases/latest -o /dev/null | sed -e 's|^.*/||'); \
+    if [ "${ARCH}" = "arm64" ] || [ "${ARCH}" = "aarch64" ]; then \
+        ARCH="arm64"; \
+    elif [ "${ARCH}" = "x86_64" ] || [ "${ARCH}" = "amd64" ]; then \
+        ARCH="amd64"; \
+    else \
+        echo "(!) Unsupported architecture: ${ARCH}"; \
+        exit 1; \
+    fi && \
+    curl -SL "https://github.com/Automattic/cron-control-runner/releases/download/${LATEST}/cron-control-runner-linux-${ARCH}" -o /usr/bin/cron-control-runner && \
+    chmod +x /usr/bin/cron-control-runner
+
+COPY --from=build /usr/lib/php/20240924/timezonedb.so /usr/lib/php/20240924/
+COPY --from=build /usr/local/bin/mydumper /usr/local/bin/myloader /usr/local/bin/
+COPY rootfs/ /
+COPY rootfs-php/ /etc/php/8.4/
+
+RUN phpenmod timezonedb
+
+WORKDIR /var/www/html
+STOPSIGNAL SIGQUIT
+EXPOSE 9000
+ENTRYPOINT ["docker-php-entrypoint"]
+CMD ["run.sh"]
