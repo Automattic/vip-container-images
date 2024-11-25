@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-FROM --platform=$BUILDPLATFORM ghcr.io/automattic/vip-container-images/alpine:3.20.3@sha256:1f0ea95af9b743aee4245da27f034beed98ebda51d57df6123e65be6a132b311 AS build
+FROM --platform=$BUILDPLATFORM ghcr.io/automattic/vip-container-images/alpine:3.20.3@sha256:2ada641f80c002a858313872ea3c0911e51f1732bb97595ee5073bb49cdbf1e3 AS build
 ARG WP_GIT_REF
 RUN apk add --no-cache git git-subtree patch
 RUN mkdir /wordpress
@@ -18,7 +18,7 @@ RUN \
 
 COPY extra/ /wordpress/wordpress/
 
-FROM ghcr.io/automattic/vip-container-images/alpine:3.20.3@sha256:1f0ea95af9b743aee4245da27f034beed98ebda51d57df6123e65be6a132b311
+FROM ghcr.io/automattic/vip-container-images/alpine:3.20.3@sha256:2ada641f80c002a858313872ea3c0911e51f1732bb97595ee5073bb49cdbf1e3
 COPY --from=build /wordpress/wordpress/ /wp/
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
