@@ -151,11 +151,16 @@ runs:
           echo "hash=" >> "${GITHUB_OUTPUT}"
         fi
 
+    - name: Get Docker socket
+      id: socket
+      run: echo docker_socket="$(docker context ls --format json | jq -r 'select(.Current == true) | .DockerEndpoint' | sed 's!^unix://!!')" >> "${GITHUB_OUTPUT}"
+      shell: bash
+
     - name: Security Scan
       shell: bash
       run: |
         docker run --rm \
-          -v /var/run/docker.sock:/var/run/docker.sock \
+          -v ${{ steps.socket.outputs.docker_socket }}:/var/run/docker.sock \
           -v $(pwd)/.cache:/root/.cache \
           -v $(pwd):/workdir \
           -w /workdir \
