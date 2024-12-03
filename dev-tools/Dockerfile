@@ -1,6 +1,16 @@
-FROM ghcr.io/automattic/vip-container-images/alpine:3.20.3@sha256:42ee5e50414b7c636fa5ee8b0d1c6b0219bb413285e4110178b16416711f52c9
+FROM alpine:3.20.3@sha256:1e42bbe2508154c9126d48c2b8a75420c3544343bf86fd041fb7527e017a4b4a AS build
 
-COPY setup.sh add-site.sh dev-env-plugin.php wp-config* /dev-tools/
-COPY scripts /scripts
+ENV SOURCE_DATE_EPOCH=0
 
-CMD ["sleep", "infinity"]
+RUN \
+    apk add --no-cache gcc musl-dev && \
+    mkdir -p /target/bin && \
+    echo 'int main() { return 0; }' > /true.c && \
+    gcc -o /target/bin/true /true.c -Os -s -static
+
+COPY setup.sh add-site.sh dev-env-plugin.php wp-config* /target/dev-tools/
+COPY scripts /target/scripts
+
+FROM scratch
+COPY --from=build /target /
+CMD ["/bin/true"]
