@@ -21,6 +21,11 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "docker"
+    directory: "helpers/"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "docker"
     directory: "mu-plugins/"
     schedule:
       interval: "weekly"
