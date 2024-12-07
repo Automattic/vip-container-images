@@ -24,7 +24,7 @@ concurrency:
 
 jobs:
   push_to_registry:
-    name: Build Treafik ${{ matrix.traefik.suffix }} with OpenSSL
+    name: Build Traefik ${{ matrix.traefik.suffix }} with OpenSSL
     runs-on: ubuntu-latest
     permissions:
       packages: write
