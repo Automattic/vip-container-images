@@ -109,7 +109,7 @@ runs:
       if: inputs.push == 'true'
 
     - name: Attest SBOM
-      uses: actions/attest-sbom@5026d3663739160db546203eeaffa6aa1c51a4d6 # v1.4.1
+      uses: actions/attest-sbom@34581d8068ef8a325425f122523e4bb9d08932f3 # v2.0.1
       with:
         subject-name: ${{ steps.imagename.outputs.image_name }}
         subject-digest: ${{ steps.push.outputs.digest }}
