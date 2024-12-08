@@ -202,3 +202,13 @@ if ! wp core is-installed --skip-plugins --skip-themes; then
 else
   echo "WordPress already installed"
 fi
+
+if wp --skip-plugins --skip-themes option get siteurl | grep -Fq 'vipdev.lndo.site' && echo "${wp_url}" | grep -qF vipdev.site; then
+  echo "Migrating from vipdev.lndo.site to vipdev.site, please stand by…"
+  echo "Backing up the database…"
+  (cd /app && wp --skip-plugins --skip-themes db export)
+  echo "Replacing vipdev.lndo.site with vipdev.site…"
+  wp --skip-plugins --skip-themes search-replace vipdev.lndo.site vipdev.site --all-tables --precise --report-changed-only
+  wp --skip-plugins --skip-themes cache flush
+  echo 'Done!'
+fi
