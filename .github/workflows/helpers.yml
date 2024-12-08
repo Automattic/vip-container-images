@@ -46,3 +46,4 @@ jobs:
           cache-to: type=gha,mode=max,scope=helpers
           no-cache: ${{ github.event_name == 'workflow_dispatch' }}
           primaryTag: ghcr.io/automattic/vip-container-images/helpers:v1
+          scan: false
