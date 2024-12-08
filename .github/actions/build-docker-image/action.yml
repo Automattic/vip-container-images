@@ -49,6 +49,10 @@ inputs:
     description: The token to authenticate with GitHub
     required: false
     default: ${{ github.token }}
+  scan:
+    description: Whether to scan the image
+    required: false
+    default: 'true'
 runs:
   using: composite
   steps:
@@ -134,12 +138,14 @@ runs:
     - name: Create cache directory
       shell: bash
       run: mkdir -p .cache/trivy/db
+      if: inputs.scan == 'true'
 
     - name: Restore Trivy database
       uses: actions/cache/restore@v4.2.0
       with:
         path: .cache/trivy/db
         key: trivy
+      if: inputs.scan == 'true'
 
     - name: Calculate database hash
       shell: bash
@@ -150,11 +156,13 @@ runs:
         else
           echo "hash=" >> "${GITHUB_OUTPUT}"
         fi
+      if: inputs.scan == 'true'
 
     - name: Get Docker socket
       id: socket
       run: echo docker_socket="$(docker context ls --format json | jq -r 'select(.Current == true) | .DockerEndpoint' | sed 's!^unix://!!')" >> "${GITHUB_OUTPUT}"
       shell: bash
+      if: inputs.scan == 'true'
 
     - name: Security Scan
       shell: bash
@@ -166,6 +174,7 @@ runs:
           -w /workdir \
           aquasec/trivy:0.57.1 image --format json --ignore-unfixed --pkg-types os --scanners vuln --db-repository ghcr.io/aquasecurity/trivy-db:2,public.ecr.aws/aquasecurity/trivy-db:2 ${{ inputs.primaryTag }} --output trivy.json
         sudo chmod a+r -R .cache
+      if: inputs.scan == 'true'
 
     - name: Calculate database hash
       shell: bash
@@ -176,37 +185,39 @@ runs:
         else
           echo "hash=" >> "${GITHUB_OUTPUT}"
         fi
+      if: inputs.scan == 'true'
 
     - name: Cache Trivy database
       uses: actions/cache/save@v4.2.0
       with:
         path: .cache/trivy/db
         key: trivy
-      if: steps.old_hash.outputs.hash != steps.new_hash.outputs.hash && steps.new_hash.outputs.hash != ''
+      if: inputs.scan == 'true' && steps.old_hash.outputs.hash != steps.new_hash.outputs.hash && steps.new_hash.outputs.hash != ''
 
     - name: Print report
       uses: docker://aquasec/trivy:0.57.1
       with:
         args: convert --format=table trivy.json
+      if: inputs.scan == 'true'
 
     - name: Generate SARIF
       uses: docker://aquasec/trivy:0.57.1
       with:
         args: convert --format=sarif --output=${{ steps.filename.outputs.filename }} trivy.json
-      if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
+      if: inputs.scan == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name)
 
     - name: Upload SARIF
       uses: github/codeql-action/upload-sarif@v3.27.6
       with:
         sarif_file: ${{ steps.filename.outputs.filename }}
-      if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
+      if: inputs.scan == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name)
       continue-on-error: true
 
     - name: Prepare markdown report
       uses: docker://aquasec/trivy:0.57.1
       with:
         args: convert --format=template --template=@.github/actions/build-docker-image/markdown.tpl --output=trivy.md trivy.json
-      if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
+      if: inputs.scan == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
 
     - name: Find Trivy Scan Report comment
       uses: peter-evans/find-comment@v3
@@ -214,7 +225,7 @@ runs:
       with:
         issue-number: ${{ github.event.pull_request.number }}
         body-includes: ${{ inputs.primaryTag }}
-      if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
+      if: inputs.scan == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
 
     - name: Create or update comment
       uses: peter-evans/create-or-update-comment@v4
@@ -223,4 +234,4 @@ runs:
         issue-number: ${{ github.event.pull_request.number }}
         body-path: trivy.md
         edit-mode: replace
-      if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
+      if: inputs.scan == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name

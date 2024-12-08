@@ -43,3 +43,4 @@ jobs:
           context: skeleton
           push: ${{ github.base_ref == null }}
           primaryTag: ghcr.io/automattic/vip-container-images/skeleton:latest
+          scan: false

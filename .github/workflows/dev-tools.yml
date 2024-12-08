@@ -47,3 +47,4 @@ jobs:
           cache-to: type=gha,mode=max,scope=dev-tools
           primaryTag: ghcr.io/automattic/vip-container-images/dev-tools:0.9
           tags: ghcr.io/automattic/vip-container-images/dev-tools:0.9
+          scan: false
