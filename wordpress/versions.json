@@ -56,7 +56,7 @@
     "prerelease": false
   },
   {
-    "ref": "HEAD",
+    "ref": "",
     "tag": "trunk",
     "cacheable": false,
     "locked": false,
