@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'DISABLE_JETPACK_WAF' ) ) {
+	define( 'DISABLE_JETPACK_WAF', true );
+}
+
 /******************
  * Handle HTTPS
  ******************/
