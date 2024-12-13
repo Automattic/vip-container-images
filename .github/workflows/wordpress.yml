@@ -78,3 +78,4 @@ jobs:
           no-cache: ${{ matrix.wp.cacheable == false || github.event_name == 'workflow_dispatch' }}
           primaryTag: ghcr.io/automattic/vip-container-images/wordpress:${{ matrix.wp.tag }}
           tags: ${{ steps.extra-tags.outputs.tags }}
+          scan: false
