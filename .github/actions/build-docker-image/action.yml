@@ -219,6 +219,11 @@ runs:
         args: convert --format=template --template=@.github/actions/build-docker-image/markdown.tpl --output=trivy.md trivy.json
       if: inputs.scan == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
 
+    - name: Add marker to markdown report
+      shell: bash
+      run: echo "<!-- ${{ inputs.primaryTag }} -->" | sudo tee -a trivy.md
+      if: inputs.scan == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
+
     - name: Find Trivy Scan Report comment
       uses: peter-evans/find-comment@v3
       id: fc
