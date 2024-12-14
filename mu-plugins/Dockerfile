@@ -9,13 +9,14 @@ RUN sed -i -e "s,git@github.com:,https://github.com/," .gitmodules && git submod
 RUN gitsha=$(git rev-parse --short HEAD) && gitdate=$(git show -s --format=%cs "$gitsha") && date=$(date -d "$gitdate" '+%Y%m%d') && echo "{ \"tag\": \"staging\", \"stack_version\": \"${date}-${gitsha}\" }" > "/mu-plugins/.version"
 RUN rsync -a -r --delete --exclude-from="/mu-plugins-tmp/.dockerignore" /mu-plugins-tmp/* /mu-plugins
 RUN rsync -a -r --delete --exclude-from="/mu-plugins-ext/.dockerignore" --exclude-from="/mu-plugins-ext/.devenvignore" /mu-plugins-ext/* /mu-plugins
+RUN mkdir /shared
 
+FROM ghcr.io/automattic/vip-container-images/helpers:v1@sha256:9f77c3da2ca0394d5846a9fc4195041f59ff5821ea6a7aaa43a08f15d28bf1eb AS helpers
+FROM busybox:stable-musl@sha256:0fc05e424940109068f4d6562b699da2563cd8521a35d7b216a5b0c51fb29281
 
-FROM ghcr.io/automattic/vip-container-images/alpine:3.21.0@sha256:32cff7c1b6fe35a9f3d0c829a5a29ca80761a19ae63c15c914bf4c03fbf7df66
-
-RUN install -d -m 0755 /shared
-COPY --from=build /mu-plugins /mu-plugins
+COPY --from=build --link /shared /shared
+COPY --from=helpers /rsync /usr/bin/rsync
+COPY --from=build --link /mu-plugins /mu-plugins
 COPY run.sh /run.sh
 
 VOLUME ["/shared"]
-CMD ["/bin/sh", "/run.sh"]
