@@ -47,3 +47,4 @@ jobs:
           push: ${{ github.base_ref == null }}
           primaryTag: ghcr.io/automattic/vip-container-images/mu-plugins:0.1
           tags: ghcr.io/automattic/vip-container-images/mu-plugins:latest
+          scan: false

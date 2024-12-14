@@ -172,7 +172,7 @@ runs:
           -v $(pwd)/.cache:/root/.cache \
           -v $(pwd):/workdir \
           -w /workdir \
-          aquasec/trivy:0.57.1 image --format json --ignore-unfixed --pkg-types os --scanners vuln --db-repository ghcr.io/aquasecurity/trivy-db:2,public.ecr.aws/aquasecurity/trivy-db:2 ${{ inputs.primaryTag }} --output trivy.json
+          aquasec/trivy:0.58.0 image --format json --ignore-unfixed --pkg-types os --scanners vuln --db-repository ghcr.io/aquasecurity/trivy-db:2,public.ecr.aws/aquasecurity/trivy-db:2 ${{ inputs.primaryTag }} --output trivy.json
         sudo chmod a+r -R .cache
       if: inputs.scan == 'true'
 
@@ -195,13 +195,13 @@ runs:
       if: inputs.scan == 'true' && steps.old_hash.outputs.hash != steps.new_hash.outputs.hash && steps.new_hash.outputs.hash != ''
 
     - name: Print report
-      uses: docker://aquasec/trivy:0.57.1
+      uses: docker://aquasec/trivy:0.58.0
       with:
         args: convert --format=table trivy.json
       if: inputs.scan == 'true'
 
     - name: Generate SARIF
-      uses: docker://aquasec/trivy:0.57.1
+      uses: docker://aquasec/trivy:0.58.0
       with:
         args: convert --format=sarif --output=${{ steps.filename.outputs.filename }} trivy.json
       if: inputs.scan == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name)
@@ -214,7 +214,7 @@ runs:
       continue-on-error: true
 
     - name: Prepare markdown report
-      uses: docker://aquasec/trivy:0.57.1
+      uses: docker://aquasec/trivy:0.58.0
       with:
         args: convert --format=template --template=@.github/actions/build-docker-image/markdown.tpl --output=trivy.md trivy.json
       if: inputs.scan == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
