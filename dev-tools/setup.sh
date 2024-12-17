@@ -4,6 +4,8 @@ export XDEBUG_MODE=off
 
 subdomain=0
 
+echo -e "Welcome to the WordPress VIP! Setting things up..."
+
 # Check if the first argument starts with '--'
 if [ "${1#--}" != "$1" ]; then
   if [ $# -lt 8 ]; then
