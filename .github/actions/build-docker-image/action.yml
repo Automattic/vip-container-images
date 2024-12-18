@@ -57,7 +57,7 @@ runs:
   using: composite
   steps:
     - name: Set up Docker
-      uses: docker/setup-docker-action@01efb57f882e3b1a22e7cf3501dbe51287b0ecb4 # v4.0.0
+      uses: docker/setup-docker-action@370a7dad4b8ce8dbf00f9363e1652e5074dd6abe # v4.1.0
       with:
         daemon-config: |
           {
