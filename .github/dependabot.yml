@@ -16,11 +16,6 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    directory: "dev-tools/"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "docker"
     directory: "helpers/"
     schedule:
       interval: "weekly"
