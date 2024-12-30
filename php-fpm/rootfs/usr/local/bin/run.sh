@@ -1,6 +1,8 @@
 #!/bin/sh
 
-if [ "enable" = "$XDEBUG" ]; then
+: "${XDEBUG:=disable}"
+
+if [ "enable" = "${XDEBUG}" ]; then
     echo "Enabling XDebug"
     phpenmod xdebug
 else
@@ -8,10 +10,18 @@ else
     phpdismod xdebug
 fi
 
+# shellcheck disable=SC2312
 if [ -n "${LANDO_INFO}" ] && [ 'null' != "$(echo "${LANDO_INFO}" | jq -r .mailpit)" ]; then
     phpenmod mailpit
 else
     phpdismod mailpit
+fi
+
+MY_UID="$(id -u)"
+FPM_OPTIONS=""
+
+if [ "${MY_UID}" = "0" ]; then
+    FPM_OPTIONS="-R"
 fi
 
 if [ -n "${ENABLE_CRON}" ]; then
@@ -19,6 +29,10 @@ if [ -n "${ENABLE_CRON}" ]; then
     PID=$!
     # shellcheck disable=SC2064
     trap "kill ${PID}" EXIT INT TERM
-fi
 
-/usr/sbin/php-fpm
+    # shellcheck disable=SC2248
+    /usr/sbin/php-fpm ${FPM_OPTIONS}
+else
+    # shellcheck disable=SC2248
+    exec /usr/sbin/php-fpm ${FPM_OPTIONS}
+fi
