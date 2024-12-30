@@ -10,13 +10,13 @@ ENV CC=xx-clang
 ENV CXX=xx-clang++
 
 ADD https://github.com/lz4/lz4/releases/download/v1.10.0/lz4-1.10.0.tar.gz /src/
-ADD https://github.com/Cyan4973/xxHash/archive/v0.8.2.tar.gz /src/
+ADD https://github.com/Cyan4973/xxHash/archive/v0.8.3.tar.gz /src/
 ADD https://download.samba.org/pub/rsync/rsync-3.3.0.tar.gz /src/
 
 WORKDIR /src
 RUN \
     tar xzf lz4-1.10.0.tar.gz && \
-    tar xzf v0.8.2.tar.gz && \
+    tar xzf v0.8.3.tar.gz && \
     tar xzf rsync-3.3.0.tar.gz
 
 COPY . .
@@ -32,7 +32,7 @@ RUN \
     make BUILD_SHARED=no CFLAGS="-O3 -flto=auto" && \
     make -C lib install BUILD_SHARED=no PREFIX="$(xx-info sysroot)usr/local" 
 
-WORKDIR /src/xxHash-0.8.2
+WORKDIR /src/xxHash-0.8.3
 RUN \
     make libxxhash.a CFLAGS="-DXXH_FORCE_MEMORY_ACCESS=1 -O3 -flto=auto" && \
     make install_libxxhash.a install_libxxhash.includes install_libxxhash.pc PREFIX="$(xx-info sysroot)usr/local"
