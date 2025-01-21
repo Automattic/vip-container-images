@@ -11,13 +11,13 @@ ENV CXX=xx-clang++
 
 ADD https://github.com/lz4/lz4/releases/download/v1.10.0/lz4-1.10.0.tar.gz /src/
 ADD https://github.com/Cyan4973/xxHash/archive/v0.8.3.tar.gz /src/
-ADD https://download.samba.org/pub/rsync/rsync-3.3.0.tar.gz /src/
+ADD https://download.samba.org/pub/rsync/rsync-3.4.1.tar.gz /src/
 
 WORKDIR /src
 RUN \
     tar xzf lz4-1.10.0.tar.gz && \
     tar xzf v0.8.3.tar.gz && \
-    tar xzf rsync-3.3.0.tar.gz
+    tar xzf rsync-3.4.1.tar.gz
 
 COPY . .
 
@@ -37,7 +37,7 @@ RUN \
     make libxxhash.a CFLAGS="-DXXH_FORCE_MEMORY_ACCESS=1 -O3 -flto=auto" && \
     make install_libxxhash.a install_libxxhash.includes install_libxxhash.pc PREFIX="$(xx-info sysroot)usr/local"
 
-WORKDIR /src/rsync-3.3.0
+WORKDIR /src/rsync-3.4.1
 RUN \
     ./configure --host=$(xx-clang --print-target-triple) \
         --enable-acl-support --enable-xattr-support --disable-openssl --disable-debug --disable-md2man --disable-locale --without-included-popt --without-included-zlib \
