@@ -75,7 +75,7 @@ if ( isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) &&
 
 
 
- /**
+/**
  * Read-only filesystem
  */
 if ( ! defined( 'DISALLOW_FILE_EDIT' ) ) {
@@ -126,6 +126,13 @@ if ( ! defined( 'WP_CRON_CONTROL_SECRET' ) ) {
 define( 'WPCOM_IS_VIP_ENV', false );
 define( 'FILES_CLIENT_SITE_ID', 200508 );
 define( 'VIP_FILESYSTEM_USE_STREAM_WRAPPER', false );
+
+/**
+ * Integrations
+ */
+if ( ! defined( 'WPVIP_INTEGRATIONS_CONFIG_DIR' ) ) {
+	define( 'WPVIP_INTEGRATIONS_CONFIG_DIR', ABSPATH . 'config/integrations-config' );
+}
 
 // We only want this defined if Photon service is present and healthy
 if ( $has_photon_service ) {
