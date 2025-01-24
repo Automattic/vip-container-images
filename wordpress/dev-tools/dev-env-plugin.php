@@ -59,8 +59,8 @@ add_filter( 'vip_integrations_config_file_path', fn() => constant( 'WPVIP_INTEGR
 add_filter( 'vip_integrations_pre_load_config', function ( $config, $path, $slug ) {
 	if ( is_null( $config ) && is_readable( $path ) ) {
 		$json = json_decode( file_get_contents( $path ), true );
-		if ( is_array( $json ) && isset( $json[ $slug ] ) ) {
-			$config = $json[ $slug ];
+		if ( is_array( $json ) ) {
+			$config = $json[ $slug ] ?? [];
 		}
 	}
 
