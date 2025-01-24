@@ -1,4 +1,7 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
 
 if ( ! defined( 'DISABLE_JETPACK_WAF' ) ) {
 	define( 'DISABLE_JETPACK_WAF', true );
@@ -42,6 +45,27 @@ add_filter('two_factor_providers', function( $providers ) {
 });
 
 add_filter( 'wpcom_vip_is_two_factor_forced', '__return_false' );
+
+/******************
+ * Integrations
+ ******************/
+
+if ( ! defined( 'WPVIP_INTEGRATIONS_CONFIG_DIR' ) ) {
+	define( 'WPVIP_INTEGRATIONS_CONFIG_DIR', ABSPATH . 'config/integrations-config' );
+}
+
+add_filter( 'vip_integrations_config_file_path', fn() => constant( 'WPVIP_INTEGRATIONS_CONFIG_DIR' ) . '/integrations.json' );
+
+add_filter( 'vip_integrations_pre_load_config', function ( $config, $path, $slug ) {
+	if ( is_null( $config ) && is_readable( $path ) ) {
+		$json = json_decode( file_get_contents( $path ), true );
+		if ( is_array( $json ) && isset( $json[ $slug ] ) ) {
+			$config = $json[ $slug ];
+		}
+	}
+
+	return $config;
+}, 10, 3 );
 
 /******************
  * ADMIN USER CREATION
