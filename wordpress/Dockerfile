@@ -4,6 +4,7 @@ ARG WP_GIT_REF
 ADD https://github.com/WordPress/WordPress.git#${WP_GIT_REF} /wp
 RUN rm -rf /wp/wp-content
 COPY extra/ /wp/
+RUN echo "${WP_GIT_REF}" > /wp/wp-content/.version
 
 FROM alpine:3.21.3@sha256:a8560b36e8b8210634f77d9f7f9efd7ffa463e380b75e2e74aff4511df3ef88c AS build-wptl
 ARG WP_GIT_REF
