@@ -141,7 +141,7 @@ runs:
       if: inputs.scan == 'true'
 
     - name: Restore Trivy database
-      uses: actions/cache/restore@v4.2.0
+      uses: actions/cache/restore@v4.2.1
       with:
         path: .cache/trivy/db
         key: trivy
@@ -188,7 +188,7 @@ runs:
       if: inputs.scan == 'true'
 
     - name: Cache Trivy database
-      uses: actions/cache/save@v4.2.0
+      uses: actions/cache/save@v4.2.1
       with:
         path: .cache/trivy/db
         key: trivy
