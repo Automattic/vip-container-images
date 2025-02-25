@@ -120,9 +120,11 @@ fi
   echo "CREATE USER IF NOT EXISTS 'wordpress'@'%' IDENTIFIED BY 'wordpress';"
   echo "CREATE USER IF NOT EXISTS 'netapp'@'%' IDENTIFIED BY 'wordpress';"
   echo "GRANT ALL ON wordpress.* TO 'wordpress'@'%';"
+  echo "GRANT ALL ON wordpress_test.* TO 'wordpress'@'%';"
   echo "GRANT ALL ON wordpress.* TO 'netapp'@'%';"
   echo "GRANT SET_ANY_DEFINER ON *.* TO 'wordpress'@'%';"
   echo "CREATE DATABASE IF NOT EXISTS wordpress;"
+  echo "CREATE DATABASE IF NOT EXISTS wordpress_test;"
 } | mysql -h "$db_host" -u "$db_admin_user"
 
 echo "Copying dev-env-plugin.php to mu-plugins"
