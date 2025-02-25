@@ -2,7 +2,7 @@
 FROM --platform=$BUILDPLATFORM busybox:stable-musl@sha256:7fe2d84eca21fa921a1006acaa68da15ed0acb7e1d21e5f3149bb6923af38498 AS build-wp
 ARG WP_GIT_REF
 ADD https://github.com/WordPress/WordPress.git#${WP_GIT_REF} /wp
-RUN rm -rf /wp/wp-content
+RUN rm -rf /wp/wp-content/* && install -d -m 0777 -o 1000 -g 1000 /wp/wp-content/mu-plugins
 COPY extra/ /wp/
 
 FROM alpine:3.21.3@sha256:a8560b36e8b8210634f77d9f7f9efd7ffa463e380b75e2e74aff4511df3ef88c AS build-wptl
