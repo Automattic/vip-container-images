@@ -1,11 +1,11 @@
 echo
-echo ＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/
-echo ＿/　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 ＿/
-echo ＿/　 Welcome to VIP Local Development Environment!　 ＿/
-echo ＿/　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 ＿/
-echo ＿/　 Learn more at: https://docs.wpvip.com 　 　 　  ＿/
-echo ＿/　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 ＿/
-echo ＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/
+echo '＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/'
+echo '＿/　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 ＿/'
+echo '＿/　 Welcome to VIP Local Development Environment!　 ＿/'
+echo '＿/　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 ＿/'
+echo '＿/　 Learn more at: https://docs.wpvip.com  　 　 　 ＿/'
+echo '＿/　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 ＿/'
+echo '＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/'
 echo
 echo "You're using interactive shell for ${LANDO_APP_NAME}"
 echo
