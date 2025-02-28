@@ -56,8 +56,8 @@ COPY --from=build-wp /usr/local/bin /usr/local/bin
 ENTRYPOINT ["/usr/local/bin/runner"]
 
 USER circleci
-COPY --link --from=build-wp --chown=circleci:circleci /home/circleci/.nvm /home/circleci/.nvm
-COPY --link --from=build-wp --chown=circleci:circleci /wordpress /wordpress
+COPY --from=build-wp --chown=circleci:circleci /home/circleci/.nvm /home/circleci/.nvm
+COPY --from=build-wp --chown=circleci:circleci /wordpress /wordpress
 ENV LD_PRELOAD=/usr/lib/libeatmydata/libeatmydata.so
 ENV NVM_DIR=/home/circleci/.nvm
 RUN \
