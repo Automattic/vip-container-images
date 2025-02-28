@@ -57,7 +57,7 @@ runs:
   using: composite
   steps:
     - name: Set up Docker
-      uses: docker/setup-docker-action@370a7dad4b8ce8dbf00f9363e1652e5074dd6abe # v4.1.0
+      uses: docker/setup-docker-action@c2d73c1a11a9b44be6d855121d75c3e0dac814c1 # v4.2.0
       with:
         daemon-config: |
           {
@@ -141,7 +141,7 @@ runs:
       if: inputs.scan == 'true'
 
     - name: Restore Trivy database
-      uses: actions/cache/restore@v4.2.1
+      uses: actions/cache/restore@v4.2.2
       with:
         path: .cache/trivy/db
         key: trivy
@@ -188,7 +188,7 @@ runs:
       if: inputs.scan == 'true'
 
     - name: Cache Trivy database
-      uses: actions/cache/save@v4.2.1
+      uses: actions/cache/save@v4.2.2
       with:
         path: .cache/trivy/db
         key: trivy
