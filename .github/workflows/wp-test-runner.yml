@@ -65,3 +65,7 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: CACHE_BUST=${{ github.run_id }}-${{ github.run_attempt }}
+          cache-from: type=gha,scope=wp-test-runner
+          cache-to: type=gha,mode=max,scope=wp-test-runner
+          no-cache: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' }}
