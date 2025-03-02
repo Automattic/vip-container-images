@@ -51,13 +51,14 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,t
 	export DEBIAN_FRONTEND=noninteractive; \
 	apt-get update && \
 	apt-get -y install \
-		default-mysql-client \
+		default-mysql-client netcat-openbsd sudo \
 		php8.0-cli php8.0-apcu php8.0-curl php8.0-gd php8.0-gmp php8.0-igbinary php8.0-imagick php8.0-imap php8.0-intl php8.0-mbstring php8.0-mysql php8.0-sqlite3 php8.0-xdebug php8.0-xml php8.0-xsl php8.0-zip php8.0-memcache php8.0-memcached \
 		php8.1-cli php8.1-apcu php8.1-curl php8.1-gd php8.1-gmp php8.1-igbinary php8.1-imagick php8.1-imap php8.1-intl php8.1-mbstring php8.1-mysql php8.1-sqlite3 php8.1-xdebug php8.1-xml            php8.1-zip php8.1-memcache php8.1-memcached \
 		php8.2-cli php8.2-apcu php8.2-curl php8.2-gd php8.2-gmp php8.2-igbinary php8.2-imagick php8.2-imap php8.2-intl php8.2-mbstring php8.2-mysql php8.2-sqlite3 php8.2-xdebug php8.2-xml            php8.2-zip php8.2-memcache php8.2-memcached \
 		php8.3-cli php8.3-apcu php8.3-curl php8.3-gd php8.3-gmp php8.3-igbinary php8.3-imagick php8.3-imap php8.3-intl php8.3-mbstring php8.3-mysql php8.3-sqlite3 php8.3-xdebug php8.3-xml            php8.3-zip php8.3-memcache php8.3-memcached \
 		php8.4-cli php8.4-apcu php8.4-curl php8.4-gd php8.4-gmp php8.4-igbinary php8.4-imagick php8.4-imap php8.4-intl php8.4-mbstring php8.4-mysql php8.4-sqlite3 php8.4-xdebug php8.4-xml            php8.4-zip php8.4-memcache php8.4-memcached && \
-	echo "xdebug.mode=coverage" | tee -a /etc/php/*/mods-available/xdebug.ini && \
+	echo "ubuntu ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/ubuntu" && \
+	chmod 0440 "/etc/sudoers.d/ubuntu" && \	echo "xdebug.mode=coverage" | tee -a /etc/php/*/mods-available/xdebug.ini && \
 	update-alternatives --set php /usr/bin/php8.2 && \
 	wget https://getcomposer.org/installer -qO - | php -- --install-dir=/usr/bin/ --filename=composer
 
@@ -66,6 +67,9 @@ ADD --chmod=0755 https://phar.phpunit.de/phpunit-10.phar /usr/local/bin/phpunit1
 ADD --chmod=0755 https://phar.phpunit.de/phpcov.phar /usr/local/bin/phpcov
 COPY create-database configure-environment install-wp runner /usr/local/bin/
 ENTRYPOINT ["/usr/local/bin/runner"]
+
+# Compatibility
+RUN ln -s /home/ubuntu /home/circleci && install -d -m 0777 -o ubuntu -g ubuntu /home/ubuntu/project
 
 USER ubuntu
 COPY --from=build-wp --chown=ubuntu:ubuntu /home/ubuntu/.nvm /home/ubuntu/.nvm
@@ -76,3 +80,5 @@ RUN \
 	. "${NVM_DIR}/nvm.sh" && \
 	nvm install --lts && \
 	nvm use --lts
+
+WORKDIR /home/ubuntu/project
