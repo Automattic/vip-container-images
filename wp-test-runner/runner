@@ -7,7 +7,7 @@ create-database
 
 : "${PHP_OPTIONS:=""}"
 : "${PHPUNIT_VERSION:=""}"
-: "${APP_HOME:="/home/circleci/project"}"
+: "${APP_HOME:="/home/ubuntu/project"}"
 : "${PRETEST_SCRIPT:=""}"
 
 if [ ! -d "${APP_HOME}/vendor/yoast/phpunit-polyfills" ]; then
