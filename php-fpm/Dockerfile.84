@@ -10,8 +10,8 @@ RUN \
     eatmydata apt-get install -y php8.4-dev php8.4-xml g++ cmake make libglib2.0-dev zlib1g-dev libpcre3-dev libssl-dev libzstd-dev libmysqlclient-dev && \
     eatmydata apt-get install -y php-pear --no-install-recommends && \
     pecl install timezonedb && \
-    curl -SL "https://github.com/mydumper/mydumper/archive/refs/tags/v0.16.3-6.tar.gz" -o mydumper.tar.gz && \
-    echo "6af51d6e18fdf318710ba0c3d87f6ac7 mydumper.tar.gz" | md5sum -c - && \
+    curl -SL "https://github.com/mydumper/mydumper/archive/refs/tags/v0.18.1-1.tar.gz" -o mydumper.tar.gz && \
+    echo "0cce6f1e15b474c35d57e9bcd87d8469 mydumper.tar.gz" | md5sum -c - && \
     mkdir /mydumper && \
     tar -xzf mydumper.tar.gz --strip-components=1 -C /mydumper && \
     cd /mydumper && cmake . && make && make install && rm -rf /mydumper && rm -f mydumper.tar.gz && \
