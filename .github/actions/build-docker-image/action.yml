@@ -67,20 +67,20 @@ runs:
           }
 
     - name: Set up QEMU
-      uses: docker/setup-qemu-action@v3
+      uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3
 
     - name: Log in to Docker Registry
-      uses: docker/login-action@v3
+      uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3
       with:
         registry: ${{ inputs.registry }}
         username: ${{ inputs.username }}
         password: ${{ inputs.password }}
 
     - name: Build and push container image
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4 # v6
       id: push
       with:
         context: ${{ inputs.context }}
@@ -135,29 +135,6 @@ runs:
       run: |
         echo "filename=trivy-$(basename "${{ inputs.primaryTag }}" | tr '\\/:' '-').sarif" >> "${GITHUB_OUTPUT}"
 
-    - name: Create cache directory
-      shell: bash
-      run: mkdir -p .cache/trivy/db
-      if: inputs.scan == 'true'
-
-    - name: Restore Trivy database
-      uses: actions/cache/restore@v4.2.2
-      with:
-        path: .cache/trivy/db
-        key: trivy
-      if: inputs.scan == 'true'
-
-    - name: Calculate database hash
-      shell: bash
-      id: old_hash
-      run: |
-        if [ -f .cache/trivy/db/trivy.db ]; then
-          echo "hash=$(sha256sum -b .cache/trivy/db/trivy.db | awk '{print $1}')" >> "${GITHUB_OUTPUT}"
-        else
-          echo "hash=" >> "${GITHUB_OUTPUT}"
-        fi
-      if: inputs.scan == 'true'
-
     - name: Get Docker socket
       id: socket
       run: echo docker_socket="$(docker context ls --format json | jq -r 'select(.Current == true) | .DockerEndpoint' | sed 's!^unix://!!')" >> "${GITHUB_OUTPUT}"
@@ -175,24 +152,6 @@ runs:
           aquasec/trivy:0.59.1 image --format json --ignore-unfixed --pkg-types os --scanners vuln --db-repository ghcr.io/aquasecurity/trivy-db:2,public.ecr.aws/aquasecurity/trivy-db:2 ${{ inputs.primaryTag }} --output trivy.json
         sudo chmod a+r -R .cache
       if: inputs.scan == 'true'
-
-    - name: Calculate database hash
-      shell: bash
-      id: new_hash
-      run: |
-        if [ -f .cache/trivy/db/trivy.db ]; then
-          echo "hash=$(sha256sum -b .cache/trivy/db/trivy.db | awk '{print $1}')" >> "${GITHUB_OUTPUT}"
-        else
-          echo "hash=" >> "${GITHUB_OUTPUT}"
-        fi
-      if: inputs.scan == 'true'
-
-    - name: Cache Trivy database
-      uses: actions/cache/save@v4.2.2
-      with:
-        path: .cache/trivy/db
-        key: trivy
-      if: inputs.scan == 'true' && steps.old_hash.outputs.hash != steps.new_hash.outputs.hash && steps.new_hash.outputs.hash != ''
 
     - name: Print report
       uses: docker://aquasec/trivy:0.59.1
@@ -225,7 +184,7 @@ runs:
       if: inputs.scan == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
 
     - name: Find Trivy Scan Report comment
-      uses: peter-evans/find-comment@v3
+      uses: peter-evans/find-comment@3eae4d37986fb5a8592848f6a574fdf654e61f9e # v3
       id: fc
       with:
         issue-number: ${{ github.event.pull_request.number }}
@@ -233,7 +192,7 @@ runs:
       if: inputs.scan == 'true' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
 
     - name: Create or update comment
-      uses: peter-evans/create-or-update-comment@v4
+      uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 # v4
       with:
         comment-id: ${{ steps.fc.outputs.comment-id }}
         issue-number: ${{ github.event.pull_request.number }}
