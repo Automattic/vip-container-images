@@ -6,6 +6,14 @@ target "base" {
   output = [
     "type=docker"
   ]
+
+  cache-from = [
+    "type=gha,scope=php-helpers"
+  ]
+
+  cache-to = [
+    "type=gha,mode=max,scope=php-helpers"
+  ]
 }
 
 target "mydumper" {
@@ -31,11 +39,6 @@ target "php83" {
 target "php84" {
   inherits = ["base"]
   target   = "php84"
-}
-
-target "php" {
-  inherits = ["base"]
-  target   = "php"
 }
 
 target "default" {

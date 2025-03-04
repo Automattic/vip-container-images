@@ -7,15 +7,11 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN \
     apt-get update && \
     apt-get install -y --no-install-recommends clang cmake file lld make pkgconf && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN \
     xx-apt-get update && \
-    xx-apt-get install -y binutils gcc g++ libc6-dev
+    xx-apt-get install -y binutils gcc g++ libc6-dev && \
+    xx-clang --setup-target-triple
 
 ENV SOURCE_DATE_EPOCH=0
-
 WORKDIR /src
 
 
@@ -33,18 +29,17 @@ RUN \
     pecl bundle timezonedb
 
 
+
 FROM --platform=${BUILDPLATFORM} common AS build-mydumper
 ARG TARGETPLATFORM
-
 RUN \
     echo 'DPkg::Pre-Invoke { "rm -f /var/lib/dpkg/info/*.postinst || true"; };' > /etc/apt/apt.conf.d/99local && \
+    xx-apt-get update && \
     xx-apt-get install --no-install-recommends -y -oDPkg::ConfigurePending=0 libglib2.0-dev || true && \
     xx-apt-get install --no-install-recommends -y -oDPkg::ConfigurePending=0 libglib2.0-dev || true && \
     xx-apt-get install --no-install-recommends -y -oDPkg::ConfigurePending=0 libglib2.0-dev && \
-    xx-apt-get install --no-install-recommends -y -oDPkg::ConfigurePending=0 \
+    xx-apt-get install --no-install-recommends -y \
         zlib1g-dev libpcre3-dev libssl-dev libzstd-dev libmysqlclient-dev
-
-RUN xx-clang --setup-target-triple
 
 WORKDIR /src/mydumper
 ADD https://github.com/mydumper/mydumper/archive/refs/tags/v0.18.1-1.tar.gz mydumper.tar.gz
@@ -59,41 +54,36 @@ RUN \
 
 
 FROM --platform=${BUILDPLATFORM} php-common AS php81
-RUN xx-apt-get install -y --no-install-recommends "php8.1-dev"
+RUN xx-apt-get update && xx-apt-get install -y --no-install-recommends "php8.1-dev"
 WORKDIR /src/timezonedb
 RUN phpize && ./configure --host=$(xx-clang --print-target-triple) && make -j$(nproc) && make install
 
 
 
 FROM --platform=${BUILDPLATFORM} php-common AS php82
-RUN xx-apt-get install -y --no-install-recommends "php8.2-dev"
+RUN xx-apt-get update && xx-apt-get install -y --no-install-recommends "php8.2-dev"
 WORKDIR /src/timezonedb
 RUN phpize && ./configure --host=$(xx-clang --print-target-triple) && make -j$(nproc) && make install
 
 
 
 FROM --platform=${BUILDPLATFORM} php-common AS php83
-RUN xx-apt-get install -y --no-install-recommends "php8.3-dev"
+RUN xx-apt-get update && xx-apt-get install -y --no-install-recommends "php8.3-dev"
 WORKDIR /src/timezonedb
 RUN phpize && ./configure --host=$(xx-clang --print-target-triple) && make -j$(nproc) && make install
 
 
 
 FROM --platform=${BUILDPLATFORM} php-common AS php84
-RUN xx-apt-get install -y --no-install-recommends "php8.4-dev"
+RUN xx-apt-get update && xx-apt-get install -y --no-install-recommends "php8.4-dev"
 WORKDIR /src/timezonedb
 RUN phpize && ./configure --host=$(xx-clang --print-target-triple) && make -j$(nproc) && make install
 
 
 
-FROM scratch AS php
+FROM scratch
+COPY --from=build-mydumper /usr/local/bin/mydumper /usr/local/bin/myloader /etc/mydumper.cnf /
 COPY --from=php81 /usr/lib/php/20210902/timezonedb.so /usr/lib/php/20210902/timezonedb.so
 COPY --from=php82 /usr/lib/php/20220829/timezonedb.so /usr/lib/php/20220829/timezonedb.so
 COPY --from=php83 /usr/lib/php/20230831/timezonedb.so /usr/lib/php/20230831/timezonedb.so
 COPY --from=php84 /usr/lib/php/20240924/timezonedb.so /usr/lib/php/20240924/timezonedb.so
-
-
-
-FROM scratch
-COPY --from=build-mydumper /usr/local/bin/mydumper /usr/local/bin/myloader /etc/mydumper.cnf /
-COPY --from=php /usr/lib/php /usr/lib/php
