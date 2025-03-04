@@ -9,7 +9,8 @@ RUN \
     apt-get install -y --no-install-recommends clang cmake file lld make pkgconf && \
     xx-apt-get update && \
     xx-apt-get install -y binutils gcc g++ libc6-dev && \
-    xx-clang --setup-target-triple
+    xx-clang --setup-target-triple && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 ENV SOURCE_DATE_EPOCH=0
 WORKDIR /src
@@ -25,6 +26,7 @@ RUN \
     curl -sSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x71DAEAAB4AD4CAB6" | gpg --dearmor > /etc/apt/trusted.gpg.d/ppa-ondrej-php.gpg && \
     xx-apt-get update && \
     apt-get install -y shtool php-pear && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* && \
     sed -i '/^Package: shtool$/a Multi-Arch: foreign' /var/lib/dpkg/status && \
     pecl bundle timezonedb
 
@@ -39,7 +41,8 @@ RUN \
     xx-apt-get install --no-install-recommends -y -oDPkg::ConfigurePending=0 libglib2.0-dev || true && \
     xx-apt-get install --no-install-recommends -y -oDPkg::ConfigurePending=0 libglib2.0-dev && \
     xx-apt-get install --no-install-recommends -y \
-        zlib1g-dev libpcre3-dev libssl-dev libzstd-dev libmysqlclient-dev
+        zlib1g-dev libpcre3-dev libssl-dev libzstd-dev libmysqlclient-dev && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 WORKDIR /src/mydumper
 ADD https://github.com/mydumper/mydumper/archive/refs/tags/v0.18.1-1.tar.gz mydumper.tar.gz
@@ -49,35 +52,56 @@ RUN \
     sed -i 's/-Werror//g' CMakeLists.txt && \
     cmake -B build $(xx-clang --print-cmake-defines) && \
     cmake --build build -j$(nproc) && \
-    cmake --install build
+    cmake --install build && \
+    rm -rf build
 
 
 
 FROM --platform=${BUILDPLATFORM} php-common AS php81
-RUN xx-apt-get update && xx-apt-get install -y --no-install-recommends "php8.1-dev"
 WORKDIR /src/timezonedb
-RUN phpize && ./configure --host=$(xx-clang --print-target-triple) && make -j$(nproc) && make install
+RUN \
+    xx-apt-get update && \
+    xx-apt-get install -y --no-install-recommends php8.1-dev && \
+    phpize && ./configure --host=$(xx-clang --print-target-triple) && make -j$(nproc) && make install && \
+    make distclean && \
+    xx-apt-get remove --purge -y --auto-remove php8.1-dev && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 
 
 FROM --platform=${BUILDPLATFORM} php-common AS php82
-RUN xx-apt-get update && xx-apt-get install -y --no-install-recommends "php8.2-dev"
 WORKDIR /src/timezonedb
-RUN phpize && ./configure --host=$(xx-clang --print-target-triple) && make -j$(nproc) && make install
+RUN \
+    xx-apt-get update && \
+    xx-apt-get install -y --no-install-recommends php8.2-dev && \
+    phpize && ./configure --host=$(xx-clang --print-target-triple) && make -j$(nproc) && make install && \
+    make distclean && \
+    xx-apt-get remove --purge -y --auto-remove php8.2-dev && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 
 
 FROM --platform=${BUILDPLATFORM} php-common AS php83
-RUN xx-apt-get update && xx-apt-get install -y --no-install-recommends "php8.3-dev"
 WORKDIR /src/timezonedb
-RUN phpize && ./configure --host=$(xx-clang --print-target-triple) && make -j$(nproc) && make install
+RUN \
+    xx-apt-get update && \
+    xx-apt-get install -y --no-install-recommends php8.3-dev && \
+    phpize && ./configure --host=$(xx-clang --print-target-triple) && make -j$(nproc) && make install && \
+    make distclean && \
+    xx-apt-get remove --purge -y --auto-remove php8.3-dev && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 
 
 FROM --platform=${BUILDPLATFORM} php-common AS php84
-RUN xx-apt-get update && xx-apt-get install -y --no-install-recommends "php8.4-dev"
 WORKDIR /src/timezonedb
-RUN phpize && ./configure --host=$(xx-clang --print-target-triple) && make -j$(nproc) && make install
+RUN \
+    xx-apt-get update && \
+    xx-apt-get install -y --no-install-recommends php8.4-dev && \
+    phpize && ./configure --host=$(xx-clang --print-target-triple) && make -j$(nproc) && make install && \
+    make distclean && \
+    xx-apt-get remove --purge -y --auto-remove php8.4-dev && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 
 
