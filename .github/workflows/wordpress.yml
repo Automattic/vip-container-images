@@ -32,9 +32,7 @@ jobs:
 
       - name: Read versions.json
         id: set-matrix
-        run: |
-          jq -c '.' versions.json
-          echo "matrix=$(jq -c '.' versions.json)" >> $GITHUB_OUTPUT
+        run: echo "matrix=$(jq -c '.' versions.json)" >> $GITHUB_OUTPUT
         working-directory: wordpress
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
@@ -72,7 +70,9 @@ jobs:
         with:
           context: wordpress
           push: ${{ github.base_ref == null }}
-          args: WP_GIT_REF=${{ matrix.wp.ref }}
+          args: |
+            WP_GIT_REF=${{ matrix.wp.ref }}
+            WP_TESTS_REF=${{ matrix.wp.tests_ref || matrix.wp.ref }}
           cache-from: type=gha,scope=wordpress-${{ matrix.wp.ref }}
           cache-to: type=gha,mode=max,scope=wordpress-${{ matrix.wp.ref }}
           no-cache: ${{ matrix.wp.cacheable == false || github.event_name == 'workflow_dispatch' }}

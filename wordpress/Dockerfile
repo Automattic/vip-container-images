@@ -6,14 +6,14 @@ RUN rm -rf /wp/wp-content/* && install -d -m 0777 -o 1000 -g 1000 /wp/wp-content
 COPY extra/ /wp/
 
 FROM --platform=$BUILDPLATFORM busybox:stable-musl@sha256:52931c5795db81b02f89211b300630477f851870b5504d6883c7c38f99f4e692 AS build-wptl
-ARG WP_GIT_REF
-ADD https://github.com/WordPress/wordpress-develop.git#${WP_GIT_REF}:/tests/phpunit/includes/ /wordpress-tests-lib/includes
-ADD https://github.com/WordPress/wordpress-develop.git#${WP_GIT_REF}:/tests/phpunit/data/ /wordpress-tests-lib/data
+ARG WP_TESTS_REF
+ADD https://github.com/WordPress/wordpress-develop.git#${WP_TESTS_REF}:/tests/phpunit/includes/ /wordpress-tests-lib/includes
+ADD https://github.com/WordPress/wordpress-develop.git#${WP_TESTS_REF}:/tests/phpunit/data/ /wordpress-tests-lib/data
 RUN \
-    if [ -z "${WP_GIT_REF}" ]; then \
+    if [ -z "${WP_TESTS_REF}" ] || [ 'trunk' = "${WP_TESTS_REF}" ]; then \
         SUBDIR="refs/heads/trunk"; \
     else \
-        SUBDIR="refs/tags/${WP_GIT_REF}"; \
+        SUBDIR="refs/tags/${WP_TESTS_REF}"; \
     fi && \
     wget -qO- "https://raw.githubusercontent.com/WordPress/wordpress-develop/${SUBDIR}/wp-tests-config-sample.php" | \
         sed \

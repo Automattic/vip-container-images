@@ -1,5 +1,13 @@
 [
   {
+    "ref": "d8453024b9cf1490836c36353cbe92cc1d03f663",
+    "tag": "6.8-beta1",
+    "cacheable": false,
+    "locked": false,
+    "prerelease": true,
+    "tests_ref": "trunk"
+  },
+  {
     "ref": "6.7.2",
     "tag": "6.7",
     "cacheable": true,
