@@ -1,5 +1,6 @@
 FROM ghcr.io/automattic/vip-container-images/php-helpers:latest@sha256:75c54e169c06e44fe4214e810c7cbb53caa9f71c8a6ce031da7193f402fbd8a2 AS build
 FROM ubuntu:24.04@sha256:72297848456d5d37d1262630108ab308d3e9ec7ed1c3286a32fe09856619a782
+ARG TARGETARCH
 
 # Extra PHP extensions: msgpack (because of memcache)
 # We lack: newrelic
@@ -8,21 +9,22 @@ RUN \
     apt-get -q update && \
     apt-get -y install eatmydata && \
     mkdir -p /usr/lib/libeatmydata && ln -s -t /usr/lib/libeatmydata/ /usr/lib/$(uname -m)-linux-gnu/libeatmydata.so* && \
-    eatmydata apt-get -y upgrade && \
-    eatmydata apt-get install -y curl lsb-release ca-certificates gnupg --no-install-recommends && \
+    export LD_PRELOAD=/usr/lib/libeatmydata/libeatmydata.so && \
+    apt-get -y upgrade && \
+    apt-get install -y curl lsb-release ca-certificates gnupg --no-install-recommends && \
     echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list && \
     curl -sSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x71DAEAAB4AD4CAB6" | gpg --dearmor > /etc/apt/trusted.gpg.d/ppa-ondrej-php.gpg && \
-    eatmydata apt-get -q update && \
-    eatmydata apt-get install -y --no-install-recommends \
+    apt-get -q update && \
+    apt-get install -y --no-install-recommends \
         ghostscript git jq less libatomic1 libglib2.0-0 libmysqlclient21 libpcre3 msmtp mysql-client \
         nano openssl vim wget zstd && \
-    eatmydata apt-get install -y --no-install-recommends \
+    apt-get install -y --no-install-recommends \
         php8.1-apcu php8.1-bcmath php8.1-cli php8.1-curl php8.1-fpm php8.1-gd php8.1-gmagick php8.1-gmp php8.1-gnupg \
         php8.1-igbinary php8.1-intl php8.1-mbstring php8.1-mcrypt php8.1-memcache php8.1-memcached php8.1-mysql \
         php8.1-soap php8.1-sqlite3 php8.1-ssh2 php8.1-xdebug php8.1-xml php8.1-zip && \
     phpdismod ffi gettext readline sysvmsg xsl xdebug && \
+    apt-get autoremove --purge -y && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* && \
-    eatmydata apt-get autoremove --purge -y && \
     ln -s /usr/sbin/php-fpm8.1 /usr/sbin/php-fpm && \
     \
     deluser --remove-home --quiet ubuntu && \
@@ -40,20 +42,7 @@ RUN \
 
 ENV WP_CLI_CONFIG_PATH=/config/wp-cli.yaml
 
-RUN \
-    ARCH="$(arch)"; \
-    LATEST=$(curl -w '%{url_effective}' -ILsS https://github.com/Automattic/cron-control-runner/releases/latest -o /dev/null | sed -e 's|^.*/||'); \
-    if [ "${ARCH}" = "arm64" ] || [ "${ARCH}" = "aarch64" ]; then \
-        ARCH="arm64"; \
-    elif [ "${ARCH}" = "x86_64" ] || [ "${ARCH}" = "amd64" ]; then \
-        ARCH="amd64"; \
-    else \
-        echo "(!) Unsupported architecture: ${ARCH}"; \
-        exit 1; \
-    fi && \
-    curl "https://github.com/Automattic/cron-control-runner/releases/download/${LATEST}/cron-control-runner-linux-${ARCH}" -SLo /usr/bin/cron-control-runner && \
-    chmod +x /usr/bin/cron-control-runner
-
+ADD --chmod=0755 https://github.com/Automattic/cron-control-runner/releases/download/1.0.0/cron-control-runner-linux-${TARGETARCH} /usr/bin/cron-control-runner
 COPY --from=build /usr/lib/php/20210902/timezonedb.so /usr/lib/php/20210902/timezonedb.so
 COPY --from=build /mydumper /myloader /usr/local/bin/
 COPY --from=build /mydumper.cnf /etc/
