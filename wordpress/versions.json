@@ -2,8 +2,8 @@
   {
     "ref": "d8453024b9cf1490836c36353cbe92cc1d03f663",
     "tag": "6.8-beta1",
-    "cacheable": true,
-    "locked": true,
+    "cacheable": false,
+    "locked": false,
     "prerelease": true
   },
   {
