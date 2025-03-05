@@ -32,9 +32,7 @@ jobs:
 
       - name: Read versions.json
         id: set-matrix
-        run: |
-          jq -c '.' versions.json
-          echo "matrix=$(jq -c '.' versions.json)" >> $GITHUB_OUTPUT
+        run: echo "matrix=$(jq -c '.' versions.json)" >> $GITHUB_OUTPUT
         working-directory: wordpress
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
