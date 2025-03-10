@@ -1,4 +1,4 @@
-FROM ghcr.io/automattic/vip-container-images/php-helpers:latest@sha256:75c54e169c06e44fe4214e810c7cbb53caa9f71c8a6ce031da7193f402fbd8a2 AS build
+FROM ghcr.io/automattic/vip-container-images/php-helpers:latest@sha256:b24251e72f54a866dc5c903821ac2c2083565e4bca0e52f4cb52a96349ab25db AS build
 FROM ubuntu:24.04@sha256:72297848456d5d37d1262630108ab308d3e9ec7ed1c3286a32fe09856619a782
 ARG TARGETARCH
 
