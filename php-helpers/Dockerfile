@@ -45,9 +45,9 @@ RUN \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 WORKDIR /src/mydumper
-ADD https://github.com/mydumper/mydumper/archive/refs/tags/v0.18.1-1.tar.gz mydumper.tar.gz
+ADD https://github.com/mydumper/mydumper/archive/refs/tags/v0.16.3-6.tar.gz mydumper.tar.gz
 RUN \
-    echo "0cce6f1e15b474c35d57e9bcd87d8469 mydumper.tar.gz" | md5sum -c - && \
+    echo "6af51d6e18fdf318710ba0c3d87f6ac7 mydumper.tar.gz" | md5sum -c - && \
     tar -xzf mydumper.tar.gz --strip-components=1 && \
     sed -i 's/-Werror//g' CMakeLists.txt && \
     cmake -B build $(xx-clang --print-cmake-defines) && \
