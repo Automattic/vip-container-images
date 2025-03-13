@@ -204,3 +204,10 @@ if ! wp core is-installed --skip-plugins --skip-themes; then
 else
   echo "WordPress already installed"
 fi
+
+echo "Processing environment variables"
+for var in $(env | grep -E '^VIP_ENV_VAR_'); do
+  key=$(echo "${var}" | cut -d= -f1)
+  value="${key}"
+  wp config set --no-add --quiet "${key}" "${value}"
+done
