@@ -25,7 +25,7 @@ RUN \
     echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list && \
     curl -sSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x71DAEAAB4AD4CAB6" | gpg --dearmor > /etc/apt/trusted.gpg.d/ppa-ondrej-php.gpg && \
     xx-apt-get update && \
-    apt-get install -y shtool php-pear && \
+    apt-get install -y shtool php8.3-cli php8.3-xml php-pear && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* && \
     sed -i '/^Package: shtool$/a Multi-Arch: foreign' /var/lib/dpkg/status && \
     pecl bundle timezonedb
