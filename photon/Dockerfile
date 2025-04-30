@@ -4,7 +4,7 @@ RUN pecl82 channel-update pecl.php.net
 RUN pecl82 install channel://pecl.php.net/gmagick-2.0.6RC1 < /dev/null
 RUN \
     install -d -D /usr/share/webapps/photon && \
-    svn co https://code.svn.wordpress.org/photon/ /usr/share/webapps/photon && \
+    svn co https://code.svn.wordpress.org/photon/ /usr/share/webapps/photon -r645 && \
     rm -rf /usr/share/webapps/photon/.svn /usr/share/webapps/photon/tests
 
 FROM alpine:3.21.3@sha256:a8560b36e8b8210634f77d9f7f9efd7ffa463e380b75e2e74aff4511df3ef88c
