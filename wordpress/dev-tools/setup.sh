@@ -7,7 +7,7 @@ subdomain=0
 # Check if the first argument starts with '--'
 if [ "${1#--}" != "$1" ]; then
   if [ $# -lt 8 ]; then
-    echo "Syntax: setup.sh --host <db_host> --user <db_admin_user> --domain <wp_domain> --title <wp_title> [--ms-domain <multisite_domain>] [--subdomain]"
+    echo "Syntax: setup.sh --host <db_host> --user <db_admin_user> --domain <wp_domain> --title <wp_title> [--ms-domain <multisite_domain>] [--subdomain] [--wpadmin_password <password>]"
     exit 1
   fi
 
@@ -37,6 +37,10 @@ if [ "${1#--}" != "$1" ]; then
         subdomain=1
         shift 1
         ;;
+      --wpadmin_password)
+        wpadmin_password="$2"
+        shift 2
+        ;;
       *)
         echo "Unknown option: $1"
         exit 1
@@ -59,6 +63,8 @@ else
     subdomain=1
   fi
 fi
+
+wpadmin_password="${wpadmin_password:-password}"
 
 # Make sure to check the core files are there before trying to install WordPress.
 echo "Waiting for WordPress core files to be copied"
@@ -163,7 +169,7 @@ if ! wp core is-installed --skip-plugins --skip-themes; then
       --title="$wp_title" \
       --admin_user="vipgo" \
       --admin_email="vip@localhost.local" \
-      --admin_password="password" \
+      --admin_password="$wpadmin_password" \
       --skip-email \
       --skip-themes \
       --skip-plugins \
@@ -176,7 +182,7 @@ if ! wp core is-installed --skip-plugins --skip-themes; then
       --title="$wp_title" \
       --admin_user="vipgo" \
       --admin_email="vip@localhost.local" \
-      --admin_password="password" \
+      --admin_password="$wpadmin_password" \
       --skip-email \
       --skip-themes \
       --skip-plugins #2>/dev/null
