@@ -1,6 +1,6 @@
 FROM --platform=${BUILDPLATFORM} tonistiigi/xx:latest@sha256:923441d7c25f1e2eb5789f82d987693c47b8ed987c4ab3b075d6ed2b5d6779a3 AS xx
 
-FROM --platform=${BUILDPLATFORM} ubuntu:24.04@sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02 AS common
+FROM --platform=${BUILDPLATFORM} ubuntu:24.04@sha256:6015f66923d7afbc53558d7ccffd325d43b4e249f41a6e93eef074c9505d2233 AS common
 ARG TARGETPLATFORM
 COPY --from=xx / /
 ENV DEBIAN_FRONTEND=noninteractive
