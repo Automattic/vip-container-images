@@ -216,15 +216,17 @@ for var in $(wp config list VIP_ENV_VAR_ --fields=name --format=csv | tail -n +2
   wp config delete "${var}" --quiet
 done
 
-# shellcheck disable=SC2016 # no variable expansion is meant here
-wp eval 'foreach (get_defined_constants() as $k => $_) if (str_starts_with($k, "VIP_ENV_VAR_")) exit(100); exit(0);' > /dev/null 2>&1
-if [ $? -eq 100 ]; then
+if env | grep -qE '^VIP_ENV_VAR_'; then
   # shellcheck disable=SC2016 # no variable expansion is meant here
-  echo 'WARNING: `VIP_ENV_VAR_` constants have been detected in the code. Please remove them, as the system handles them automatically now.'
-else
-  for var in $(env | grep -E '^VIP_ENV_VAR_'); do
-    key=$(echo "${var}" | cut -d= -f1)
-    value=$(echo "${var}" | cut -d= -f2-)
-    wp config set --quiet "${key}" "${value}"
-  done
+  wp eval 'foreach (get_defined_constants() as $k => $_) if (str_starts_with($k, "VIP_ENV_VAR_")) exit(100); exit(0);' > /dev/null 2>&1
+  if [ $? -eq 100 ]; then
+    # shellcheck disable=SC2016 # no variable expansion is meant here
+    echo 'WARNING: `VIP_ENV_VAR_` constants have been detected in the code. Please remove them, as the system handles them automatically now.'
+  else
+    for var in $(env | grep -E '^VIP_ENV_VAR_'); do
+      key=$(echo "${var}" | cut -d= -f1)
+      value=$(echo "${var}" | cut -d= -f2-)
+      wp config set --quiet "${key}" "${value}"
+    done
+  fi
 fi
