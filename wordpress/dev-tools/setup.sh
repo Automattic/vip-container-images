@@ -222,6 +222,7 @@ if env | grep -qE '^VIP_ENV_VAR_'; then
   if [ $? -eq 100 ]; then
     # shellcheck disable=SC2016 # no variable expansion is meant here
     echo 'WARNING: `VIP_ENV_VAR_` constants have been detected in the code. Please remove them, as the system handles them automatically now.'
+    php /dev-tools/backfill-env-vars.php
   else
     for var in $(env | grep -E '^VIP_ENV_VAR_'); do
       key=$(echo "${var}" | cut -d= -f1)
