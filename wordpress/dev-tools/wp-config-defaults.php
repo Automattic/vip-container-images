@@ -39,12 +39,8 @@ if ( isset( $_SERVER['HTTP_HOST'] ) && count( explode( ':', $_SERVER['HTTP_HOST'
 	define( 'WP_SITEURL', $proto . '://' . $_SERVER['HTTP_HOST'] );
 }
 
-
-/**
- * Parity with Go's wp-config.php
- */
 if ( ! defined( 'ABSPATH' ) ) {
-	define( 'ABSPATH', dirname( __FILE__ ) . '/' );
+	define( 'ABSPATH', dirname( __DIR__ ) . '/' );
 }
 
 if ( file_exists( ABSPATH . '/wp-content/mu-plugins/lib/wpcom-error-handler/wpcom-error-handler.php' ) ) {
@@ -56,7 +52,7 @@ if ( file_exists( ABSPATH . '/wp-content/mu-plugins/lib/class-vip-request-block.
 	require_once ABSPATH . '/wp-content/mu-plugins/lib/class-vip-request-block.php';
 }
 
-$_SERVER['REMOTE_ADDR_ORIG'] = $_SERVER['REMOTE_ADDR'];
+$_SERVER['REMOTE_ADDR_ORIG'] = $_SERVER['REMOTE_ADDR'] ?? '';
 
 
 if ( isset( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && strstr( $_SERVER['HTTP_X_FORWARDED_PROTO'], 'https' ) ) {
