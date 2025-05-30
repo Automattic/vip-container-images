@@ -39,10 +39,6 @@ if ( isset( $_SERVER['HTTP_HOST'] ) && count( explode( ':', $_SERVER['HTTP_HOST'
 	define( 'WP_SITEURL', $proto . '://' . $_SERVER['HTTP_HOST'] );
 }
 
-
-/**
- * Parity with Go's wp-config.php
- */
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', dirname( __DIR__ ) . '/' );
 }
