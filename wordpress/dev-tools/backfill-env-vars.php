@@ -1,19 +1,11 @@
 <?php
 $env_file = '/app/.env';
 
-if ( stream_isatty( STDERR ) ) {
-    $strong = '\x1B[1m';
-    $red    = '\x1B[31m';
-    $green  = '\x1B[32m';
-    $yellow = '\x1B[33m';
-    $reset  = '\x1B(B\x1B[m';
-} else {
-    $strong = '';
-    $red    = '';
-    $green  = '';
-    $yellow = '';
-    $reset  = '';
-}
+$strong = "\x1B[1m";
+$red    = "\x1B[31m";
+$green  = "\x1B[32m";
+$yellow = "\x1B[33m";
+$reset  = "\x1B(B\x1B[m";
 
 if ( is_file( $env_file ) && is_readable( $env_file ) && is_writable( $env_file ) && is_writable( dirname( $env_file ) ) && is_readable( '/wp/wp-load.php' ) ) {
     require_once '/wp/wp-load.php';

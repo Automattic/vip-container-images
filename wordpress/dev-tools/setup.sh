@@ -2,25 +2,14 @@
 
 export XDEBUG_MODE=off
 
-if [ -t 1 ]; then
-  RED=$(tput setaf 1)
-  GREEN=$(tput setaf 2)
-  YELLOW=$(tput setaf 3)
-  CYAN=$(tput setaf 6)
-  STRONG=$(tput bold)
-  CODE=$(tput smso)
-  ENDCODE=$(tput rmso)
-  RESET=$(tput sgr0)
-else
-  RED=""
-  GREEN=""
-  YELLOW=""
-  CYAN=""
-  STRONG=""
-  CODE='`'
-  ENDCODE='`'
-  RESET=""
-fi
+RED="$(tput setaf 1)"
+GREEN="$(tput setaf 2)"
+YELLOW="$(tput setaf 3)"
+CYAN="$(tput setaf 6)"
+STRONG="$(tput bold)"
+CODE="$(tput smso)"
+ENDCODE="$(tput rmso)"
+RESET="$(tput sgr0)"
 
 subdomain=0
 
@@ -87,7 +76,7 @@ fi
 wpadmin_password="${wpadmin_password:-password}"
 
 # Make sure to check the core files are there before trying to install WordPress.
-echo "Waiting for WordPress core files to be copied"
+printf "Waiting for WordPress core files to be copied..."
 i=0;
 while [ ! -f /wp/wp-includes/pomo/mo.php ]
 do
@@ -100,9 +89,10 @@ do
     exit 1;
   fi
 done
+printf " %sDONE%s\n" "${GREEN}" "${RESET}"
 
 if [ -n "${LANDO_INFO}" ] && [ "$(echo "${LANDO_INFO}" | jq -r '.["vip-mu-plugins"]')" != 'null' ]; then
-  echo "${CYAN}Waiting for MU-plugins to be copied${RESET}"
+  printf "Waiting for MU-plugins to be copied..."
   i=0;
   while [ ! -f /wp/wp-content/mu-plugins/.version ]; do
     printf "."
@@ -114,6 +104,7 @@ if [ -n "${LANDO_INFO}" ] && [ "$(echo "${LANDO_INFO}" | jq -r '.["vip-mu-plugin
     fi
   done
 fi
+printf " %sDONE%s\n" "${GREEN}" "${RESET}"
 
 if [ -r /wp/config/wp-config.php ]; then
   echo "${GREEN}wp-config.php already exists${RESET}"
@@ -129,18 +120,18 @@ else
   curl -s https://api.wordpress.org/secret-key/1.1/salt/ >> /wp/config/wp-config.php
 fi
 
-printf "%sWaiting for MySQL to come online%s" "${CYAN}" "${RESET}"
+printf "Waiting for MySQL to come online..."
 second=0
 while ! mysqladmin ping -h "${db_host}" --silent && [ "${second}" -lt 120 ]; do
   printf "."
   sleep 1
   second=$((second+1))
 done
-echo ""
 if ! mysqladmin ping -h "${db_host}" --silent; then
     echo "${RED}${STRONG}ERROR:${RESET} MySQL has failed to come online. Please check the database container logs for details."
     exit 1;
 fi
+printf " %sDONE%s\n" "${GREEN}" "${RESET}"
 
 {
   echo "CREATE USER IF NOT EXISTS 'wordpress'@'%' IDENTIFIED BY 'wordpress';"
@@ -157,26 +148,28 @@ echo "${CYAN}Copying dev-env-plugin.php to mu-plugins${RESET}"
 cp /dev-tools/dev-env-plugin.php /wp/wp-content/mu-plugins/
 
 if [ -n "${ENABLE_ELASTICSEARCH}" ] || { [ -n "${LANDO_INFO}" ] && [ "$(echo "${LANDO_INFO}" | jq .elasticsearch.service)" != 'null' ]; }; then
-  printf "%sWaiting for Elasticsearch to come online%s" "${CYAN}" "${RESET}"
+  printf "Waiting for Elasticsearch to come online..."
   second=0
   while ! curl -s 'http://elasticsearch:9200/_cluster/health' > /dev/null && [ "${second}" -lt 60 ]; do
     printf "."
     sleep 1
     second=$((second+1))
   done
-  echo ""
   status="$(curl -s 'http://elasticsearch:9200/_cluster/health?wait_for_status=yellow&timeout=60s' | jq -r .status)"
   if [ "${status}" != 'green' ] && [ "${status}" != 'yellow' ]; then
-      echo "${YELLOW}${STRONG}WARNING:${RESET} Elasticsearch has failed to come online"
+      echo " ${YELLOW}${STRONG}WARNING:${RESET} Elasticsearch has failed to come online"
       curl -sS 'http://elasticsearch:9200/_cluster/health'
+  else
+    printf " %sDONE%s\n" "${GREEN}" "${RESET}"
   fi
 fi
 
-echo "${CYAN}Checking for WordPress installation...${RESET}"
+printf "Checking for WordPress installation..."
 
-wp cache flush --skip-plugins --skip-themes
-if ! wp core is-installed --skip-plugins --skip-themes; then
-  echo "${CYAN}No installation found, installing WordPress...${RESET}"
+wp cache flush --skip-plugins --skip-themes >/dev/null 2>&1
+if ! wp core is-installed --skip-plugins --skip-themes >/dev/null 2>&1; then
+  printf " %sNOT FOUND%s\n" "${YELLOW}" "${RESET}"
+  echo "Installing WordPress..."
 
   # Ensuring wp-config-defaults is up to date
   cp /dev-tools/wp-config-defaults.php /wp/config/
@@ -184,6 +177,7 @@ if ! wp core is-installed --skip-plugins --skip-themes; then
   if [ -n "$multisite_domain" ]; then
     # shellcheck disable=SC2046
     wp core multisite-install \
+      --color \
       --path=/wp \
       --url="$wp_url" \
       --title="$wp_title" \
@@ -197,6 +191,7 @@ if ! wp core is-installed --skip-plugins --skip-themes; then
       $(if [ "$subdomain" -eq 1 ]; then echo "--subdomains"; fi) #2>/dev/null
   else
     wp core install \
+      --color \
       --path=/wp \
       --url="$wp_url" \
       --title="$wp_title" \
@@ -209,8 +204,8 @@ if ! wp core is-installed --skip-plugins --skip-themes; then
   fi
 
   if [ -n "${LANDO_INFO}" ] && [ "$(echo "${LANDO_INFO}" | jq .elasticsearch.service)" != 'null' ] && [ "$(echo "${LANDO_INFO}" | jq '.["demo-app-code"].service')" != 'null' ]; then
-    wp config set VIP_ENABLE_VIP_SEARCH true --raw
-    wp config set VIP_ENABLE_VIP_SEARCH_QUERY_INTEGRATION true --raw
+    wp config set --quiet VIP_ENABLE_VIP_SEARCH true --raw
+    wp config set --quiet VIP_ENABLE_VIP_SEARCH_QUERY_INTEGRATION true --raw
     echo "Automatically set constants ${CODE}VIP_ENABLE_VIP_SEARCH${ENDCODE} and ${CODE}VIP_ENABLE_VIP_SEARCH_QUERY_INTEGRATION${ENDCODE} to ${CODE}true${ENDCODE}. For more information, see https://docs.wpvip.com/how-tos/vip-search/enable/"
     echo "To disable the Enterprise Search integration, please run:"
     if [ -n "${LANDO_APP_NAME}" ]; then
@@ -223,16 +218,16 @@ if ! wp core is-installed --skip-plugins --skip-themes; then
   fi
 
   if wp cli has-command vip-search; then
-    wp vip-search index --skip-confirm --setup
+    wp --color vip-search index --skip-confirm --setup
   fi
 
-  wp user add-cap 1 view_query_monitor
+  wp --color user add-cap 1 view_query_monitor
 else
-  echo "${GREEN}WordPress already installed${RESET}"
+  printf " %sFOUND%s\n" "${GREEN}" "${RESET}"
 fi
 
-echo "${CYAN}Processing environment variables${RESET}"
-for var in $(wp config list VIP_ENV_VAR_ --fields=name --format=csv | tail -n +2); do
+echo "Processing environment variables..."
+for var in $(wp config list VIP_ENV_VAR_ --fields=name --format=csv 2>/dev/null | tail -n +2); do
   wp config delete "${var}" --quiet
 done
 
@@ -251,3 +246,7 @@ if env | grep -qE '^VIP_ENV_VAR_'; then
     done
   fi
 fi
+
+echo
+echo "${GREEN}${STRONG}Environment has been started!${RESET}"
+echo
