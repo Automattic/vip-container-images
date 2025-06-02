@@ -1,11 +1,11 @@
 # syntax=docker/dockerfile:1.7
-FROM --platform=$BUILDPLATFORM busybox:stable-musl@sha256:7fe2d84eca21fa921a1006acaa68da15ed0acb7e1d21e5f3149bb6923af38498 AS build-wp
+FROM --platform=$BUILDPLATFORM busybox:stable-musl@sha256:5c16ec53d312df1867044cc90abd951bf37fdad32cc9b4a1e1e25d2f8eaf343c AS build-wp
 ARG WP_GIT_REF
 ADD https://github.com/WordPress/WordPress.git#${WP_GIT_REF} /wp
 RUN rm -rf /wp/wp-content/* && install -d -m 0777 -o 1000 -g 1000 /wp/wp-content/mu-plugins
 COPY extra/ /wp/
 
-FROM --platform=$BUILDPLATFORM busybox:stable-musl@sha256:52931c5795db81b02f89211b300630477f851870b5504d6883c7c38f99f4e692 AS build-wptl
+FROM --platform=$BUILDPLATFORM busybox:stable-musl@sha256:5c16ec53d312df1867044cc90abd951bf37fdad32cc9b4a1e1e25d2f8eaf343c AS build-wptl
 ARG WP_TESTS_REF
 ADD https://github.com/WordPress/wordpress-develop.git#${WP_TESTS_REF}:/tests/phpunit/includes/ /wordpress-tests-lib/includes
 ADD https://github.com/WordPress/wordpress-develop.git#${WP_TESTS_REF}:/tests/phpunit/data/ /wordpress-tests-lib/data
@@ -21,7 +21,7 @@ RUN \
         > /wordpress-tests-lib/wp-tests-config.php
 
 FROM ghcr.io/automattic/vip-container-images/helpers:v1@sha256:bc2beca042ce7c47e2b737920c77248f4a6c25cc7e137bf9de6944af8a68701c AS helpers
-FROM busybox:stable-musl@sha256:52931c5795db81b02f89211b300630477f851870b5504d6883c7c38f99f4e692
+FROM busybox:stable-musl@sha256:5c16ec53d312df1867044cc90abd951bf37fdad32cc9b4a1e1e25d2f8eaf343c
 ENV WP_TESTS_DIR=/wp/wp-content/wordpress-tests-lib
 COPY --from=build-wp --link /wp /wp
 COPY --from=build-wptl /wordpress-tests-lib /wp/wp-content/wordpress-tests-lib
