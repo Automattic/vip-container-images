@@ -21,7 +21,7 @@ if ( is_file( $env_file ) && is_readable( $env_file ) && is_writable( $env_file 
             // Single quotes: special character is '. It is escaped with a slash
             if ( str_starts_with( $value, '"' ) && str_ends_with( $value, '"' ) ) {
                 $value = substr( $value, 1, -1 );
-                $value = str_replace( [ '\\"', '\\$', '\\\\' ], [ '"', '$', '\\' ], $value );
+                $value = str_replace( [ '\\"', '\\$', '\\\\', '\\r', '\\n', '\\t' ], [ '"', '$', '\\', "\r", "\n", "\t" ], $value );
             } elseif ( str_starts_with( $value, "'" ) && str_ends_with( $value, "'" ) ) {
                 $value = substr( $value, 1, -1 );
                 $value = str_replace( "\\'", "'", $value );
@@ -43,7 +43,7 @@ if ( is_file( $env_file ) && is_readable( $env_file ) && is_writable( $env_file 
     $env = '';
     foreach ( $env_vars as $key => $value ) {
         if ( ! empty( $value ) ) {
-            $value = str_replace( [ '$', '"', '\\' ], [ '\\$', '\\"', '\\\\' ], (string) $value );
+            $value = str_replace( [ '$', '"', '\\', "\r", "\n", "\t" ], [ '\\$', '\\"', '\\\\', '\\r', '\\n', '\\t' ], (string) $value );
             $env  .= sprintf( "%s=\"%s\"\n", $key, $value );
         } else {
             $env .= sprintf( "%s=\n", $key );
