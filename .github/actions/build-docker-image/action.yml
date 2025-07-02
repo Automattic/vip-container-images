@@ -70,7 +70,7 @@ runs:
       uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3
+      uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3
 
     - name: Log in to Docker Registry
       uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3
@@ -105,7 +105,7 @@ runs:
       run: echo "image_name=$(echo "${{ inputs.primaryTag }}" | cut -d ':' -f 1)" >> "${GITHUB_OUTPUT}"
 
     - name: Generate SBOM
-      uses: anchore/sbom-action@e11c554f704a0b820cbf8c51673f6945e0731532 # v0.20.0
+      uses: anchore/sbom-action@9246b90769f852b3a8921f330c59e0b3f439d6e9 # v0.20.1
       with:
         image: ${{ inputs.primaryTag }}
         format: 'cyclonedx-json'
@@ -113,7 +113,7 @@ runs:
       if: inputs.push == 'true'
 
     - name: Attest SBOM
-      uses: actions/attest-sbom@115c3be05ff3974bcbd596578934b3f9ce39bf68 # v2.2.0
+      uses: actions/attest-sbom@bd218ad0dbcb3e146bd073d1d9c6d78e08aa8a0b # v2.4.0
       with:
         subject-name: ${{ steps.imagename.outputs.image_name }}
         subject-digest: ${{ steps.push.outputs.digest }}
@@ -122,7 +122,7 @@ runs:
       if: inputs.push == 'true'
 
     - name: Attest provenance
-      uses: actions/attest-build-provenance@db473fddc028af60658334401dc6fa3ffd8669fd # v2.3.0
+      uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
       with:
         subject-name: ${{ steps.imagename.outputs.image_name }}
         subject-digest: ${{ steps.push.outputs.digest }}
@@ -166,7 +166,7 @@ runs:
       if: inputs.scan == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name)
 
     - name: Upload SARIF
-      uses: github/codeql-action/upload-sarif@v3.28.18
+      uses: github/codeql-action/upload-sarif@v3.29.1
       with:
         sarif_file: ${{ steps.filename.outputs.filename }}
       if: inputs.scan == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name)
