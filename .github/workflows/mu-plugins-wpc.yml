@@ -1,4 +1,4 @@
-name: Build MU Plugins
+name: Build MU Plugins (WPC)
 
 on:
   push:
