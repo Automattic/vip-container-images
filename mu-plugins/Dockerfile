@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-FROM --platform=$BUILDPLATFORM ghcr.io/automattic/vip-container-images/alpine:3.22.1@sha256:cd5a74d47566cd062f9b14829a1e2d9da53ad33803298d2d75e647a878e05cb5 AS build
+FROM --platform=$BUILDPLATFORM ghcr.io/automattic/vip-container-images/alpine:3.22.1@sha256:c6da1043da2259a38b78f32349e9acf54e86775c689a33fb6f6e66e26aa766ed AS build
 
 RUN apk add --no-cache git && mkdir -p /mu-plugins
 RUN git clone --depth 1 --single-branch https://github.com/Automattic/vip-go-mu-plugins-ext /mu-plugins-ext
