@@ -66,6 +66,6 @@ jobs:
           set: |
             *.output=type=docker,rewrite-timestamp=true
             *.output=type=image,push=${{ github.base_ref == null }},rewrite-timestamp=true
+            *.args.GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
         env:
           SOURCE_DATE_EPOCH: 0
-          GITHUB_TOKEN: ${{ github.token }}
