@@ -179,3 +179,8 @@ if ( ! defined( 'JETPACK_STAGING_MODE' ) ) {
 if ( 'Windows' !== PHP_OS_FAMILY ) {
 	ini_set( 'error_log', '/dev/stderr' );
 }
+
+// Disable Jetpack Account Protection by default on local development environments
+if ( defined( 'VIP_GO_APP_ENVIRONMENT') && VIP_GO_APP_ENVIRONMENT === 'local' ) {
+	define( 'DISABLE_JETPACK_ACCOUNT_PROTECTION', true )
+}
