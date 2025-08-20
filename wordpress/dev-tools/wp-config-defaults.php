@@ -182,5 +182,5 @@ if ( 'Windows' !== PHP_OS_FAMILY ) {
 
 // Disable Jetpack Account Protection by default on local development environments
 if ( defined( 'VIP_GO_APP_ENVIRONMENT') && VIP_GO_APP_ENVIRONMENT === 'local' ) {
-	define( 'DISABLE_JETPACK_ACCOUNT_PROTECTION', true )
+	define( 'DISABLE_JETPACK_ACCOUNT_PROTECTION', true );
 }
