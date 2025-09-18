@@ -41,7 +41,7 @@ download_wp() {
 			mkdir -p "/wordpress/wordpress-${VERSION}"
 			wget -q "https://wordpress.org/wordpress-${VERSION}.tar.gz" -O - | tar --strip-components=1 -zxm -f - -C "/wordpress/wordpress-${VERSION}"
 		fi
-		wget -q https://raw.github.com/markoheijnen/wp-mysqli/master/db.php -O "/wordpress/wordpress-${VERSION}/wp-content/db.php"
+		wget -q https://raw.githubusercontent.com/markoheijnen/wp-mysqli/refs/heads/master/db.php -O "/wordpress/wordpress-${VERSION}/wp-content/db.php"
 	else
 		echo "Skipping WordPress download"
 	fi
