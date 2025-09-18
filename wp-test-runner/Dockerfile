@@ -58,7 +58,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked --mount=type=cache,t
 		php8.3-cli php8.3-apcu php8.3-curl php8.3-gd php8.3-gmp php8.3-igbinary php8.3-imagick php8.3-imap php8.3-intl php8.3-mbstring php8.3-mysql php8.3-sqlite3 php8.3-xdebug php8.3-xml            php8.3-zip php8.3-memcache php8.3-memcached \
 		php8.4-cli php8.4-apcu php8.4-curl php8.4-gd php8.4-gmp php8.4-igbinary php8.4-imagick php8.4-imap php8.4-intl php8.4-mbstring php8.4-mysql php8.4-sqlite3 php8.4-xdebug php8.4-xml            php8.4-zip php8.4-memcache php8.4-memcached && \
 	echo "ubuntu ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/ubuntu" && \
-	chmod 0440 "/etc/sudoers.d/ubuntu" && \	echo "xdebug.mode=coverage" | tee -a /etc/php/*/mods-available/xdebug.ini && \
+	chmod 0440 "/etc/sudoers.d/ubuntu" && \
+	echo "xdebug.mode=coverage" | tee -a /etc/php/*/mods-available/xdebug.ini && \
 	update-alternatives --set php /usr/bin/php8.2 && \
 	wget https://getcomposer.org/installer -qO - | php -- --install-dir=/usr/bin/ --filename=composer
 
