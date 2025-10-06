@@ -45,6 +45,9 @@ jobs:
             suffix: "83"
           - name: "8.4"
             suffix: "84"
+
+          - name: "8.5"
+            suffix: "85"
     steps:
       - name: Check out the repo
         uses: actions/checkout@v6
