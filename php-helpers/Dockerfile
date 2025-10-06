@@ -104,6 +104,17 @@ RUN \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 
+FROM --platform=${BUILDPLATFORM} php-common AS php85
+WORKDIR /src/timezonedb
+RUN \
+    xx-apt-get update && \
+    xx-apt-get install -y --no-install-recommends php8.5-dev && \
+    phpize && ./configure --host=$(xx-clang --print-target-triple) && make -j$(nproc) && make install && \
+    make distclean && \
+    xx-apt-get remove --purge -y --auto-remove php8.5-dev && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+
+
 
 FROM scratch
 COPY --from=build-mydumper /usr/local/bin/mydumper /usr/local/bin/myloader /etc/mydumper.cnf /
