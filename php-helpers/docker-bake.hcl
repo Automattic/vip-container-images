@@ -41,6 +41,11 @@ target "php84" {
   target   = "php84"
 }
 
+target "php85" {
+  inherits = ["base"]
+  target   = "php85"
+}
+
 target "default" {
   inherits = ["base"]
   output = [
