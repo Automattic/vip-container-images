@@ -104,6 +104,7 @@ RUN \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 
+
 FROM --platform=${BUILDPLATFORM} php-common AS php85
 WORKDIR /src/timezonedb
 RUN \
@@ -122,3 +123,4 @@ COPY --from=php81 /usr/lib/php/20210902/timezonedb.so /usr/lib/php/20210902/time
 COPY --from=php82 /usr/lib/php/20220829/timezonedb.so /usr/lib/php/20220829/timezonedb.so
 COPY --from=php83 /usr/lib/php/20230831/timezonedb.so /usr/lib/php/20230831/timezonedb.so
 COPY --from=php84 /usr/lib/php/20240924/timezonedb.so /usr/lib/php/20240924/timezonedb.so
+COPY --from=php85 /usr/lib/php/20250925/timezonedb.so /usr/lib/php/20250925/timezonedb.so
