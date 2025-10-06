@@ -1,4 +1,4 @@
-FROM ghcr.io/automattic/vip-container-images/php-helpers:latest@sha256:7ee54e4e0007a61f7c48499aa8dd595043a7624e51c78f2aac202927684fdd4f AS build
+FROM ghcr.io/automattic/vip-container-images/php-helpers:latest@sha256:1c86d0b79290cad05541c39fa7744e2a55fb9ea358cc1f0fdc29ea7cb6cef495 AS build
 FROM ubuntu:24.04@sha256:728785b59223d755e3e5c5af178fab1be7031f3522c5ccd7a0b32b80d8248123
 ARG TARGETARCH
 
@@ -46,7 +46,7 @@ RUN \
 ENV WP_CLI_CONFIG_PATH=/config/wp-cli.yaml
 
 ADD --chmod=0755 https://github.com/Automattic/cron-control-runner/releases/download/1.1.0/cron-control-runner-linux-${TARGETARCH} /usr/bin/cron-control-runner
-COPY --from=build /usr/lib/php/20240924/timezonedb.so /usr/lib/php/20240924/
+COPY --from=build /usr/lib/php/20250925/timezonedb.so /usr/lib/php/20250925/
 COPY --from=build /mydumper /myloader /usr/local/bin/
 COPY --from=build /mydumper.cnf /etc/
 COPY rootfs/ /
