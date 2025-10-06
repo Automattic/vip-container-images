@@ -1,5 +1,5 @@
-FROM ghcr.io/automattic/vip-container-images/php-helpers:latest@sha256:ec3a6a6b32d4b9b13c47b7aba735e3e87dbb0522e4698ce5d7da678352e0303f AS build
-FROM ubuntu:24.04@sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02
+FROM ghcr.io/automattic/vip-container-images/php-helpers:latest@sha256:7ee54e4e0007a61f7c48499aa8dd595043a7624e51c78f2aac202927684fdd4f AS build
+FROM ubuntu:24.04@sha256:728785b59223d755e3e5c5af178fab1be7031f3522c5ccd7a0b32b80d8248123
 ARG TARGETARCH
 
 # We lack: newrelic
