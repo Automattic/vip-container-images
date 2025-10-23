@@ -61,6 +61,7 @@
     "tag": "6.9-beta1",
     "cacheable": true,
     "locked": false,
-    "prerelease": true
+    "prerelease": true,
+    "tests_ref": "trunk"
   }
 ]
