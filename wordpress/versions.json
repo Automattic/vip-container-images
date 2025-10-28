@@ -57,8 +57,8 @@
     "tests_ref": "trunk"
   },
   {
-    "ref": "8ab440340a344b10c8ff0602e0a595736c7a1b3a",
-    "tag": "6.9-beta1",
+    "ref": "3a6e5d2c08d6bf297400f7ed9808ede70324c61c",
+    "tag": "6.9",
     "cacheable": true,
     "locked": false,
     "prerelease": true,
