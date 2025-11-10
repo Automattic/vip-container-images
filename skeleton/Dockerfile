@@ -1,3 +1,3 @@
-FROM busybox:stable-musl@sha256:2f9af5cf39068ec3a9e124feceaa11910c511e23a1670dcfdff0bc16793545fb
+FROM busybox:stable-musl@sha256:faeb06dde6421d3dd02f59896bf47a64820f995458a42388277382010d208e1e
 
 ADD --link https://github.com/Automattic/vip-go-skeleton.git /clientcode
