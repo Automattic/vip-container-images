@@ -28,7 +28,8 @@ RUN \
     apt-get install -y shtool php8.3-cli php8.3-xml php-pear && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* && \
     sed -i '/^Package: shtool$/a Multi-Arch: foreign' /var/lib/dpkg/status && \
-    pecl bundle timezonedb
+    pecl bundle timezonedb && \
+    rm -f *.tgz
 
 
 
@@ -106,14 +107,18 @@ RUN \
 
 
 FROM --platform=${BUILDPLATFORM} php-common AS php85
-WORKDIR /src/timezonedb
 RUN \
+    pecl bundle gmagick && \
+    pecl bundle memcache && \
+    pecl bundle memcached && \
     xx-apt-get update && \
-    xx-apt-get install -y --no-install-recommends php8.5-dev && \
-    phpize && ./configure --host=$(xx-clang --print-target-triple) && make -j$(nproc) && make install && \
-    make distclean && \
-    xx-apt-get remove --purge -y --auto-remove php8.5-dev && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
+    xx-apt-get install -y --no-install-recommends libgraphicsmagick1-dev libmemcached-dev php8.5-dev zlib1g-dev && \
+    ( cd gmagick && sed -i 's!zend_exception_get_default()!zend_ce_exception!g' gmagick.c && phpize && ./configure --host=$(xx-clang --print-target-triple) && make -j$(nproc) && make install && make distclean ) && \
+    ( cd memcache && sed -i 's!ext/standard/php_smart_!Zend/zend_smart_!g' src/*.c src/*.h && phpize && ./configure --host=$(xx-clang --print-target-triple) && make -j$(nproc) && make install && make distclean ) && \
+    ( cd memcached && phpize && ./configure --host=$(xx-clang --print-target-triple) && make -j$(nproc) && make install && make distclean ) && \
+    ( cd timezonedb && phpize && ./configure --host=$(xx-clang --print-target-triple) && make -j$(nproc) && make install && make distclean ) && \
+    xx-apt-get remove --purge -y --auto-remove libgraphicsmagick1-dev libmemcached-dev php8.5-dev zlib1g-dev && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* *.tgz
 
 
 
@@ -123,4 +128,4 @@ COPY --from=php81 /usr/lib/php/20210902/timezonedb.so /usr/lib/php/20210902/time
 COPY --from=php82 /usr/lib/php/20220829/timezonedb.so /usr/lib/php/20220829/timezonedb.so
 COPY --from=php83 /usr/lib/php/20230831/timezonedb.so /usr/lib/php/20230831/timezonedb.so
 COPY --from=php84 /usr/lib/php/20240924/timezonedb.so /usr/lib/php/20240924/timezonedb.so
-COPY --from=php85 /usr/lib/php/20250925/timezonedb.so /usr/lib/php/20250925/timezonedb.so
+COPY --from=php85 /usr/lib/php/20250925/gmagick.so /usr/lib/php/20250925/memcache.so /usr/lib/php/20250925/memcached.so /usr/lib/php/20250925/timezonedb.so /usr/lib/php/20250925/
