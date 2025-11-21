@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out source code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Read versions.json
         id: set-matrix
@@ -54,7 +54,7 @@ jobs:
         wp: ${{ fromJson(needs.prepare.outputs.matrix) }}
     steps:
       - name: Check out source code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set additional tags
         id: extra-tags
