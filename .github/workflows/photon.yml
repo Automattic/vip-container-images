@@ -35,7 +35,7 @@ jobs:
       attestations: write
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Build and push image
         uses: ./.github/actions/build-docker-image
