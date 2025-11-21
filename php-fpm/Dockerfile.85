@@ -28,7 +28,6 @@ RUN \
     echo 'extension=memcache.so' > /etc/php/8.5/mods-available/memcache.ini && \
     echo 'extension=memcached.so' > /etc/php/8.5/mods-available/memcached.ini && \
     echo 'extension=gmagick.so' > /etc/php/8.5/mods-available/gmagick.ini && \
-    phpenmod memcache memcached gmagick && \
     \
     phpdismod ffi gettext readline sysvmsg xsl xdebug && \
     apt-get autoremove --purge -y && \
@@ -57,7 +56,7 @@ COPY --from=build /mydumper.cnf /etc/
 COPY rootfs/ /
 COPY rootfs-php/ /etc/php/8.5/
 
-RUN phpenmod timezonedb
+RUN phpenmod memcache memcached gmagick timezonedb
 
 WORKDIR /var/www/html
 STOPSIGNAL SIGQUIT
