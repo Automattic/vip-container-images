@@ -175,9 +175,12 @@ if ( ! defined( 'JETPACK_STAGING_MODE' ) ) {
 	define( 'JETPACK_STAGING_MODE', true );
 }
 
-// Force log to `/dev/stderr` so we get the errors in docker logs
-if ( 'Windows' !== PHP_OS_FAMILY ) {
-	ini_set( 'error_log', '/dev/stderr' );
+if ( ! defined( 'ERROR_LOG_LOCATION' ) ) {
+	define( 'ERROR_LOG_LOCATION',  'Windows' !== PHP_OS_FAMILY ? '/dev/stderr' : '' );
+}
+
+if ( ERROR_LOG_LOCATION ) {
+	ini_set( 'error_log', ERROR_LOG_LOCATION );
 }
 
 // Disable Jetpack Account Protection by default on local development environments
