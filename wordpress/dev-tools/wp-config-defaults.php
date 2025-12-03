@@ -175,12 +175,8 @@ if ( ! defined( 'JETPACK_STAGING_MODE' ) ) {
 	define( 'JETPACK_STAGING_MODE', true );
 }
 
-if ( ! defined( 'ERROR_LOG_LOCATION' ) ) {
-	define( 'ERROR_LOG_LOCATION',  'Windows' !== PHP_OS_FAMILY ? '/dev/stderr' : '' );
-}
-
-if ( ERROR_LOG_LOCATION ) {
-	ini_set( 'error_log', ERROR_LOG_LOCATION );
+if ( ! defined( 'DO_NOT_CHANGE_ERROR_LOG' ) || true !== constant( 'DO_NOT_CHANGE_ERROR_LOG' ) ) {
+	ini_set( 'error_log', 'Windows' !== PHP_OS_FAMILY ? '/dev/stderr' : '' );
 }
 
 // Disable Jetpack Account Protection by default on local development environments

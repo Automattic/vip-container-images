@@ -10,21 +10,20 @@ define( 'DB_COLLATE', 'utf8mb4_unicode_520_ci' );
 
 $table_prefix = 'wp_';
 
-$memcached_servers = array (
-  'default' =>
-  array (
-    0 => 'memcached:11211',
-  ),
-);
+$memcached_servers = [
+	'default' => [
+		'memcached:11211',
+	],
+];
 
 require( __DIR__ . '/wp-config-defaults.php' );
 
 if ( ! defined( 'WP_DEBUG' ) ) {
-    define( 'WP_DEBUG', true );
+	define( 'WP_DEBUG', true );
 }
 
 if ( ! defined( 'WP_DEBUG_LOG' ) ) {
-    define( 'WP_DEBUG_LOG', '/wp/log/debug.log' );
+	define( 'WP_DEBUG_LOG', '/wp/log/debug.log' );
 }
 
 if ( ! defined( 'WP_DEBUG_DISPLAY' ) ) {
