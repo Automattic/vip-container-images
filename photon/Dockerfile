@@ -13,7 +13,7 @@ RUN \
     apk add --no-cache \
         php83 php83-fpm php83-curl php83-gd php83-opcache php83-openssl graphicsmagick libgomp  \
         optipng pngquant libwebp-tools jpegoptim libjpeg-turbo-utils pngcrush && \
-    ln -s /usr/sbin/php-fpm82 /usr/sbin/php-fpm
+    ln -s /usr/sbin/php-fpm83 /usr/sbin/php-fpm
 
 # These packages are required to download composer, install PHPUnit and run tests
 # RUN apk add --no-cache php83-dom php83-fileinfo php83-mbstring php83-phar php83-pdo php83-tokenizer php83-xml php83-xmlwriter
