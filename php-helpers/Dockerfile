@@ -110,14 +110,11 @@ FROM --platform=${BUILDPLATFORM} php-common AS php85
 RUN \
     pecl bundle gmagick && \
     pecl bundle memcache && \
-    pecl bundle memcached && \
     xx-apt-get update && \
-    xx-apt-get install -y --no-install-recommends libgraphicsmagick1-dev libmemcached-dev php8.5-dev zlib1g-dev && \
-    ( cd gmagick && sed -i 's!zend_exception_get_default()!zend_ce_exception!g' gmagick.c && phpize && ./configure --host=$(xx-clang --print-target-triple) && make -j$(nproc) && make install && make distclean ) && \
+    xx-apt-get install -y --no-install-recommends libmemcached-dev php8.5-dev zlib1g-dev && \
     ( cd memcache && sed -i 's!ext/standard/php_smart_!Zend/zend_smart_!g' src/*.c src/*.h && phpize && ./configure --host=$(xx-clang --print-target-triple) && make -j$(nproc) && make install && make distclean ) && \
-    ( cd memcached && phpize && ./configure --host=$(xx-clang --print-target-triple) && make -j$(nproc) && make install && make distclean ) && \
     ( cd timezonedb && phpize && ./configure --host=$(xx-clang --print-target-triple) && make -j$(nproc) && make install && make distclean ) && \
-    xx-apt-get remove --purge -y --auto-remove libgraphicsmagick1-dev libmemcached-dev php8.5-dev zlib1g-dev && \
+    xx-apt-get remove --purge -y --auto-remove libmemcached-dev php8.5-dev zlib1g-dev && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* *.tgz
 
 
@@ -128,4 +125,4 @@ COPY --from=php81 /usr/lib/php/20210902/timezonedb.so /usr/lib/php/20210902/time
 COPY --from=php82 /usr/lib/php/20220829/timezonedb.so /usr/lib/php/20220829/timezonedb.so
 COPY --from=php83 /usr/lib/php/20230831/timezonedb.so /usr/lib/php/20230831/timezonedb.so
 COPY --from=php84 /usr/lib/php/20240924/timezonedb.so /usr/lib/php/20240924/timezonedb.so
-COPY --from=php85 /usr/lib/php/20250925/gmagick.so /usr/lib/php/20250925/memcache.so /usr/lib/php/20250925/memcached.so /usr/lib/php/20250925/timezonedb.so /usr/lib/php/20250925/
+COPY --from=php85 /usr/lib/php/20250925/memcache.so /usr/lib/php/20250925/timezonedb.so /usr/lib/php/20250925/
