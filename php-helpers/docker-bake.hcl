@@ -21,11 +21,6 @@ target "mydumper" {
   target   = "build-mydumper"
 }
 
-target "php81" {
-  inherits = ["base"]
-  target   = "php81"
-}
-
 target "php82" {
   inherits = ["base"]
   target   = "php82"
