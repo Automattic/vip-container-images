@@ -58,18 +58,6 @@ RUN \
 
 
 
-FROM --platform=${BUILDPLATFORM} php-common AS php81
-WORKDIR /src/timezonedb
-RUN \
-    xx-apt-get update && \
-    xx-apt-get install -y --no-install-recommends php8.1-dev && \
-    phpize && ./configure --host=$(xx-clang --print-target-triple) && make -j$(nproc) && make install && \
-    make distclean && \
-    xx-apt-get remove --purge -y --auto-remove php8.1-dev && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
-
-
-
 FROM --platform=${BUILDPLATFORM} php-common AS php82
 WORKDIR /src/timezonedb
 RUN \
@@ -121,7 +109,6 @@ RUN \
 
 FROM scratch
 COPY --from=build-mydumper /usr/local/bin/mydumper /usr/local/bin/myloader /etc/mydumper.cnf /
-COPY --from=php81 /usr/lib/php/20210902/timezonedb.so /usr/lib/php/20210902/timezonedb.so
 COPY --from=php82 /usr/lib/php/20220829/timezonedb.so /usr/lib/php/20220829/timezonedb.so
 COPY --from=php83 /usr/lib/php/20230831/timezonedb.so /usr/lib/php/20230831/timezonedb.so
 COPY --from=php84 /usr/lib/php/20240924/timezonedb.so /usr/lib/php/20240924/timezonedb.so
