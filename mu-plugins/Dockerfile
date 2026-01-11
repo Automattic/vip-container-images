@@ -12,7 +12,7 @@ RUN rsync -a -r --delete --exclude-from="/mu-plugins-ext/.dockerignore" --exclud
 RUN mkdir /shared
 
 FROM ghcr.io/automattic/vip-container-images/helpers:v1@sha256:35163555a35cf836a1ec71c525cebd98c4abefa319b73e0328f9d7e6007dd420 AS helpers
-FROM busybox:stable-musl@sha256:a56f14592e5a275b6f2d22197ba51ba9aaa24b75d8d4bb4579418e61fdcaae83
+FROM busybox:stable-musl@sha256:c29b078aeeb7cdc487cf52dc87a69dac71499937f498b35cb606c7943bc412c9
 
 COPY --from=build --link /shared /shared
 COPY --from=helpers /rsync /usr/bin/rsync
