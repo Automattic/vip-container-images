@@ -11,11 +11,6 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    directory: "alpine/"
-    schedule:
-      interval: "weekly"
-
-  - package-ecosystem: "docker"
     directory: "helpers/"
     schedule:
       interval: "weekly"
