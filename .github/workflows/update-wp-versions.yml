@@ -53,7 +53,7 @@ jobs:
       - name: Get WordPress versions we want
         id: wanted
         run: |
-          LATEST=$(wget https://api.wordpress.org/core/version-check/1.7/ -q -O - | jq -r '[.offers[].version] | unique | map(select( . >= "6.2")) | sort | reverse | .[]')
+          LATEST=$(wget https://api.wordpress.org/core/version-check/1.7/ -q -O - | jq -r '[.offers[].version] | unique | map(select( . >= "6.4")) | sort | reverse | .[]')
           echo latest=${LATEST} >> $GITHUB_OUTPUT
           TAGS=
           for v in ${LATEST}; do
