@@ -161,8 +161,3 @@ function dev_env_auto_login() {
 	wp_safe_redirect( admin_url() );
 	exit;
 }
-
-// Force log to `/dev/stderr` so we get the errors in docker logs
-if ( 'Windows' !== PHP_OS_FAMILY ) {
-	ini_set( 'error_log', '/dev/stderr' );
-}
