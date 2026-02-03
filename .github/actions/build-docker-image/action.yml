@@ -73,7 +73,7 @@ runs:
       uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
 
     - name: Log in to Docker Registry
-      uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3
+      uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
       with:
         registry: ${{ inputs.registry }}
         username: ${{ inputs.username }}
@@ -105,7 +105,7 @@ runs:
       run: echo "image_name=$(echo "${{ inputs.primaryTag }}" | cut -d ':' -f 1)" >> "${GITHUB_OUTPUT}"
 
     - name: Generate SBOM
-      uses: anchore/sbom-action@62ad5284b8ced813296287a0b63906cb364b73ee # v0.22.0
+      uses: anchore/sbom-action@deef08a0db64bfad603422135db61477b16cef56 # v0.22.1
       with:
         image: ${{ inputs.primaryTag }}
         format: 'cyclonedx-json'
@@ -166,7 +166,7 @@ runs:
       if: inputs.scan == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name)
 
     - name: Upload SARIF
-      uses: github/codeql-action/upload-sarif@v4.32.0
+      uses: github/codeql-action/upload-sarif@v4.32.1
       with:
         sarif_file: ${{ steps.filename.outputs.filename }}
       if: inputs.scan == 'true' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name)
