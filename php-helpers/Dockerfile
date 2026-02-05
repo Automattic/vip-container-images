@@ -96,7 +96,6 @@ RUN \
 
 FROM --platform=${BUILDPLATFORM} php-common AS php85
 RUN \
-    pecl bundle gmagick && \
     pecl bundle memcache && \
     xx-apt-get update && \
     xx-apt-get install -y --no-install-recommends libmemcached-dev php8.5-dev zlib1g-dev && \
