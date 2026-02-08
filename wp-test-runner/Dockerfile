@@ -32,7 +32,7 @@ RUN install -d -o ubuntu -g ubuntu -m 0777 /wordpress
 COPY install-wp /usr/local/bin/
 
 USER ubuntu
-RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
 RUN \
 	set -ex; \
 	WP_VERSIONS="$(wget https://api.wordpress.org/core/version-check/1.7/ -q -O - | jq -r '[.offers[].version] | unique | map(select( . >= "6.2")) | .[]')"; \
