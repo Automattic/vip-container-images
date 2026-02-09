@@ -35,7 +35,7 @@ USER ubuntu
 RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
 RUN \
 	set -ex; \
-	WP_VERSIONS="$(wget https://api.wordpress.org/core/version-check/1.7/ -q -O - | jq -r '[.offers[].version] | unique | map(select( . >= "6.2")) | .[]')"; \
+	WP_VERSIONS="$(wget https://api.wordpress.org/core/version-check/1.7/ -q -O - | jq -r '[.offers[].version] | unique | map(select( . >= "6.4")) | .[]')"; \
 	for version in ${WP_VERSIONS} latest; do \
 		install-wp "${version}"; \
 	done
