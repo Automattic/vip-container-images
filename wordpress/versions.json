@@ -4,7 +4,8 @@
     "tag": "7.0",
     "cacheable": false,
     "locked": true,
-    "prerelease": true
+    "prerelease": true,
+    "tests_ref": "trunk"
   },
   {
     "ref": "6.9.1",
