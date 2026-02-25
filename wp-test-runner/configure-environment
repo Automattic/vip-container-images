@@ -8,7 +8,7 @@ set -e
 : "${MYSQL_HOST="db"}"
 : "${WP_VERSION:="latest"}"
 : "${PHPUNIT_VERSION:=""}"
-: "${PHP_VERSION:="8.1"}"
+: "${PHP_VERSION:="8.3"}"
 : "${DISABLE_XDEBUG:=""}"
 : "${APP_HOME:="/home/circleci/project"}"
 : "${PHP_OPTIONS:=""}"
