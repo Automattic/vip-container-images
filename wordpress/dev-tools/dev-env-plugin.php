@@ -43,8 +43,8 @@ add_filter( 'redirect_canonical', function ( $redirect_url, $requested_url ) {
  * 2FA
  ******************/
 
-// Disable Two_Factor_FIDO_U2F Profider for the dev-env
-add_filter('two_factor_providers', function ( $providers ) {
+// Disable Two_Factor_FIDO_U2F Provider for the dev-env
+add_filter( 'two_factor_providers', function ( $providers ) {
 	unset( $providers['Two_Factor_FIDO_U2F'] );
 	return $providers;
 });
@@ -139,7 +139,7 @@ function dev_env_auto_login() {
 	}
 
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-	$submitted_key = sanitize_text_field( $_GET['vip-dev-autologin'] ?? '' );
+	$submitted_key = sanitize_text_field( wp_unslash( $_GET['vip-dev-autologin'] ?? '' ) );
 	if ( is_user_logged_in() ) {
 		if ( $submitted_key ) {
 			wp_safe_redirect( admin_url() );
