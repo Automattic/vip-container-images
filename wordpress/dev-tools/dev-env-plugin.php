@@ -11,10 +11,11 @@ if ( ! defined( 'DISABLE_JETPACK_WAF' ) ) {
  * Handle HTTPS
  ******************/
 
-add_filter( 'set_url_scheme', function( $url ) {
+add_filter( 'set_url_scheme', function ( $url ) {
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	$proto = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '';
 
-	if ( 'https' == $proto ) {
+	if ( 'https' === $proto ) {
 		return str_replace( 'http://', 'https://', $url );
 	}
 	return $url;
@@ -24,11 +25,15 @@ add_filter( 'set_url_scheme', function( $url ) {
  * In some scenarios https is not correctly detected. That leads to infinite redirect to https.
  * Infinite because you already are on https
  */
-add_filter( 'redirect_canonical', function( $redirect_url, $requested_url ) {
+add_filter( 'redirect_canonical', function ( $redirect_url, $requested_url ) {
+	if ( ! is_string( $redirect_url ) ) {
+		return $redirect_url;
+	}
+
 	$https_request_version    = str_replace( 'http://', 'https://', $requested_url );
 	$is_redirecting_for_https = $https_request_version === $redirect_url;
 	if ( $is_redirecting_for_https ) {
-		return;
+		return false;
 	}
 
 	return $redirect_url;
@@ -38,8 +43,8 @@ add_filter( 'redirect_canonical', function( $redirect_url, $requested_url ) {
  * 2FA
  ******************/
 
-// Disable Two_Factor_FIDO_U2F Profider for the dev-env
-add_filter('two_factor_providers', function( $providers ) {
+// Disable Two_Factor_FIDO_U2F Provider for the dev-env
+add_filter( 'two_factor_providers', function ( $providers ) {
 	unset( $providers['Two_Factor_FIDO_U2F'] );
 	return $providers;
 });
@@ -58,6 +63,7 @@ add_filter( 'vip_integrations_config_file_path', fn() => constant( 'WPVIP_INTEGR
 
 add_filter( 'vip_integrations_pre_load_config', function ( $config, $path, $slug ) {
 	if ( is_null( $config ) && is_readable( $path ) ) {
+		// phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown -- local file, not remote data.
 		$json = json_decode( file_get_contents( $path ), true );
 		if ( is_array( $json ) ) {
 			$config = $json[ $slug ] ?? [];
@@ -102,26 +108,39 @@ function dev_env_add_admin( $args, $assoc_args ) {
 	}
 
 	if ( username_exists( $username ) ) {
-		WP_CLI::line( 'User "' . $username . '" already exits. Skipping creating it.' );
+		WP_CLI::line( sprintf( 'User "%s" already exists. Skipping creating it.', $username ) );
 		return;
 	}
 
-	WP_CLI::runcommand( 'user create ' . $username . ' ' . $email . ' --user_pass=' . $password . ' --role=administrator' . ' --skip-plugins --skip-themes' );
-	WP_CLI::success( 'User "' . $username . '" created.' );
+	$user_id = wp_insert_user( [
+		'user_login' => $username,
+		'user_pass'  => $password,
+		'user_email' => $email,
+		'role'       => 'administrator',
+	] );
+
+	if ( is_wp_error( $user_id ) ) {
+		WP_CLI::error( sprintf( 'Failed to create user "%s": %s', $username, $user_id->get_error_message() ) );
+	}
+
+	WP_CLI::success( sprintf( 'User "%s" created.', $username ) );
 
 	if ( is_multisite() ) {
 		// on multisite we do more setup
-		WP_CLI::runcommand( 'super-admin add ' . $username . ' --skip-plugins --skip-themes' );
-		WP_CLI::success( 'User "' . $username . '" added to super-admin list.' );
+		grant_super_admin( $user_id );
+		WP_CLI::success( sprintf( 'User "%s" added to super-admin list.', $username ) );
 
 		$sites = get_sites();
 		foreach ( $sites as $site ) {
-			switch_to_blog( $site->blog_id );
-			$subsite_url = home_url();
-
-			WP_CLI::runcommand( 'user set-role ' . $username . ' administrator --url=' . $subsite_url . ' --skip-plugins --skip-themes' );
-
-			restore_current_blog();
+			$result = add_user_to_blog( $site->blog_id, $user_id, 'administrator' );
+			if ( is_wp_error( $result ) ) {
+				WP_CLI::warning( sprintf(
+					'Failed to add user "%s" to site ID %d: %s',
+					$username,
+					$site->blog_id,
+					$result->get_error_message()
+				) );
+			}
 		}
 	}
 }
@@ -132,7 +151,8 @@ function dev_env_auto_login() {
 		return;
 	}
 
-	$submitted_key = $_GET['vip-dev-autologin'] ?? false;
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$submitted_key = sanitize_text_field( wp_unslash( $_GET['vip-dev-autologin'] ?? '' ) );
 	if ( is_user_logged_in() ) {
 		if ( $submitted_key ) {
 			wp_safe_redirect( admin_url() );
