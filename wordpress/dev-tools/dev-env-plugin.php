@@ -108,7 +108,7 @@ function dev_env_add_admin( $args, $assoc_args ) {
 	}
 
 	if ( username_exists( $username ) ) {
-		WP_CLI::line( 'User "' . $username . '" already exits. Skipping creating it.' );
+		WP_CLI::line( sprintf( 'User "%s" already exists. Skipping creating it.', $username ) );
 		return;
 	}
 
@@ -120,19 +120,27 @@ function dev_env_add_admin( $args, $assoc_args ) {
 	] );
 
 	if ( is_wp_error( $user_id ) ) {
-		WP_CLI::error( 'Failed to create user "' . $username . '": ' . $user_id->get_error_message() );
+		WP_CLI::error( sprintf( 'Failed to create user "%s": %s', $username, $user_id->get_error_message() ) );
 	}
 
-	WP_CLI::success( 'User "' . $username . '" created.' );
+	WP_CLI::success( sprintf( 'User "%s" created.', $username ) );
 
 	if ( is_multisite() ) {
 		// on multisite we do more setup
 		grant_super_admin( $user_id );
-		WP_CLI::success( 'User "' . $username . '" added to super-admin list.' );
+		WP_CLI::success( sprintf( 'User "%s" added to super-admin list.', $username ) );
 
 		$sites = get_sites();
 		foreach ( $sites as $site ) {
-			add_user_to_blog( $site->blog_id, $user_id, 'administrator' );
+			$result = add_user_to_blog( $site->blog_id, $user_id, 'administrator' );
+			if ( is_wp_error( $result ) ) {
+				WP_CLI::warning( sprintf(
+					'Failed to add user "%s" to site ID %d: %s',
+					$username,
+					$site->blog_id,
+					$result->get_error_message()
+				) );
+			}
 		}
 	}
 }
