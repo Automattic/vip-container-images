@@ -8,7 +8,7 @@
     "tests_ref": "trunk"
   },
   {
-    "ref": "6.9.1",
+    "ref": "6.9.2",
     "tag": "6.9",
     "cacheable": true,
     "locked": true,
