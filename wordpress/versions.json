@@ -8,42 +8,42 @@
     "tests_ref": "trunk"
   },
   {
-    "ref": "6.9.2",
+    "ref": "6.9.3",
     "tag": "6.9",
     "cacheable": true,
     "locked": true,
     "prerelease": false
   },
   {
-    "ref": "6.8.3",
+    "ref": "6.8.5",
     "tag": "6.8",
     "cacheable": true,
     "locked": true,
     "prerelease": false
   },
   {
-    "ref": "6.7.4",
+    "ref": "6.7.5",
     "tag": "6.7",
     "cacheable": true,
     "locked": true,
     "prerelease": false
   },
   {
-    "ref": "6.6.4",
+    "ref": "6.6.5",
     "tag": "6.6",
     "cacheable": true,
     "locked": true,
     "prerelease": false
   },
   {
-    "ref": "6.5.7",
+    "ref": "6.5.8",
     "tag": "6.5",
     "cacheable": true,
     "locked": true,
     "prerelease": false
   },
   {
-    "ref": "6.4.7",
+    "ref": "6.4.8",
     "tag": "6.4",
     "cacheable": true,
     "locked": true,
