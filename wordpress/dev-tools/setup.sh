@@ -106,10 +106,12 @@ if [ -n "${LANDO_INFO}" ] && [ "$(echo "${LANDO_INFO}" | jq -r '.["vip-mu-plugin
 fi
 printf " %sDONE%s\n" "${GREEN}" "${RESET}"
 
+# Always ensure wp-config-defaults.php is up to date
+cp /dev-tools/wp-config-defaults.php /wp/config/
+
 if [ -r /wp/config/wp-config.php ]; then
   echo "${GREEN}wp-config.php already exists${RESET}"
 else
-  cp /dev-tools/wp-config-defaults.php /wp/config/
   sed -e "s/%DB_HOST%/$db_host/" /dev-tools/wp-config.php.tpl > /wp/config/wp-config.php
   if [ -n "$multisite_domain" ]; then
     sed -e "s/%DOMAIN%/$multisite_domain/" /dev-tools/wp-config-multisite.php.tpl >> /wp/config/wp-config.php
@@ -170,9 +172,6 @@ wp cache flush --skip-plugins --skip-themes >/dev/null 2>&1
 if ! wp core is-installed --skip-plugins --skip-themes >/dev/null 2>&1; then
   printf " %sNOT FOUND%s\n" "${YELLOW}" "${RESET}"
   echo "Installing WordPress..."
-
-  # Ensuring wp-config-defaults is up to date
-  cp /dev-tools/wp-config-defaults.php /wp/config/
 
   if [ -n "$multisite_domain" ]; then
     # shellcheck disable=SC2046
