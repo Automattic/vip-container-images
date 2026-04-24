@@ -57,8 +57,7 @@ jobs:
       - name: Build and push
         uses: docker/bake-action@a66e1c87e2eca0503c343edf1d208c716d54b8a8 # v7.1.0
         with:
-          source: .
-          workdir: php-helpers
+          source: php-helpers
           files: docker-bake.hcl
           push: ${{ github.event_name != 'pull_request' }}
           no-cache: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' }}
