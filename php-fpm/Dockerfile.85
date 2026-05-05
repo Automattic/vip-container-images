@@ -1,5 +1,5 @@
 FROM ghcr.io/automattic/vip-container-images/php-helpers:latest@sha256:fb5d4a8d718b8e056cf2db62ebe0a817155c34d5af5d66bd7296ec59e4327c84 AS build
-FROM ubuntu:24.04@sha256:c35e29c9450151419d9448b0fd75374fec4fff364a27f176fb458d472dfc9e54
+FROM debian:bookworm@sha256:8a8cd02c5912770b4980228a54d4aff9e4f986f1eb2525d2d371dec5232cefcc
 ARG TARGETARCH
 
 # We lack: newrelic
@@ -11,17 +11,16 @@ RUN \
     export LD_PRELOAD=/usr/lib/libeatmydata/libeatmydata.so && \
     apt-get -y upgrade && \
     apt-get install -y curl lsb-release ca-certificates gnupg --no-install-recommends && \
-    echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list && \
-    curl -sSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x71DAEAAB4AD4CAB6" | gpg --dearmor > /etc/apt/trusted.gpg.d/ppa-ondrej-php.gpg && \
+    curl -SLo /tmp/debsuryorg-archive-keyring.deb https://packages.sury.org/debsuryorg-archive-keyring.deb && \
+    dpkg -i /tmp/debsuryorg-archive-keyring.deb && \
+    rm -f /tmp/debsuryorg-archive-keyring.deb && \
+    CODENAME="$(lsb_release -sc)" && \
+    echo "deb [signed-by=/usr/share/keyrings/debsuryorg-archive-keyring.gpg] https://packages.sury.org/php/ ${CODENAME} main" > /etc/apt/sources.list.d/php.list && \
     apt-get -q update && \
     apt-get install -y --no-install-recommends \
-        ghostscript git jq less libatomic1 libglib2.0-0 libmysqlclient21 libpcre3 msmtp mysql-client \
+        ghostscript git jq less libatomic1 libglib2.0-0 libmariadb3 libpcre3 msmtp mariadb-client \
         nano openssl vim wget zstd && \
-    apt-get install -y --no-install-recommends libmemcached11t64 && \
-    # apt-get install -y --no-install-recommends \
-    #     php8.5-apcu php8.5-bcmath php8.5-cli php8.5-curl php8.5-fpm php8.5-gd php8.5-gmagick php8.5-gmp php8.5-gnupg \
-    #     php8.5-igbinary php8.5-intl php8.5-mbstring php8.5-mcrypt php8.5-memcache php8.5-memcached php8.5-mysql \
-    #     php8.5-soap php8.5-sqlite3 php8.5-ssh2 php8.5-xdebug php8.5-xml php8.5-zip && \
+    apt-get install -y --no-install-recommends libmemcached11 && \
     apt-get install -y --no-install-recommends \
         php8.5-apcu php8.5-bcmath php8.5-cli php8.5-curl php8.5-fpm php8.5-gd php8.5-gmagick php8.5-gmp php8.5-gnupg \
         php8.5-igbinary php8.5-intl php8.5-mbstring php8.5-mcrypt php8.5-memcached php8.5-mysql \
@@ -33,7 +32,6 @@ RUN \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* && \
     ln -s /usr/sbin/php-fpm8.5 /usr/sbin/php-fpm && \
     \
-    deluser --remove-home --quiet ubuntu && \
     usermod -d /home/www-data -s /bin/bash www-data && \
     install -d -D -m 0750 -o www-data -g www-data /home/www-data && \
     install -d -D -m 0777 -o www-data -g www-data /var/www/html && \
