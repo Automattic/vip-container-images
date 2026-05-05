@@ -17,7 +17,6 @@ RUN \
     rm -f /tmp/debsuryorg-archive-keyring.deb && \
     CODENAME="$(lsb_release -sc)" && \
     echo "deb [signed-by=/usr/share/keyrings/debsuryorg-archive-keyring.gpg] https://packages.sury.org/php/ ${CODENAME} main" > /etc/apt/sources.list.d/php.list && \
-    curl -sSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x71DAEAAB4AD4CAB6" | gpg --dearmor > /etc/apt/trusted.gpg.d/ppa-ondrej-php.gpg && \
     apt-get -q update && \
     apt-get install -y --no-install-recommends \
         ghostscript git jq less libatomic1 libglib2.0-0 libmariadb3 libpcre3 msmtp mariadb-client \
