@@ -1,6 +1,6 @@
 FROM --platform=${BUILDPLATFORM} tonistiigi/xx:latest@sha256:c64defb9ed5a91eacb37f96ccc3d4cd72521c4bd18d5442905b95e2226b0e707 AS xx
 
-FROM --platform=${BUILDPLATFORM} ubuntu:24.04@sha256:c4a8d5503dfb2a3eb8ab5f807da5bc69a85730fb49b5cfca2330194ebcc41c7b AS common
+FROM --platform=${BUILDPLATFORM} debian:bookworm-slim@sha256:f9c6a2fd2ddbc23e336b6257a5245e31f996953ef06cd13a59fa0a1df2d5c252 AS common
 ARG TARGETPLATFORM
 COPY --from=xx / /
 ENV DEBIAN_FRONTEND=noninteractive
@@ -21,9 +21,13 @@ FROM --platform=${BUILDPLATFORM} common AS php-common
 ARG TARGETPLATFORM
 RUN \
     apt-get update && \
-    apt-get install -y curl lsb-release ca-certificates gnupg --no-install-recommends && \
-    echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list && \
-    curl -sSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x71DAEAAB4AD4CAB6" | gpg --dearmor > /etc/apt/trusted.gpg.d/ppa-ondrej-php.gpg && \
+    apt-get install -y curl lsb-release ca-certificates --no-install-recommends && \
+    curl -SLo /tmp/debsuryorg-archive-keyring.deb https://packages.sury.org/debsuryorg-archive-keyring.deb && \
+    echo '7511384559c9ddf1d5ce5f60be429ae9d4e7d01d9480d6f1b7a30c0810cf8b60  /tmp/debsuryorg-archive-keyring.deb' | sha256sum -c - && \
+    dpkg -i /tmp/debsuryorg-archive-keyring.deb && \
+    rm -f /tmp/debsuryorg-archive-keyring.deb && \
+    CODENAME="$(lsb_release -sc)" && \
+    echo "deb [signed-by=/usr/share/keyrings/debsuryorg-archive-keyring.gpg] https://packages.sury.org/php/ ${CODENAME} main" > /etc/apt/sources.list.d/php.list && \
     xx-apt-get update && \
     apt-get install -y shtool php8.3-cli php8.3-xml php-pear && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* && \
@@ -35,23 +39,27 @@ RUN \
 
 FROM --platform=${BUILDPLATFORM} common AS build-mydumper
 ARG TARGETPLATFORM
+ARG TARGETARCH
 RUN \
     echo 'DPkg::Pre-Invoke { "rm -f /var/lib/dpkg/info/*.postinst || true"; };' > /etc/apt/apt.conf.d/99local && \
     xx-apt-get update && \
+    apt-get install -y --no-install-recommends libmariadb-dev && \
+    mv /usr/bin/mariadb_config /usr/bin/mariadb_config.${TARGETARCH} && \
     xx-apt-get install --no-install-recommends -y -oDPkg::ConfigurePending=0 libglib2.0-dev || true && \
     xx-apt-get install --no-install-recommends -y -oDPkg::ConfigurePending=0 libglib2.0-dev || true && \
     xx-apt-get install --no-install-recommends -y -oDPkg::ConfigurePending=0 libglib2.0-dev && \
     xx-apt-get install --no-install-recommends -y \
-        zlib1g-dev libpcre3-dev libssl-dev libzstd-dev libmysqlclient-dev && \
+        zlib1g-dev libpcre3-dev libssl-dev libzstd-dev libmariadb-dev && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 WORKDIR /src/mydumper
+ARG TARGETARCH
 ADD https://github.com/mydumper/mydumper/archive/refs/tags/v0.21.3-1.tar.gz mydumper.tar.gz
 RUN \
     echo "b878f78f02eda3129584105ad7e2af60 mydumper.tar.gz" | md5sum -c - && \
     tar -xzf mydumper.tar.gz --strip-components=1 && \
     sed -i 's/-Werror//g' CMakeLists.txt && \
-    cmake -B build $(xx-clang --print-cmake-defines) && \
+    cmake -B build $(xx-clang --print-cmake-defines) -DMARIADB_CONFIG=/usr/bin/mariadb_config.${TARGETARCH} && \
     cmake --build build -j$(nproc) && \
     cmake --install build && \
     rm -rf build
