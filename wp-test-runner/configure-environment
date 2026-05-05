@@ -10,7 +10,7 @@ set -e
 : "${PHPUNIT_VERSION:=""}"
 : "${PHP_VERSION:="8.3"}"
 : "${DISABLE_XDEBUG:=""}"
-: "${APP_HOME:="/home/circleci/project"}"
+: "${APP_HOME:="/home/debian/project"}"
 : "${PHP_OPTIONS:=""}"
 
 if [ ! -d "/wordpress/wordpress-${WP_VERSION}" ] || [ ! -d "/wordpress/wordpress-tests-lib-${WP_VERSION}" ]; then
@@ -49,8 +49,8 @@ if [ -x "${APP_HOME}/vendor/bin/phpunit" ] && [ -z "${PHPUNIT_VERSION}" ]; then
     PHPUNIT="${APP_HOME}/vendor/bin/phpunit"
 elif [ -n "${PHPUNIT_VERSION}" ] && [ -x "/usr/local/bin/phpunit${PHPUNIT_VERSION}" ]; then
     PHPUNIT="/usr/local/bin/phpunit${PHPUNIT_VERSION}"
-elif [ -x "${APP_HOME}/vendor/bin/phpunit" ]; then
-	PHPUNIT=~/.composer/vendor/bin/phpunit
+elif [ -x "${HOME}/vendor/bin/phpunit" ]; then
+	PHPUNIT="${HOME}/vendor/bin/phpunit"
 else
 	PHPUNIT=/usr/local/bin/phpunit9
 fi
