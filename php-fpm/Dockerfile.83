@@ -1,5 +1,5 @@
-FROM ghcr.io/automattic/vip-container-images/php-helpers:latest@sha256:fb5d4a8d718b8e056cf2db62ebe0a817155c34d5af5d66bd7296ec59e4327c84 AS build
-FROM ubuntu:24.04@sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02
+FROM ghcr.io/automattic/vip-container-images/php-helpers:latest@sha256:5240ace0386e93c8a9a52dbfa208c3590fd0c7d599ca93b555c80a3078681caa AS build
+FROM debian:bookworm@sha256:8a8cd02c5912770b4980228a54d4aff9e4f986f1eb2525d2d371dec5232cefcc
 ARG TARGETARCH
 
 # We lack: newrelic
@@ -11,11 +11,15 @@ RUN \
     export LD_PRELOAD=/usr/lib/libeatmydata/libeatmydata.so && \
     apt-get -y upgrade && \
     apt-get install -y curl lsb-release ca-certificates gnupg --no-install-recommends && \
-    echo "deb http://ppa.launchpad.net/ondrej/php/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list && \
-    curl -sSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x71DAEAAB4AD4CAB6" | gpg --dearmor > /etc/apt/trusted.gpg.d/ppa-ondrej-php.gpg && \
+    curl -SLo /tmp/debsuryorg-archive-keyring.deb https://packages.sury.org/debsuryorg-archive-keyring.deb && \
+    echo '7511384559c9ddf1d5ce5f60be429ae9d4e7d01d9480d6f1b7a30c0810cf8b60  /tmp/debsuryorg-archive-keyring.deb' | sha256sum -c - && \
+    dpkg -i /tmp/debsuryorg-archive-keyring.deb && \
+    rm -f /tmp/debsuryorg-archive-keyring.deb && \
+    CODENAME="$(lsb_release -sc)" && \
+    echo "deb [signed-by=/usr/share/keyrings/debsuryorg-archive-keyring.gpg] https://packages.sury.org/php/ ${CODENAME} main" > /etc/apt/sources.list.d/php.list && \
     apt-get -q update && \
     apt-get install -y --no-install-recommends \
-        ghostscript git jq less libatomic1 libglib2.0-0 libmysqlclient21 libpcre3 msmtp mysql-client \
+        ghostscript git jq less libatomic1 libglib2.0-0 libmariadb3 libpcre3 msmtp mariadb-client \
         nano openssl vim wget zstd && \
     apt-get install -y --no-install-recommends \
         php8.3-apcu php8.3-bcmath php8.3-cli php8.3-curl php8.3-fpm php8.3-gd php8.3-gmagick php8.3-gmp php8.3-gnupg \
@@ -26,7 +30,6 @@ RUN \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* && \
     ln -s /usr/sbin/php-fpm8.3 /usr/sbin/php-fpm && \
     \
-    deluser --remove-home --quiet ubuntu && \
     usermod -d /home/www-data -s /bin/bash www-data && \
     install -d -D -m 0750 -o www-data -g www-data /home/www-data && \
     install -d -D -m 0777 -o www-data -g www-data /var/www/html && \
