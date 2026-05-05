@@ -1,5 +1,5 @@
 FROM ghcr.io/automattic/vip-container-images/php-helpers:latest@sha256:fb5d4a8d718b8e056cf2db62ebe0a817155c34d5af5d66bd7296ec59e4327c84 AS build
-FROM ubuntu:24.04@sha256:1e622c5f073b4f6bfad6632f2616c7f59ef256e96fe78bf6a595d1dc4376ac02
+FROM ubuntu:26.04@sha256:f3d28607ddd78734bb7f71f117f3c6706c666b8b76cbff7c9ff6e5718d46ff64
 ARG TARGETARCH
 
 # Extra PHP extensions: msgpack (because of memcache)
