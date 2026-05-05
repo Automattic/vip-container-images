@@ -2,12 +2,13 @@
 
 set -e
 
+# shellcheck source=/dev/null
 . configure-environment
 create-database
 
 : "${PHP_OPTIONS:=""}"
 : "${PHPUNIT_VERSION:=""}"
-: "${APP_HOME:="/home/ubuntu/project"}"
+: "${APP_HOME:="/home/debian/project"}"
 : "${PRETEST_SCRIPT:=""}"
 
 if [ ! -d "${APP_HOME}/vendor/yoast/phpunit-polyfills" ]; then
