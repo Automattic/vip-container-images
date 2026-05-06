@@ -46,11 +46,9 @@ fi
 PHP="php ${PHP_OPTIONS}"
 
 if [ -x "${APP_HOME}/vendor/bin/phpunit" ] && [ -z "${PHPUNIT_VERSION}" ]; then
-    PHPUNIT="${APP_HOME}/vendor/bin/phpunit"
+	PHPUNIT="${APP_HOME}/vendor/bin/phpunit"
 elif [ -n "${PHPUNIT_VERSION}" ] && [ -x "/usr/local/bin/phpunit${PHPUNIT_VERSION}" ]; then
-    PHPUNIT="/usr/local/bin/phpunit${PHPUNIT_VERSION}"
-elif [ -x "${HOME}/vendor/bin/phpunit" ]; then
-	PHPUNIT="${HOME}/vendor/bin/phpunit"
+	PHPUNIT="/usr/local/bin/phpunit${PHPUNIT_VERSION}"
 else
 	PHPUNIT=/usr/local/bin/phpunit9
 fi
