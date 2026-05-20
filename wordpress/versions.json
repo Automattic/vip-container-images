@@ -1,11 +1,10 @@
 [
   {
-    "ref": "c0e25380377f550bc4fa72971c7eaeda052686d1",
+    "ref": "7.0",
     "tag": "7.0",
-    "cacheable": false,
+    "cacheable": true,
     "locked": true,
-    "prerelease": true,
-    "tests_ref": "trunk"
+    "prerelease": false
   },
   {
     "ref": "6.9.4",
