@@ -24,7 +24,7 @@ COPY . .
 FROM --platform=${BUILDPLATFORM} common AS build
 ARG TARGETPLATFORM
 
-RUN xx-apk add --no-cache gcc musl-dev acl-dev acl-static attr-dev attr-static popt-dev popt-static zlib-dev zlib-static zstd-dev zstd-static
+RUN xx-apk add --no-cache gcc musl-dev acl-dev acl-static attr-dev attr-static linux-headers popt-dev popt-static zlib-dev zlib-static zstd-dev zstd-static
 RUN xx-clang --setup-target-triple
 
 WORKDIR /src/lz4-1.10.0
