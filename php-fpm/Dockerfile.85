@@ -1,5 +1,5 @@
 FROM ghcr.io/automattic/vip-container-images/php-helpers:latest@sha256:5240ace0386e93c8a9a52dbfa208c3590fd0c7d599ca93b555c80a3078681caa AS build
-FROM debian:bookworm@sha256:85019db29298555fd1a5f4bb57673ae989414a9884117c75d7a3e1a6cce21688
+FROM debian:bookworm@sha256:ed4fcc40bb1162b6d2d32e7bec15044d13963779abbe63f67f1cd62b06220519
 ARG TARGETARCH
 
 # We lack: newrelic
