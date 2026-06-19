@@ -3,7 +3,7 @@ FROM --platform=${BUILDPLATFORM} tonistiigi/xx:latest@sha256:923441d7c25f1e2eb57
 FROM --platform=${BUILDPLATFORM} alpine:3.24.1@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b AS common
 COPY --from=xx / /
 
-RUN apk add --no-cache clang file gawk lld make pkgconf
+RUN apk add --no-cache binutils clang file gawk lld make pkgconf
 
 ENV SOURCE_DATE_EPOCH=0
 ENV CC=xx-clang
