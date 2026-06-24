@@ -1,13 +1,14 @@
-echo
-echo '＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/'
-echo '＿/　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 ＿/'
-echo '＿/　 Welcome to VIP Local Development Environment!　 ＿/'
-echo '＿/　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 ＿/'
-echo '＿/　 Learn more at: https://docs.wpvip.com  　 　 　 ＿/'
-echo '＿/　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 　 ＿/'
-echo '＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/'
-echo
-echo "You're using interactive shell for ${LANDO_APP_NAME}"
-echo
-echo
+printf '\n'
+printf '\033[38;2;232;196;142m  ██╗    ██╗██████╗ ██╗   ██╗██╗██████╗ \033[0m\n'
+printf '\033[38;2;224;181;118m  ██║    ██║██╔══██╗██║   ██║██║██╔══██╗\033[0m\n'
+printf '\033[38;2;216;164;95m  ██║ █╗ ██║██████╔╝██║   ██║██║██████╔╝\033[0m\n'
+printf '\033[38;2;205;150;78m  ██║███╗██║██╔═══╝ ╚██╗ ██╔╝██║██╔═══╝ \033[0m\n'
+printf '\033[38;2;195;137;60m  ╚███╔███╔╝██║      ╚████╔╝ ██║██║     \033[0m\n'
+printf '\033[38;2;185;124;45m   ╚══╝╚══╝ ╚═╝       ╚═══╝  ╚═╝╚═╝     \033[0m\n'
+printf '\n'
+printf '  \033[1mLocal Development Environment\033[0m\n'
+printf '  \033[38;2;216;164;95m──────────────────────────────────────\033[0m\n'
+printf '  shell: \033[1;38;2;216;164;95m%s\033[0m\n' "${LANDO_APP_NAME}"
+printf '  docs:  \033[4;38;2;216;164;95mhttps://docs.wpvip.com\033[0m\n'
+printf '\n'
 PS1='\[\033[01;32m\]\u\[\033[01;34m\]:\w \$\[\033[00m\] '
