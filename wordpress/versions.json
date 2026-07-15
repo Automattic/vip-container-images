@@ -1,5 +1,13 @@
 [
   {
+    "ref": "46e17f4c69636694d68fed79d6754a9e8a87b633",
+    "tag": "7.1",
+    "tests_ref": "1b957d710850a7a28eb4740c5ed5e308efb76460",
+    "cacheable": false,
+    "locked": true,
+    "prerelease": true
+  },
+  {
     "ref": "7.0.1",
     "tag": "7.0",
     "cacheable": true,
@@ -37,13 +45,6 @@
   {
     "ref": "6.5.8",
     "tag": "6.5",
-    "cacheable": true,
-    "locked": true,
-    "prerelease": false
-  },
-  {
-    "ref": "6.4.8",
-    "tag": "6.4",
     "cacheable": true,
     "locked": true,
     "prerelease": false
