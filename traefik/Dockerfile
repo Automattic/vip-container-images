@@ -1,3 +1,3 @@
-FROM traefik:v3.7.5@sha256:e4d98158c01ad752fc1071d4e9573788747230d902cdde00a772516e692d07c9
+FROM traefik:v3.7.9@sha256:652929a140a32d7cafafb13c6cdfab5376cfeff800f51397b87b524501ed02a8
 
 RUN apk upgrade --no-cache && apk add --no-cache openssl
