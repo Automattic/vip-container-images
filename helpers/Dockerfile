@@ -9,9 +9,15 @@ ENV SOURCE_DATE_EPOCH=0
 ENV CC=xx-clang
 ENV CXX=xx-clang++
 
-ADD https://github.com/lz4/lz4/releases/download/v1.10.0/lz4-1.10.0.tar.gz /src/
-ADD https://github.com/Cyan4973/xxHash/archive/v0.8.3.tar.gz /src/
 RUN \
+    mkdir -p /src && \
+    \
+    curl -fsSL https://github.com/lz4/lz4/releases/download/v1.10.0/lz4-1.10.0.tar.gz -o /src/lz4-1.10.0.tar.gz && \
+    echo '537512904744b35e232912055ccf8ec66d768639ff3abe5788d90d792ec5f48b  /src/lz4-1.10.0.tar.gz' | sha256sum -c - && \
+    \
+    curl -fsSL https://github.com/Cyan4973/xxHash/archive/v0.8.3.tar.gz -o /src/v0.8.3.tar.gz && \
+    echo 'aae608dfe8213dfd05d909a57718ef82f30722c392344583d3f39050c7f29a80  /src/v0.8.3.tar.gz' | sha256sum -c - && \
+    \
     curl -fsSL https://download.samba.org/pub/rsync/rsync-3.5.0.tar.gz -o /src/rsync-3.5.0.tar.gz && \
     echo 'c7ffd1ef653e99540f661e47cb00b7f9cad1ee6b972399b16f93d672656e0d33  /src/rsync-3.5.0.tar.gz' | sha256sum -c -
 
