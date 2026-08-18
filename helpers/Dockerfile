@@ -3,7 +3,7 @@ FROM --platform=${BUILDPLATFORM} tonistiigi/xx:latest@sha256:923441d7c25f1e2eb57
 FROM --platform=${BUILDPLATFORM} alpine:3.24.1@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b AS common
 COPY --from=xx / /
 
-RUN apk add --no-cache binutils clang file gawk lld make pkgconf
+RUN apk add --no-cache binutils clang curl file gawk lld make pkgconf
 
 ENV SOURCE_DATE_EPOCH=0
 ENV CC=xx-clang
@@ -11,13 +11,15 @@ ENV CXX=xx-clang++
 
 ADD https://github.com/lz4/lz4/releases/download/v1.10.0/lz4-1.10.0.tar.gz /src/
 ADD https://github.com/Cyan4973/xxHash/archive/v0.8.3.tar.gz /src/
-ADD https://download.samba.org/pub/rsync/rsync-3.4.4.tar.gz /src/
+RUN \
+    curl -fsSL https://download.samba.org/pub/rsync/rsync-3.5.0.tar.gz -o /src/rsync-3.5.0.tar.gz && \
+    echo 'c7ffd1ef653e99540f661e47cb00b7f9cad1ee6b972399b16f93d672656e0d33  /src/rsync-3.5.0.tar.gz' | sha256sum -c -
 
 WORKDIR /src
 RUN \
     tar xzf lz4-1.10.0.tar.gz && \
     tar xzf v0.8.3.tar.gz && \
-    tar xzf rsync-3.4.4.tar.gz
+    tar xzf rsync-3.5.0.tar.gz
 
 COPY . .
 
@@ -37,7 +39,7 @@ RUN \
     make libxxhash.a CFLAGS="-DXXH_FORCE_MEMORY_ACCESS=1 -O3 -flto=auto" && \
     make install_libxxhash.a install_libxxhash.includes install_libxxhash.pc PREFIX="$(xx-info sysroot)usr/local"
 
-WORKDIR /src/rsync-3.4.4
+WORKDIR /src/rsync-3.5.0
 RUN \
     ./configure --host=$(xx-clang --print-target-triple) \
         --enable-acl-support --enable-xattr-support --disable-openssl --disable-debug --disable-md2man --disable-locale --without-included-popt --without-included-zlib \
