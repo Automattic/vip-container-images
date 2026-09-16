@@ -209,7 +209,7 @@ if ( defined( 'VIP_GO_APP_ENVIRONMENT') && VIP_GO_APP_ENVIRONMENT === 'local' ) 
 					$value = str_replace( "\\'", "'", $value );
 				}
 
-				$constant = 'VIP_ENV_VAR_' . $key;
+$constant = str_starts_with( $key, 'VIP_ENV_VAR_' ) ? $key : 'VIP_ENV_VAR_' . $key;
 				if ( ! defined( $constant ) ) {
 					$value = str_replace( [ '$', '"', '\\', "\r", "\n", "\t" ], [ '\\$', '\\"', '\\\\', '\\r', '\\n', '\\t' ], $value );
 					define( $constant, $value );
