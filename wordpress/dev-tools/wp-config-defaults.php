@@ -188,3 +188,33 @@ if ( 'Windows' !== PHP_OS_FAMILY ) {
 if ( defined( 'VIP_GO_APP_ENVIRONMENT') && VIP_GO_APP_ENVIRONMENT === 'local' ) {
 	define( 'DISABLE_JETPACK_ACCOUNT_PROTECTION', true );
 }
+
+(function() {
+	$env_file = '/app/.env';
+	if ( is_file( $env_file ) && is_readable( $env_file ) ) {
+		$lines    = file( $env_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
+		$env_vars = [];
+		foreach ( $lines as $line ) {
+			if ( strpos( $line, '=' ) !== false ) {
+				list( $key, $value ) = explode( '=', $line, 2 );
+				$key   = trim( $key );
+				$value = trim( $value );
+				// Double quotes: special characters are ", $, and \. They are escaped with a slash
+				// Single quotes: special character is '. It is escaped with a slash
+				if ( str_starts_with( $value, '"' ) && str_ends_with( $value, '"' ) ) {
+					$value = substr( $value, 1, -1 );
+					$value = str_replace( [ '\\"', '\\$', '\\\\', '\\r', '\\n', '\\t' ], [ '"', '$', '\\', "\r", "\n", "\t" ], $value );
+				} elseif ( str_starts_with( $value, "'" ) && str_ends_with( $value, "'" ) ) {
+					$value = substr( $value, 1, -1 );
+					$value = str_replace( "\\'", "'", $value );
+				}
+
+$constant = str_starts_with( $key, 'VIP_ENV_VAR_' ) ? $key : 'VIP_ENV_VAR_' . $key;
+				if ( ! defined( $constant ) ) {
+					$value = str_replace( [ '$', '"', '\\', "\r", "\n", "\t" ], [ '\\$', '\\"', '\\\\', '\\r', '\\n', '\\t' ], $value );
+					define( $constant, $value );
+				}
+			}
+		}
+	}
+})();
