@@ -1,55 +1,55 @@
 [
   {
-    "ref": "7.1",
+    "ref": "7.1.1",
     "tag": "7.1",
     "cacheable": true,
     "locked": true,
     "prerelease": false
   },
   {
-    "ref": "7.0.4",
+    "ref": "7.0.5",
     "tag": "7.0",
     "cacheable": true,
     "locked": true,
     "prerelease": false
   },
   {
-    "ref": "6.9.7",
+    "ref": "6.9.8",
     "tag": "6.9",
     "cacheable": true,
     "locked": true,
     "prerelease": false
   },
   {
-    "ref": "6.8.8",
+    "ref": "6.8.9",
     "tag": "6.8",
     "cacheable": true,
     "locked": true,
     "prerelease": false
   },
   {
-    "ref": "6.7.7",
+    "ref": "6.7.8",
     "tag": "6.7",
     "cacheable": true,
     "locked": true,
     "prerelease": false
   },
   {
-    "ref": "6.6.7",
+    "ref": "6.6.8",
     "tag": "6.6",
     "cacheable": true,
     "locked": true,
     "prerelease": false
   },
   {
-    "ref": "6.5.10",
+    "ref": "6.5.11",
     "tag": "6.5",
     "cacheable": true,
     "locked": true,
     "prerelease": false
   },
   {
-    "ref": "6.4.10",
+    "ref": "6.4.11",
     "tag": "6.4",
     "cacheable": true,
     "locked": true,
