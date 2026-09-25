@@ -48,7 +48,7 @@ RUN \
 WORKDIR /src/rsync-3.5.1
 RUN \
     ./configure --host=$(xx-clang --print-target-triple) \
-        --enable-acl-support --enable-xattr-support --disable-openssl --disable-debug --disable-md2man --disable-locale --without-included-popt --without-included-zlib \
+        --enable-acl-support --enable-xattr-support --disable-openssl --disable-debug --disable-idn --disable-md2man --disable-locale --without-included-popt --without-included-zlib \
         LDFLAGS="-L$(xx-info sysroot)usr/local/lib -s -static" CFLAGS="-O2 -flto=auto" && \
     make -j2 && \
     make install
