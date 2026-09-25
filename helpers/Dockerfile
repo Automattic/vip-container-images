@@ -18,14 +18,14 @@ RUN \
     curl -fsSL https://github.com/Cyan4973/xxHash/archive/v0.8.3.tar.gz -o /src/v0.8.3.tar.gz && \
     echo 'aae608dfe8213dfd05d909a57718ef82f30722c392344583d3f39050c7f29a80  /src/v0.8.3.tar.gz' | sha256sum -c - && \
     \
-    curl -fsSL https://download.samba.org/pub/rsync/rsync-3.5.0.tar.gz -o /src/rsync-3.5.0.tar.gz && \
-    echo 'c7ffd1ef653e99540f661e47cb00b7f9cad1ee6b972399b16f93d672656e0d33  /src/rsync-3.5.0.tar.gz' | sha256sum -c -
+    curl -fsSL https://download.samba.org/pub/rsync/rsync-3.5.1.tar.gz -o /src/rsync-3.5.1.tar.gz && \
+    echo 'c55f9c9dc10fb8bec397b399a0fdded53cc9a2d8e30891bb0d63724d25c37bef  /src/rsync-3.5.1.tar.gz' | sha256sum -c -
 
 WORKDIR /src
 RUN \
     tar xzf lz4-1.10.0.tar.gz && \
     tar xzf v0.8.3.tar.gz && \
-    tar xzf rsync-3.5.0.tar.gz
+    tar xzf rsync-3.5.1.tar.gz
 
 COPY . .
 
@@ -45,7 +45,7 @@ RUN \
     make libxxhash.a CFLAGS="-DXXH_FORCE_MEMORY_ACCESS=1 -O3 -flto=auto" && \
     make install_libxxhash.a install_libxxhash.includes install_libxxhash.pc PREFIX="$(xx-info sysroot)usr/local"
 
-WORKDIR /src/rsync-3.5.0
+WORKDIR /src/rsync-3.5.1
 RUN \
     ./configure --host=$(xx-clang --print-target-triple) \
         --enable-acl-support --enable-xattr-support --disable-openssl --disable-debug --disable-md2man --disable-locale --without-included-popt --without-included-zlib \
