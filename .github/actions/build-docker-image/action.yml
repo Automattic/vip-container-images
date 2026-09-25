@@ -97,7 +97,7 @@ runs:
         cache-to: ${{ inputs.cache-to }}
         no-cache: ${{ inputs.no-cache }}
       env:
-        SOURCE_DATE_EPOCH: 0
+        SOURCE_DATE_EPOCH: 1
 
     - name: Get image name
       shell: bash
