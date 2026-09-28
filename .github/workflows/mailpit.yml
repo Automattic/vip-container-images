@@ -51,4 +51,5 @@ jobs:
           cache-from: type=gha,scope=mailpit
           cache-to: type=gha,mode=max,scope=mailpit
           no-cache: ${{ github.event_name == 'workflow_dispatch' }}
-          primaryTag: ghcr.io/automattic/vip-container-images/mailpit_openssl:${{ steps.getversion.outputs.version }}
+          primaryTag: ghcr.io/automattic/vip-container-images/mailpit_openssl:latest
+          tags: ghcr.io/automattic/vip-container-images/mailpit_openssl:${{ steps.getversion.outputs.version }}
