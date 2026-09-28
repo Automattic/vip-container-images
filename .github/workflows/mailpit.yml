@@ -1,0 +1,54 @@
+name: Build Mailpit with OpenSSL
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "mailpit/**"
+      - ".github/workflows/mailpit.yml"
+      - ".github/actions/build-docker-image/**"
+  pull_request:
+    paths:
+      - "mailpit/**"
+      - ".github/workflows/mailpit.yml"
+      - ".github/actions/build-docker-image/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  push_to_registry:
+    name: Build Mailpit with OpenSSL
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+      pull-requests: write
+      security-events: write
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v7
+
+      - name: Get image version
+        id: getversion
+        run: echo "version=$(head -n 1 mailpit/Dockerfile | sed -r -e 's/^([^:]+):([^ @$-]+).*/\2/')" >> "${GITHUB_OUTPUT}"
+
+      - name: Build and push image
+        uses: ./.github/actions/build-docker-image
+        with:
+          context: mailpit
+          file: mailpit/Dockerfile
+          push: ${{ github.base_ref == null }}
+          cache-from: type=gha,scope=mailpit
+          cache-to: type=gha,mode=max,scope=mailpit
+          no-cache: ${{ github.event_name == 'workflow_dispatch' }}
+          primaryTag: ghcr.io/automattic/vip-container-images/mailpit_openssl:${{ steps.getversion.outputs.version }}
