@@ -72,7 +72,7 @@ ADD --chmod=0755 https://phar.phpunit.de/phpcov.phar /usr/local/bin/phpcov
 COPY create-database configure-environment install-wp runner /usr/local/bin/
 ENTRYPOINT ["/usr/local/bin/runner"]
 
-RUN install -d -m 0775 -o debian -g debian /home/debian/project
+RUN install -d -m 0777 -o debian -g debian /home/debian/project
 
 USER debian
 COPY --from=build-wp --chown=debian:debian /home/debian/.nvm /home/debian/.nvm
