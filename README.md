@@ -49,7 +49,7 @@ The CLI supplies `VIP_DEVENV_MAILPIT`, `VIP_DEVENV_PHOTON`, `VIP_DEVENV_ELASTICS
 
 Mailpit enables PHP's mail transport. Photon supplies `FILES_ACCESS_TOKEN=local-dev-token` unless a token is already defined. Enterprise Search constants are automatically enabled only when installing a fresh demo site with Elasticsearch enabled.
 
-Run the native script/config tests with `python3 -m unittest discover -s tests -v` (requires PHP and jq).
+Run the native script/config tests with `sh tests/dev-env-services.sh` (requires PHP and jq).
 
 ## Publishing the images
 
