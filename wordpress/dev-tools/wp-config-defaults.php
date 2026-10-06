@@ -17,9 +17,11 @@ if ( ! empty( $_SERVER['HTTP_X_FORWARDED_HOST'] ) && substr( $_SERVER['HTTP_X_FO
 $has_photon_service = false;
 
 /**
- * Do Lando-specific things.
+ * Prefer explicit service settings, falling back to Lando discovery.
  */
-if ( isset( $_ENV['LANDO_INFO'] ) ) {
+if ( isset( $_ENV['VIP_DEVENV_PHOTON'] ) ) {
+	$has_photon_service = '1' === $_ENV['VIP_DEVENV_PHOTON'];
+} elseif ( isset( $_ENV['LANDO_INFO'] ) ) {
 	$lando_info = json_decode( $_ENV['LANDO_INFO'], true );
 
 	$has_photon_service = is_array( $lando_info ) && isset( $lando_info['photon'] ) && $lando_info['photon']['healthy'];
@@ -130,8 +132,8 @@ if ( ! defined( 'WPVIP_INTEGRATIONS_CONFIG_DIR' ) ) {
 	define( 'WPVIP_INTEGRATIONS_CONFIG_DIR', ABSPATH . 'config/integrations-config' );
 }
 
-// We only want this defined if Photon service is present and healthy
-if ( $has_photon_service ) {
+// Provide a local token when Photon is enabled, unless one was already configured.
+if ( $has_photon_service && ! defined( 'FILES_ACCESS_TOKEN' ) ) {
 	define( 'FILES_ACCESS_TOKEN', 'local-dev-token' );
 	// Depending on your needs you may want to flip this between true and false
 	// define( 'WPCOM_VIP_USE_JETPACK_PHOTON', false );

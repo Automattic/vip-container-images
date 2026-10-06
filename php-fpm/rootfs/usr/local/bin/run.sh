@@ -11,7 +11,7 @@ else
 fi
 
 # shellcheck disable=SC2312
-if [ -n "${LANDO_INFO}" ] && [ 'null' != "$(echo "${LANDO_INFO}" | jq -r .mailpit)" ]; then
+if [ '1' = "${VIP_DEVENV_MAILPIT}" ] || { [ -z "${VIP_DEVENV_MAILPIT+x}" ] && [ -n "${LANDO_INFO}" ] && [ 'null' != "$(echo "${LANDO_INFO}" | jq -r .mailpit)" ]; }; then
     phpenmod mailpit
 else
     phpdismod mailpit
