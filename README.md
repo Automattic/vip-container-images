@@ -74,3 +74,26 @@ This will add a 5.9 and point to 5.9.3 tag.
 This can be used to delete tag.
 
 Alternatively, this also can be done by removing the related entry from `wordpress/versions.json`
+
+## Local import credential cleanup
+
+`php /dev-tools/import-cleanup.php` removes imported Jetpack, VaultPress, and
+WordPress.com connection options from every local options table, including
+inactive or orphaned subsites, then flushes Memcached without loading WordPress.
+Run it after the database importer succeeds and before any WordPress command.
+It exits nonzero if either cleanup step fails; callers must stop the import flow.
+It deletes stored options only and never disconnects the production site remotely.
+Other options are preserved; removing `jetpack_options` also resets Jetpack settings.
+
+The helper ships with the WordPress images. Publish those images before releasing
+the CLI import hook, and refresh existing environments so their `/dev-tools`
+volume contains the helper.
+
+To run the integration tests using disposable database and cache services:
+
+```sh
+docker compose -p import-cleanup -f wordpress/tests/import-cleanup.compose.yml run --rm test
+docker compose -p import-cleanup -f wordpress/tests/import-cleanup.compose.yml stop memcached
+docker compose -p import-cleanup -f wordpress/tests/import-cleanup.compose.yml run --rm --no-deps test /tests/import-cleanup.php --cache-unavailable
+docker compose -p import-cleanup -f wordpress/tests/import-cleanup.compose.yml down -v
+```
