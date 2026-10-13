@@ -43,6 +43,14 @@ For WordPress we'll also need to pass WP_GIT_REF argument, here's an example ent
   # the rest is omitted
 ```
 
+## Dev-env service settings
+
+The CLI supplies `VIP_DEVENV_MAILPIT`, `VIP_DEVENV_PHOTON`, `VIP_DEVENV_ELASTICSEARCH`, and `VIP_DEVENV_DEMO_APP` as `1` (enabled) or `0` (disabled). Each explicit setting overrides `LANDO_INFO`; unset settings retain Lando discovery. `ENABLE_ELASTICSEARCH` still triggers the readiness check when `VIP_DEVENV_ELASTICSEARCH` is unset.
+
+Mailpit enables PHP's mail transport. Photon supplies `FILES_ACCESS_TOKEN=local-dev-token` unless a token is already defined. Enterprise Search constants are automatically enabled only when installing a fresh demo site with Elasticsearch enabled.
+
+Run the native script/config tests with `sh tests/dev-env-services.sh` (requires PHP and jq).
+
 ## Publishing the images
 
 The image publishing process is performed by [a GitHub action](.github/workflows/) every time a commit is done to `master`. All workflows are triggered then, therefore, all images are built in parallel.

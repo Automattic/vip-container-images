@@ -149,7 +149,17 @@ printf " %sDONE%s\n" "${GREEN}" "${RESET}"
 echo "${CYAN}Copying dev-env-plugin.php to mu-plugins${RESET}"
 cp /dev-tools/dev-env-plugin.php /wp/wp-content/mu-plugins/
 
-if [ -n "${ENABLE_ELASTICSEARCH}" ] || { [ -n "${LANDO_INFO}" ] && [ "$(echo "${LANDO_INFO}" | jq .elasticsearch.service)" != 'null' ]; }; then
+# Explicit CLI settings take precedence; older Lando environments retain discovery.
+has_elasticsearch=0
+if [ '1' = "${VIP_DEVENV_ELASTICSEARCH}" ] || { [ -z "${VIP_DEVENV_ELASTICSEARCH+x}" ] && [ -n "${LANDO_INFO}" ] && [ "$(echo "${LANDO_INFO}" | jq .elasticsearch.service)" != 'null' ]; }; then
+  has_elasticsearch=1
+fi
+has_demo_app=0
+if [ '1' = "${VIP_DEVENV_DEMO_APP}" ] || { [ -z "${VIP_DEVENV_DEMO_APP+x}" ] && [ -n "${LANDO_INFO}" ] && [ "$(echo "${LANDO_INFO}" | jq '.["demo-app-code"].service')" != 'null' ]; }; then
+  has_demo_app=1
+fi
+
+if [ "$has_elasticsearch" -eq 1 ] || { [ -z "${VIP_DEVENV_ELASTICSEARCH+x}" ] && [ -n "${ENABLE_ELASTICSEARCH}" ]; }; then
   printf "Waiting for Elasticsearch to come online..."
   second=0
   while ! curl -s 'http://elasticsearch:9200/_cluster/health' > /dev/null && [ "${second}" -lt 60 ]; do
@@ -202,7 +212,7 @@ if ! wp core is-installed --skip-plugins --skip-themes >/dev/null 2>&1; then
       --skip-plugins #2>/dev/null
   fi
 
-  if [ -n "${LANDO_INFO}" ] && [ "$(echo "${LANDO_INFO}" | jq .elasticsearch.service)" != 'null' ] && [ "$(echo "${LANDO_INFO}" | jq '.["demo-app-code"].service')" != 'null' ]; then
+  if [ "$has_elasticsearch" -eq 1 ] && [ "$has_demo_app" -eq 1 ]; then
     wp config set --quiet VIP_ENABLE_VIP_SEARCH true --raw
     wp config set --quiet VIP_ENABLE_VIP_SEARCH_QUERY_INTEGRATION true --raw
     echo "Automatically set constants ${CODE}VIP_ENABLE_VIP_SEARCH${ENDCODE} and ${CODE}VIP_ENABLE_VIP_SEARCH_QUERY_INTEGRATION${ENDCODE} to ${CODE}true${ENDCODE}. For more information, see https://docs.wpvip.com/how-tos/vip-search/enable/"
