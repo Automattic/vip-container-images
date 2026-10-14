@@ -1,6 +1,6 @@
 FROM --platform=${BUILDPLATFORM} tonistiigi/xx:latest@sha256:c64defb9ed5a91eacb37f96ccc3d4cd72521c4bd18d5442905b95e2226b0e707 AS xx
 
-FROM --platform=${BUILDPLATFORM} debian:bookworm-slim@sha256:3783cc01769c7b2b1b83a5c5ad96c815348e28ed7da68e2e3687004faa906251 AS common
+FROM --platform=${BUILDPLATFORM} debian:bookworm-slim@sha256:7c7b2c966bc9ee8cedfeef67e0e279108992c77681fa595db4a9d65c06ccc587 AS common
 ARG TARGETPLATFORM
 COPY --from=xx / /
 ENV DEBIAN_FRONTEND=noninteractive
