@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM} tonistiigi/xx:latest@sha256:c64defb9ed5a91eacb37f96ccc3d4cd72521c4bd18d5442905b95e2226b0e707 AS xx
+FROM --platform=${BUILDPLATFORM} tonistiigi/xx:latest@sha256:40fe21f44bb8cddf1eb1226db190d0a984118f62ee02a91b77d99448d28264a6 AS xx
 
 FROM --platform=${BUILDPLATFORM} debian:bookworm-slim@sha256:3783cc01769c7b2b1b83a5c5ad96c815348e28ed7da68e2e3687004faa906251 AS common
 ARG TARGETPLATFORM
