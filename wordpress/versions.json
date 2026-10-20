@@ -1,5 +1,13 @@
 [
   {
+    "ref": "44f00f092d0af6fa205155cd8f8a0c4ca203f097",
+    "tag": "7.2",
+    "tests_ref": "trunk",
+    "cacheable": false,
+    "locked": true,
+    "prerelease": true
+  },
+  {
     "ref": "7.1.3",
     "tag": "7.1",
     "cacheable": true,
