@@ -23,6 +23,20 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  test-import-cleanup:
+    name: Test local import cleanup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Run database and cache integration tests
+        run: |
+          docker compose -p import-cleanup -f wordpress/tests/import-cleanup.compose.yml run --rm test
+          docker compose -p import-cleanup -f wordpress/tests/import-cleanup.compose.yml stop memcached
+          docker compose -p import-cleanup -f wordpress/tests/import-cleanup.compose.yml run --rm --no-deps test /tests/import-cleanup.php --cache-unavailable
+      - name: Remove test containers
+        if: always()
+        run: docker compose -p import-cleanup -f wordpress/tests/import-cleanup.compose.yml down -v
+
   prepare:
     name: Prepare build matrix
     runs-on: ubuntu-latest
@@ -40,7 +54,7 @@ jobs:
   build:
     name: "Build Docker image (ref: ${{ matrix.wp.ref }}, tag: ${{ matrix.wp.tag }})"
     runs-on: ubuntu-latest
-    needs: prepare
+    needs: [prepare, test-import-cleanup]
     permissions:
       contents: read
       packages: write

@@ -1,0 +1,27 @@
+services:
+  database:
+    image: mysql:8.4
+    command: --log-bin-trust-function-creators=1
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    healthcheck:
+      test: [CMD, mysqladmin, ping, -h127.0.0.1, --silent]
+      interval: 1s
+      retries: 60
+  memcached:
+    image: memcached:1.6-alpine
+  test:
+    image: ghcr.io/automattic/vip-container-images/php-fpm:8.4
+    entrypoint: php
+    command: /tests/import-cleanup.php
+    volumes:
+      - ../dev-tools:/dev-tools:ro
+      - .:/tests:ro
+    depends_on:
+      database:
+        condition: service_healthy
+      memcached:
+        condition: service_started
