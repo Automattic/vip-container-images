@@ -1,4 +1,4 @@
-FROM alpine:3.24.2@sha256:294b683cb724975bec92580e1e685676bd4b50bda910ddb8c51d4cabeaec77e6 AS build
+FROM alpine:3.24.4@sha256:f59abe656b692d901e184be3445e084786602108599d2a51d229c0f5a48c71bf AS build
 RUN apk add --no-cache php83-dev php83-pear php83-openssl gcc make libc-dev graphicsmagick-dev libtool subversion
 RUN pecl83 channel-update pecl.php.net
 RUN pecl83 install channel://pecl.php.net/gmagick-2.0.6RC1 < /dev/null
@@ -7,7 +7,7 @@ RUN \
     svn co https://code.svn.wordpress.org/photon/ /usr/share/webapps/photon -r645 && \
     rm -rf /usr/share/webapps/photon/.svn /usr/share/webapps/photon/tests
 
-FROM alpine:3.24.2@sha256:294b683cb724975bec92580e1e685676bd4b50bda910ddb8c51d4cabeaec77e6
+FROM alpine:3.24.4@sha256:f59abe656b692d901e184be3445e084786602108599d2a51d229c0f5a48c71bf
 RUN \
     apk upgrade --no-cache && \
     apk add --no-cache \
